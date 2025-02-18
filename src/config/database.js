@@ -1,19 +1,21 @@
-import mysql from 'mysql2'
+import { Sequelize } from "sequelize";
+import "dotenv/config";
 
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'bookedge'
-});
-
-connection.connect((err) => {
-    if (err) {
-        console.log('Error in connecting to the database');
-        return;
-    }
-    console.log('Connected to the database');
-}
+const database = new Sequelize(
+  process.env.DB_NAME || "bookedge",
+  process.env.DB_USER || "root",
+  process.env.DB_PASSWORD || "",
+  {
+    host: process.env.DB_HOST || "localhost",
+    dialect: "mysql",
+    logging: false,
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
+  }
 );
 
-export default connection;
+export { database };
