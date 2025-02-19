@@ -18,4 +18,4 @@ const database = new Sequelize(
   }
 );
 
-export { database };
+export { database }; 
