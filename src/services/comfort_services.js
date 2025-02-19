@@ -3,7 +3,8 @@ import {
   getComfortById,
   createComfort,
   updateComfort,
-  deleteComfort
+  deleteComfort,
+  
 } from "../repositories/comfortsRepository.js";
 
 export async function getAllComfortsService() {
@@ -25,3 +26,5 @@ export async function updateComfortService(id, data) {
 export async function deleteComfortService(id) {
   return await deleteComfort(id);
 }
+
+

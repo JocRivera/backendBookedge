@@ -18,7 +18,9 @@ export const getAllComfortsController = async (req, res) => {
 export const getAllComfortById = async (req, res) => {
   const { id } = req.params;
   try {
-    return res.status(200).json(await getByIdService(id)); 
+    const comfort = await getByIdService(id);
+    if (!comfort) return res.status(404).json({ error: "Comfort not found" });
+    res.status(200).json(comfort);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -37,6 +39,9 @@ export const updateComfortController = async (req, res) => {
   const { id } = req.params;
   try {
     const comfort = await updateService(id, req.body);
+    if (!comfort) {
+      return res.status(404).json({ error: "Comfort not found" });
+    }
     res.status(200).json(comfort);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -47,6 +52,7 @@ export const deleteComfortController = async (req, res) => {
   const { id } = req.params;
   try {
     const comfort = await deleteService(id);
+    if (!comfort) return res.status(404).json({ error: "Comfort not found" });
     res.status(200).json(comfort);
   } catch (error) {
     res.status(500).json({ error: error.message });
