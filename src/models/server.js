@@ -2,6 +2,7 @@ import express, {json} from 'express';
 import { database } from '../config/database.js';
 import morgan from "morgan";
 import cabinRoutes from '../routes/cabinRoutes.js';
+import serviceRoutes from "../routes/serviceRoute.js"
 
 
 
@@ -28,6 +29,7 @@ export default class Server {
 
     routes(){
         this.app.use('/cabins', cabinRoutes);
+        this.app.use('/services', serviceRoutes)
     }
 
     listen(){
