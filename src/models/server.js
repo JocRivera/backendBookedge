@@ -31,6 +31,7 @@ export default class Server {
         this.app.use('/cabins', cabinRoutes);
         this.app.use('/comforts', comfortRoutes);
         this.app.use('/customers', customerRoutes);
+        this.app.use('/reservations', reservationRoutes);
     }
 
     listen(){
