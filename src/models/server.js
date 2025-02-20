@@ -4,14 +4,15 @@ import morgan from "morgan";
 import cabinRoutes from '../routes/cabinRoutes.js';
 import comfortRoutes from '../routes/comfortRoutes.js';
 import serviceRoutes from '../routes/serviceRoutes.js';
-
-
+import customerRoutes from '../routes/customersRoutes.js';
+import reservationRoutes from '../routes/ReservationsRoutes.js'
+import express from "express";
 
 export default class Server {
 
     constructor() {
         this.app = express();
-        this.app.use(json());
+        this.app.use(express.json());
         this.app.use(morgan('dev'));
         this.dbConection();
         this.listen();
@@ -22,9 +23,9 @@ export default class Server {
     async dbConection() {
         try {
             await database.authenticate();
-            console.log('Base de datos conectdada');
+            console.log('Base de datos conectada');
         } catch (error) {
-            console.error('se jodio la base de datos', error);
+            console.error('Se jodió la base de datos', error);
         }
     }
 
@@ -32,6 +33,8 @@ export default class Server {
         this.app.use('/cabins', cabinRoutes);
         this.app.use('/comforts', comfortRoutes);
         this.app.use('/services', serviceRoutes);
+        this.app.use('/customers', customerRoutes);
+        this.app.use('/reservations', reservationRoutes);
     }
 
     listen() {
