@@ -1,6 +1,8 @@
 import { database } from '../config/database.js';
 import morgan from "morgan";
 import cabinRoutes from '../routes/cabinRoutes.js';
+import comfortRoutes from '../routes/comfortRoutes.js';
+import customerRoutes from '../routes/customersRoutes.js';
 import reservationRoutes from '../routes/ReservationsRoutes.js'
 import express from "express";
 
@@ -19,15 +21,16 @@ export default class Server {
     async dbConection() {
         try {
             await database.authenticate();
-            console.log('Base de datos conectdada');
+            console.log('Base de datos conectada');
         } catch (error) {
-            console.error('se jodio la base de datos', error);
+            console.error('Se jodió la base de datos', error);
         }
     }
 
     routes(){
         this.app.use('/cabins', cabinRoutes);
-        this.app.use('/reservations', reservationRoutes);
+        this.app.use('/comforts', comfortRoutes);
+        this.app.use('/customers', customerRoutes);
     }
 
     listen(){
