@@ -1,4 +1,4 @@
-import { Cabins } from "../models/Cabins.js";
+import { Cabins } from "../models/model_Cabins.js";
 
 export const getAllCabins = async () => {
   try {
@@ -42,7 +42,7 @@ export const getCabinById = async (id) => {
 
 export const createCabin = async (data) => {
   try {
-    const cabin = await Cabins.create(data);
+    return  await Cabins.create(data);
     return {
       success: true,
       data: cabin,
