@@ -1,38 +1,19 @@
-import { Services } from "../models/Services";
+import { Services } from "../models/Services.js";
 
-export const getAllServices = async () =>{
-    try{
-        const services = await Cabins.findAll();
-        return {
-            success: true,
-            data: services,
-        };
-    } catch(err){
-        console.error("Error in GetAllServices", err); 
-        return {
-            success: false,
-            error: "Error"
-        }
+export class ServiceRepository {
+    async getAllServices() {
+        return await Services.findAll();
     }
-};
-export const getServiceById= async (id)=>{ 
-    try{
-        const service = await Services.findByPk(id);
-        if(!service){
-            return{
-                succes: false,
-                error: "Error"
-            }
-        }
-        return{
-            succes: true,
-            data: service,
-        };
-    } catch (error){
-        console.error("error en getServiceById", error);
-        return{
-            succes: false,
-            error: "Error"
-        };
+    async getServiceById(id) {
+        return await Services.findByPk(id);
+    }
+    async createService(data) {
+        return await Services.create(data);
+    }
+    async updateService(id, data) {
+        return await Services.update(data, { where: { id_service: id } });
+    }
+    async deleteService(id) {
+        return await Services.destroy({ where: { id_service: id } });
     }
 }

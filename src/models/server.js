@@ -3,10 +3,9 @@ import { database } from '../config/database.js';
 import morgan from "morgan";
 import cabinRoutes from '../routes/cabinRoutes.js';
 import comfortRoutes from '../routes/comfortRoutes.js';
-import serviceRoutes from '../routes/serviceRoutes.js';
 import customerRoutes from '../routes/customersRoutes.js';
 import reservationRoutes from '../routes/ReservationsRoutes.js'
-import express from "express";
+import serviceRoutes from '../routes/serviceRoute.js';
 
 export default class Server {
 
@@ -32,9 +31,9 @@ export default class Server {
     routes() {
         this.app.use('/cabins', cabinRoutes);
         this.app.use('/comforts', comfortRoutes);
-        this.app.use('/services', serviceRoutes);
         this.app.use('/customers', customerRoutes);
         this.app.use('/reservations', reservationRoutes);
+        this.app.use('/services', serviceRoutes);
     }
 
     listen() {

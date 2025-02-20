@@ -1,12 +1,22 @@
-import{
-    getAllServices,
-    getCabinById,
-} from "../repositories/ServiceRepository.js"
+import { ServiceRepository } from '../repositories/serviceRepository.js';
 
-export async function getAllServices(){
-    const result= await getAllServices();
-    if (!result.succes){
-        throw new Error(result.error);
+export class ServiceService {
+    constructor() {
+        this.serviceRepository = new ServiceRepository();
     }
-    return result.data
+    async createService(data) {
+        return this.serviceRepository.createService(data);
+    }
+    async getAllServices() {
+        return this.serviceRepository.getAllServices();
+    }
+    async getServiceById(id) {
+        return this.serviceRepository.getServiceById(id);
+    }
+    async updateService(id, data) {
+        return this.serviceRepository.updateService(id, data);
+    }
+    async deleteService(id) {
+        return this.serviceRepository.deleteService(id);
+    }
 }
