@@ -1,103 +1,103 @@
-import { Cabins } from "../models/model_Cabins.js";
+import { Cabins } from "../models/cabin_Model.js";
+import { Comforts } from "../models/comfort_Model.js";
+import { Cabins_Comforts } from "../models/cabins_Comforts.js";
 
 export const getAllCabins = async () => {
   try {
-    const cabins = await Cabins.findAll(); 
-    return {
-      success: true,
-      data: cabins,
-    };
+    return await Cabins.findAll({
+      include: [{ model: Comforts, as: "Comforts" }],
+    });
   } catch (error) {
     console.error("Error en getAllCabins:", error);
-    return {
-      success: false,
-      error: "Error al obtener las cabañas",
-    };
+    throw error;
   }
 };
 
 export const getCabinById = async (id) => {
   try {
-    const cabin = await Cabins.findByPk(id);
-
+    const cabin = await Cabins.findByPk(id, {
+      include: [{ model: Comforts, as: "Comforts" }],
+    });
     if (!cabin) {
-      return {
-        success: false,
-        error: "Cabaña no encontrada",
-      };
+      throw new Error("Cabaña no encontrada");
     }
-
-    return {
-      success: true,
-      data: cabin,
-    };
+    return cabin;
   } catch (error) {
     console.error("Error en getCabinById:", error);
-    return {
-      success: false,
-      error: "Error al obtener la cabaña",
-    };
+    throw error;
   }
 };
 
-export const createCabin = async (data) => {
+export const createCabin = async (cabinData) => {
   try {
-    return  await Cabins.create(data);
-    return {
-      success: true,
-      data: cabin,
-    };
+    return await Cabins.create(cabinData);
   } catch (error) {
     console.error("Error en createCabin:", error);
-    return {
-      success: false,
-      error: "Error al crear la cabaña",
-    };
+    throw error;
   }
 };
 
-export const updateCabin = async (id, data) => {
+export const updateCabin = async (id, cabinData) => {
   try {
-    const [updatedRows] = await Cabins.update(data, {
-      where: { id_cabin: id }, 
+    const [updated] = await Cabins.update(cabinData, {
+      where: { id_cabin: id },
     });
-
-    if (updatedRows === 0) {
-      return {
-        success: false,
-        error: "No se encontró la cabaña para actualizar",
-      };
+    if (!updated) {
+      throw new Error("Cabaña no encontrada");
     }
-
-    const updatedCabin = await Cabins.findByPk(id);
-
-    return {
-      success: true,
-      data: updatedCabin,
-    };
+    return updated;
   } catch (error) {
     console.error("Error en updateCabin:", error);
-    return {
-      success: false,
-      error: "Error al actualizar la cabaña",
-    };
+    throw error;
   }
 };
 
 export const deleteCabin = async (id) => {
   try {
-    const cabin = await Cabins.destroy({
-      where: { Id_Cabin: id },
-    });
-    return {
-      success: true,
-      data: cabin,
-    };
+    const deleted = await Cabins.destroy({ where: { id_cabin: id } });
+    if (!deleted) {
+      throw new Error("Cabaña no encontrada");
+    }
+    return deleted;
   } catch (error) {
     console.error("Error en deleteCabin:", error);
-    return {
-      success: false,
-      error: "Error al eliminar la cabaña",
-    };
+    throw error;
+  }
+};
+
+export const addComforts = async (id, comfortId, status = true, Date_entry) => {
+  try {
+    const cabin = await Cabins.findByPk(id);
+    const comfort = await Comforts.findByPk(comfortId);
+    if (!cabin || !comfort) {
+      throw new Error("Cabaña o comodidad no encontrada");
+    }
+    return await Cabins_Comforts.create({
+      Id_Cabin: id,
+      Id_Comfort: comfortId,
+      Date_entry: Date_entry || new Date(),
+      Status: status,
+    });
+  } catch (error) {
+    console.error("Error en addComforts:", error);
+    throw error;
+  }
+};
+
+
+export const deleteComforts = async (cabinId, comfortId) => {
+  try {
+    const relation = await Cabins_Comforts.findOne({
+      where: { id_cabin: cabinId, id_comfort: comfortId },
+    });
+    if (!relation) {
+      throw new Error("Relación no encontrada");
+    }
+    return await Cabins_Comforts.destroy({
+      where: { id_cabin: cabinId, id_comfort: comfortId },
+    });
+  } catch (error) {
+    console.error("Error en deleteComforts:", error);
+    throw error;
   }
 };
