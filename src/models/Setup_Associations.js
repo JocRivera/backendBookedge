@@ -1,5 +1,5 @@
 import { Bedrooms } from "./bedrooms_Model.js";
-import { Bedrooms_Comforts } from "./bedrooms_Comforts.js";
+import { Bedrooms_Comforts } from "./Bedrooms_Comforts.js";
 import { Cabins } from "./cabin_Model.js";
 import { Cabins_Comforts } from "./cabins_Comforts.js";
 import { Comforts } from "./comfort_Model.js";

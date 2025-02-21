@@ -1,4 +1,4 @@
-import { ServiceRepository } from '../repositories/serviceRepository.js';
+import { ServiceRepository } from '../repositories/ServiceRepository.js';
 
 export class ServiceService {
     constructor() {
