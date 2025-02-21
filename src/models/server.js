@@ -1,51 +1,44 @@
-import { database } from "../config/database.js";
+import express, { json } from 'express';
+import { database } from '../config/database.js';
 import morgan from "morgan";
-import cabinRoutes from "../routes/cabinRoutes.js";
-import comfortRoutes from "../routes/comfortRoutes.js";
-import customerRoutes from "../routes/customersRoutes.js";
-import reservationRoutes from "../routes/ReservationsRoutes.js";
-import express from "express";
-import { setupAssociations } from "./Setup_Associations.js";
+import cabinRoutes from '../routes/cabinRoutes.js';
+import comfortRoutes from '../routes/comfortRoutes.js';
+import customerRoutes from '../routes/customersRoutes.js';
+import reservationRoutes from '../routes/ReservationsRoutes.js'
+import serviceRoutes from '../routes/serviceRoute.js';
 
 export default class Server {
-  constructor() {
-    this.app = express();
-    this.app.use(express.json());
-    this.app.use(morgan("dev"));
-    this.dbConection();
-    this.listen();
-    this.routes();
-    this.setupAssociations();
-  }
 
-  async dbConection() {
-    try {
-      await database.authenticate();
-      console.log("Base de datos conectada");
-    } catch (error) {
-      console.error("Se jodió la base de datos", error);
+    constructor() {
+        this.app = express();
+        this.app.use(express.json());
+        this.app.use(morgan('dev'));
+        this.dbConection();
+        this.listen();
+        this.routes();
+
     }
-  }
 
-  setupAssociations() {
-    try {
-      setupAssociations();
-      console.log("Asociaciones creadas");
-    } catch (error) {
-      console.error("Se jodió la creación de asociaciones", error);
+    async dbConection() {
+        try {
+            await database.authenticate();
+            console.log('Base de datos conectada');
+        } catch (error) {
+            console.error('Se jodió la base de datos', error);
+        }
     }
-  }
 
-  routes() {
-    this.app.use("/cabins", cabinRoutes);
-    this.app.use("/comforts", comfortRoutes);
-    this.app.use("/customers", customerRoutes);
-    this.app.use("/reservations", reservationRoutes);
-  }
+    routes() {
+        this.app.use('/cabins', cabinRoutes);
+        this.app.use('/comforts', comfortRoutes);
+        this.app.use('/customers', customerRoutes);
+        this.app.use('/reservations', reservationRoutes);
+        this.app.use('/services', serviceRoutes);
+    }
 
-  listen() {
-    this.app.listen(process.env.PORT, () => {
-      console.log(`Servidor corriendo en el puerto ${process.env.PORT}`);
-    });
-  }
-}
+    listen() {
+        this.app.listen(process.env.PORT, () => {
+            console.log(`Servidor corriendo en el puerto ${process.env.PORT}`);
+        })
+    }
+} database
