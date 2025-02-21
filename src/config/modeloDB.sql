@@ -21,7 +21,7 @@ CREATE TABLE Cabins (
     Description VARCHAR(250) NOT NULL,
     Capacity INT NOT NULL,
     Statuss ENUM('En Servicio', 'Fuera de Servicio', 'Mantenimiento') DEFAULT 'En Servicio',
-    IMAGE VARCHAR(250) NOT NULL,
+    Imagen VARCHAR(250) NOT NULL,
     CONSTRAINT PK_Id_Cabin PRIMARY KEY (Id_Cabin),
     CONSTRAINT UC_CabinName UNIQUE (Name),
     CONSTRAINT CHK_Capacity_Cabins CHECK (Capacity >= 4 AND Capacity <= 7)
@@ -44,7 +44,7 @@ CREATE TABLE Bedrooms (
     Description VARCHAR(250) NOT NULL,
     Capacity INT NOT NULL,
     Statuss ENUM('En Servicio', 'Fuera de Servicio', 'Mantenimiento') DEFAULT 'En Servicio',
-    IMAGE VARCHAR(250) NOT NULL,
+    Imagen VARCHAR(250) NOT NULL,
     CONSTRAINT PK_Id_Room PRIMARY KEY (Id_Room),
     CONSTRAINT UC_BedroomName UNIQUE (Name),
     CONSTRAINT CHK_Capacity_Bedrooms CHECK (Capacity >= 1 AND Capacity <= 3)

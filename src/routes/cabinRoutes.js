@@ -1,19 +1,20 @@
 import express from "express";
 import {
-  getAllCabinsController,
-  getCabinByIdController,
-  createCabinController,
-  updateCabinController,
-  deleteCabinController,
+  getAllCabins,
+  getCabinById,
+  createCabin,
+  updateCabin,
+  deleteCabin,
+  addComforts,
+  deleteComforts,
 } from "../controllers/cabinsControllers.js";
-import upload from "../middlewares/multer.js"; 
 
 const router = express.Router();
-
-router.get("/", getAllCabinsController); 
-router.get("/:id", getCabinByIdController); 
-router.post("/", upload.single("IMAGE"), createCabinController); 
-router.put("/:id", upload.single("IMAGE"), updateCabinController); 
-router.delete("/:id", deleteCabinController); 
-
+router.get("/", getAllCabins);
+router.get("/:id", getCabinById);
+router.post("/", createCabin);
+router.put("/:id", updateCabin);
+router.delete("/:id", deleteCabin);
+router.post("/:id/comforts/:comfortId", addComforts);
+router.delete("/:id/comforts/:comfortId", deleteComforts);
 export default router;

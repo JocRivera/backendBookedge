@@ -1,63 +1,110 @@
 import {
-  getAllCabins as getAllCabinsService,
-  getCabinById as getCabinByIdService,
-  createCabin as createCabinService,
-  updateCabin as updateCabinService,
-  deleteCabin as deleteCabinService,
+  getAllCabinsService,
+  getCabinByIdService,
+  createCabinService,
+  updateCabinService,
+  deleteCabinService,
+  addComfortsService,
+  deleteComfortsService,
 } from "../services/cabinServices.js";
+import upload  from "../middlewares/multer.js";
 
-export const getAllCabinsController = async (req, res) => {
+export const getAllCabins = async (req, res) => {
   try {
     const cabins = await getAllCabinsService();
     res.status(200).json(cabins);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Error al obtener las cabañas" });
   }
 };
 
-export const getCabinByIdController = async (req, res) => {
+export const getCabinById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const cabin = await getCabinByIdService(id);
+    const cabin = await getCabinByIdService(req.params.id);
+    if (!cabin) {
+      return res.status(404).json({ error: "Cabaña no encontrada" });
+    }
     res.status(200).json(cabin);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Error al obtener la cabaña" });
   }
 };
 
-export const createCabinController = async (req, res) => {
-  try {
-    const data = req.body;
-    if (req.file) {
-      data.IMAGE = req.file.path;
+// Crear una nueva cabaña
+export const createCabin = async (req, res) => {
+  upload.single("Imagen")(req, res, async (error) => {
+    if (error) {
+      return res.status(400).json({ error: "Error al subir la imagen" });
     }
-    const newCabin = await createCabinService(data);
-    res.status(201).json(newCabin);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-export const updateCabinController = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const data = req.body;
-    if (req.file) {
-      data.IMAGE = req.file.path;
+    try {
+      const cabinData = {
+        ...req.body,
+        Imagen: req.file ? req.file.filename : null, // Guardar el nombre del archivo
+      };
+      const cabin = await createCabinService(cabinData);
+      res.status(201).json(cabin);
+    } catch (error) {
+      res.status(500).json({ error: "Error al crear la cabaña" });
     }
-    const updatedCabin = await updateCabinService(id, data);
-    res.status(200).json(updatedCabin);
+  });
+};
+
+export const updateCabin = async (req, res) => {
+  upload.single("Imagen")(req, res, async (error) => {
+    if (error) {
+      return res.status(400).json({ error: "Error al subir la imagen" });
+    }
+    try {
+      const cabinData = {
+        ...req.body,
+        Imagen: req.file ? req.file.filename : req.body.Imagen, //valido aca si se subio una imagen nueva para actulizarla
+      };
+      const updatedCabin = await updateCabinService(req.params.id, cabinData);
+      if (!updatedCabin) {
+        return res.status(404).json({ error: "Cabaña no encontrada" });
+      }
+      res.status(200).json(updatedCabin);
+    } catch (error) {
+      res.status(500).json({ error: "Error al actualizar la cabaña" });
+    }
+  });
+};
+
+export const deleteCabin = async (req, res) => {
+  try {
+    const deletedCabin = await deleteCabinService(req.params.id);
+    if (!deletedCabin) {
+      return res.status(404).json({ error: "Cabaña no encontrada" });
+    }
+    res.status(200).json({ message: "Cabaña eliminada exitosamente" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: "Error al eliminar la cabaña" });
   }
 };
 
-export const deleteCabinController = async (req, res) => {
+export const addComforts = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deletedCabin = await deleteCabinService(id);
-    res.status(200).json(deletedCabin);
+    const { status, Date_entry } = req.body;
+    const { id, comfortId } = req.params;
+    const result = await addComfortsService(id, comfortId, status, Date_entry);
+    if (!result) {
+      return res.status(404).json({ error: "Cabaña o comodidad no encontrada" });
+    }
+    res.status(200).json({ message: "Comodidad agregada exitosamente" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Error al agregar la comodidad" });
+  }
+};
+
+
+export const deleteComforts = async (req, res) => {
+  try {
+    const result = await deleteComfortsService(req.params.id, req.params.comfortId);
+    if (!result) {
+      return res.status(404).json({ error: "Cabaña o comodidad no encontrada" });
+    }
+    res.status(200).json({ message: "Comodidad eliminada exitosamente" });
+  } catch (error) {
+    res.status(500).json({ error: "Error al eliminar la comodidad" });
   }
 };

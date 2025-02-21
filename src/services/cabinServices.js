@@ -1,74 +1,40 @@
 import {
-  getAllCabins as getAllCabinsRepo,
-  getCabinById as getCabinByIdRepo,
-  createCabin as createCabinRepo,
-  updateCabin as updateCabinRepo,
-  deleteCabin as deleteCabinRepo,
+  getAllCabins,
+  getCabinById,
+  createCabin,
+  updateCabin,
+  deleteCabin,
+  addComforts,
+  deleteComforts,
 } from "../repositories/cabinRepository.js";
 
-export async function getAllCabins() {
-  const result = await getAllCabinsRepo();
-  if (!result.success) {
-    throw new Error(result.error);
-  }
-  return result.data;
+
+export const getAllCabinsService = async () => {
+  return await getAllCabins();
+};
+
+export const getCabinByIdService = async (id) => {
+  return await getCabinById(id);
+};
+
+export const createCabinService = async (cabinData) => {
+  return await createCabin(cabinData);
+};
+
+export const updateCabinService = async (id, cabinData) => {
+  return await updateCabin(id, cabinData);
 }
 
-export async function getCabinById(id) {
-  if (!id || isNaN(id)) {
-    throw new Error("ID de cabaña inválido");
-  }
-  const result = await getCabinByIdRepo(id);
-  if (!result.success) {
-    throw new Error(result.error);
-  }
-  return result.data;
-}
+export const deleteCabinService = async (id) => {
+  return await deleteCabin(id);
+};
 
-export async function createCabin(data) {
-  if (!data.name || !data.description || !data.capacity) {
-    throw new Error("Faltan datos obligatorios");
-  }
+export const addComfortsService = async (id, comfortId, status = true , Date_entry) => {
+  return await addComforts(id, comfortId, status, Date_entry);
+};
 
-  if (data.capacity < 3 || data.capacity > 7) {
-    throw new Error("La capacidad debe estar entre 3 y 7");
-  }
+export const deleteComfortsService = async (cabinId, comfortId) => {
+  
 
-  const result = await createCabinRepo(data);
-  if (!result.success) {
-    throw new Error(result.error);
-  }
-
-  return result.data;
-}
-
-export async function updateCabin(id, data) {
-  if (!id || isNaN(id)) {
-    throw new Error("ID de cabaña inválido");
-  }
-  const existingCabin = await getCabinByIdRepo(id);
-  if (!existingCabin.success) {
-    throw new Error("Cabaña no encontrada");
-  }
-
-  const result = await updateCabinRepo(id, data);
-  if (!result.success) {
-    throw new Error(result.error);
-  }
-  return result.data;
-}
-
-export async function deleteCabin(id) {
-  if (!id || isNaN(id)) {
-    throw new Error("ID de cabaña inválido");
-  }
-  const existingCabin = await getCabinByIdRepo(id);
-  if (!existingCabin.success) {
-    throw new Error("Cabaña no encontrada");
-  }
-  const result = await deleteCabinRepo(id);
-  if (!result.success) {
-    throw new Error(result.error);
-  }
-  return result.data;
-}
+  return await deleteComforts(cabinId, comfortId);
+};

@@ -1,15 +1,15 @@
 import { DataTypes } from "sequelize";
 import { database } from "../config/database.js";
 
-export const Bedrooms_Comforts = database.define(
-  "Bedrooms_Comforts",
+export const Cabins_Comforts = database.define(
+  "Cabins_Comforts",
   {
-    Id_Room_Comforts: {
+    Id_Cabin_Comfort: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    Id_Room: {
+    Id_Cabin: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -20,28 +20,20 @@ export const Bedrooms_Comforts = database.define(
     Date_entry: {
       type: DataTypes.DATE,
       allowNull: false,
-      valide: {
-        notEmpty: {
-          msg: "La fecha de entrada no puede estar vacía.",
-        },
-        isDate: {
-          msg: "La fecha de entrada debe ser una fecha válida. (YYYY-MM-DD)",
-        },
+      validate: { 
+        notEmpty: { msg: "La fecha de entrada no puede estar vacía." },
+        isDate: { msg: "La fecha de entrada debe ser una fecha válida. (YYYY-MM-DD)" },
       },
     },
-    Statuss: {
+    Status: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true,
-      valide: {
-        notNull: {
-          msg: "El estado no puede ser nulo.",
-        },
-      },
+      validate: { notNull: { msg: "El estado no puede ser nulo." } },
     },
   },
   {
-    tableName: "Bedrooms_Comforts",
+    tableName: "Cabins_Comforts",
     timestamps: false,
   }
 );
