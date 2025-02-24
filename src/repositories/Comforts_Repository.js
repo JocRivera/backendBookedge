@@ -1,4 +1,4 @@
-import { Comforts } from "../models/comfort_Model.js";
+import { Comforts } from "../models/Comfort_Model.js";
 
 export const getAllComforts = async () => {
   try {

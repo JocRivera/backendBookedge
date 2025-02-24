@@ -4,7 +4,7 @@ import {
   createComfortService as createService,
   updateComfortService as updateService,
   deleteComfortService as deleteService,
-} from "../services/comfort_services.js";
+} from "../services/Comfort_Services.js";
 
 export const getAllComfortsController = async (req, res) => {
   try {

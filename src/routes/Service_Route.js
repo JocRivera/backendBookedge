@@ -1,7 +1,7 @@
 import express from "express";
 
-import { ServicesController } from "../controllers/servicesControllers.js";
-import { validateService } from "../middlewares/validateService.js";
+import { ServicesController } from "../controllers/Services_Controllers.js";
+import { validateService } from "../middlewares/Validate_Service.js";
 
 const router = express.Router();
 const servicesController = new ServicesController();

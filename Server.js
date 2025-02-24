@@ -1,12 +1,12 @@
 import express, { json } from 'express';
-import { database } from '../config/database.js';
+import { database } from './src/config/Database.js';
 import morgan from "morgan";
-import cabinRoutes from '../routes/cabinRoutes.js';
-import comfortRoutes from '../routes/comfortRoutes.js';
-import customerRoutes from '../routes/customersRoutes.js';
-import reservationRoutes from '../routes/ReservationsRoutes.js'
-import {setupAssociations} from '../models/Setup_Associations.js'
-import serviceRoutes from '../routes/serviceRoute.js';
+import cabinRoutes from './src/routes/Cabin_Routes.js';
+import comfortRoutes from './src/routes/Comfort_Routes.js';
+import customerRoutes from './src/routes/Customers_Routes.js';
+import reservationRoutes from './src/routes/Reservations_Routes.js'
+import {setupAssociations} from './src/models/Setup_Associations.js'
+import serviceRoutes from './src/routes/Service_Route.js';
 
 export default class Server {
 

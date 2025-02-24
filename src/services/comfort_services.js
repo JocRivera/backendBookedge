@@ -5,7 +5,7 @@ import {
   updateComfort,
   deleteComfort,
   
-} from "../repositories/comfortsRepository.js";
+} from "../repositories/Comforts_Repository.js";
 
 export async function getAllComfortsService() {
   return await getAllComforts(); 

@@ -4,7 +4,7 @@ import {
   createReservations as createReservationsService,
   updateReservations as updateReservationsService,
 
-} from "../services/ReservationsServices.js"
+} from "../services/Reservations_Services.js"
 
 export const getAllReservationsController = async (req, res) => {
     try {

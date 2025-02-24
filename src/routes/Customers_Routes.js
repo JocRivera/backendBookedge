@@ -3,8 +3,8 @@
 
 import express from "express";
 
-import { CustomersController } from "../controllers/customersController.js";
-import { validateCustomer } from "../middlewares/validateCustomer.js";
+import { CustomersController } from "../controllers/Customers_Controller.js";
+import { validateCustomer } from "../middlewares/Validate_Customer.js";
 
 const router = express.Router();
 const customersController = new CustomersController();

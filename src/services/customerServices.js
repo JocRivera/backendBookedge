@@ -1,6 +1,6 @@
 //Contiene la lógica de negocio. Usa los repositories para acceder a los datos. Actúan como intermediarios entre los controladores y los repositorios.
 
-import { CustomerRepository } from "../repositories/customerRepository.js";
+import { CustomerRepository } from "../repositories/Customer_Repository.js";
 
 export class CustomerService {
     constructor() {

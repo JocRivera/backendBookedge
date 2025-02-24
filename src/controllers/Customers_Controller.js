@@ -3,7 +3,7 @@
 // Traduce las peticiones HTTP a llamadas al service
 // Maneja los errores y envía las respuestas apropiadas
 
-import { CustomerService } from "../services/customerServices.js";
+import { CustomerService } from "../services/CustomerServices.js";
 
 export class CustomersController {
     constructor() {

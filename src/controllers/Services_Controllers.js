@@ -1,4 +1,4 @@
-import { ServiceService } from '../services/serviceServices.js';
+import { ServiceService } from '../services/Service_Services.js';
 
 export class ServicesController {
     constructor() {

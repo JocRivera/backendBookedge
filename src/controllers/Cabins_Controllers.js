@@ -6,8 +6,8 @@ import {
   deleteCabinService,
   addComfortsService,
   deleteComfortsService,
-} from "../services/cabinServices.js";
-import upload  from "../middlewares/multer.js";
+} from "../services/Cabin_Services.js";
+import upload  from "../middlewares/Multer.js";
 
 export const getAllCabins = async (req, res) => {
   try {

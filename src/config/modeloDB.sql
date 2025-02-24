@@ -60,3 +60,32 @@ CREATE TABLE Bedrooms_Comforts (
     CONSTRAINT FK_Id_Room FOREIGN KEY (Id_Room) REFERENCES Bedrooms(Id_Room),
     CONSTRAINT FK_Id_Comforts FOREIGN KEY (Id_Comfort) REFERENCES Comforts(Id_Comfort)
 );
+
+CREATE TABLE Users (
+    Id_User INT NOT NULL AUTO_INCREMENT,
+    Id_Rol INT NOT NULL,
+    Name VARCHAR(50) NOT NULL,
+    Email VARCHAR(80) NOT NULL,
+    Phone VARCHAR(20) NOT NULL,
+    Document VARCHAR(50) NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    State ENUM('activo', 'inactivo') DEFAULT 'activeo',
+
+    CONSTRAINT PK_Id_User PRIMARY KEY (Id_User),
+    CONSTRAINT FK_Id_Rol FOREIGN KEY (Id_Rol) REFERENCES Roles(Id_Rol),
+    CONSTRAINT UC_Email UNIQUE (Email),
+    CONSTRAINT UC_Phone UNIQUE (Phone),
+    CONSTRAINT UC_Document UNIQUE (Document),
+    CONSTRAINT CHK_Email CHECK (Email REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'),
+    CONSTRAINT CHK_Phone CHECK (Phone REGEXP '^\+?[0-9]{1,20}$'),
+
+    CONSTRAINT CHK_Password CHECK (
+        LENGTH(Password) >= 8 AND
+        Password REGEXP '[a-z]' AND  -- Al menos una letra minúscula
+        Password REGEXP '[A-Z]' AND  -- Al menos una letra mayúscula
+        Password REGEXP '[0-9]' AND  -- Al menos un número
+        Password REGEXP '[!@#$%^&*()]'  -- Al menos un carácter especial
+    )
+);
+
+CREATE INDEX idx_email ON Users (Email); //este indice es como un libro pero en base de datos es para busquedas rápidas
