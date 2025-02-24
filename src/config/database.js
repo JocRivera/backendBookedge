@@ -18,4 +18,11 @@ const database = new Sequelize(
   }
 );
 
-export { database }; 
+export { database };
+
+database.sync({ force: false })
+  .then(() => {
+    console.log("Database synced successfully");
+  })
+  .catch()
+  

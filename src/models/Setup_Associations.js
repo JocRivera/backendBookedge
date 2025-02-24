@@ -1,8 +1,8 @@
-import { Bedrooms } from "./bedrooms_Model.js";
+import { Bedrooms } from "./Bedrooms_Model.js";
 import { Bedrooms_Comforts } from "./Bedrooms_Comforts.js";
-import { Cabins } from "./cabin_Model.js";
-import { Cabins_Comforts } from "./cabins_Comforts.js";
-import { Comforts } from "./comfort_Model.js";
+import { Cabins } from "./Cabin_Model.js";
+import { Cabins_Comforts } from "./Cabins_Comforts.js";
+import { Comforts } from "./Comfort_Model.js";
 
 export const setupAssociations = () => {
   // Asociaciones para Cabins y Comforts (relación muchos a muchos)

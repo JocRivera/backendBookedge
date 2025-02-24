@@ -1,4 +1,4 @@
-import { Services } from "../models/Services.js";
+import { Services } from "../models/Services_Model.js";
 
 export class ServiceRepository {
     async getAllServices() {

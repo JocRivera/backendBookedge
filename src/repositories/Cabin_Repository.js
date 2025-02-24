@@ -1,6 +1,6 @@
-import { Cabins } from "../models/cabin_Model.js";
-import { Comforts } from "../models/comfort_Model.js";
-import { Cabins_Comforts } from "../models/cabins_Comforts.js";
+import { Cabins } from "../models/Cabin_Model.js";
+import { Comforts } from "../models/Comfort_Model.js";
+import { Cabins_Comforts } from "../models/Cabins_Comforts.js";
 
 export const getAllCabins = async () => {
   try {

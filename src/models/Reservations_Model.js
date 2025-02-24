@@ -1,36 +1,36 @@
 import { DataTypes, Sequelize } from "sequelize";  
-import { database } from "../config/database.js";    
+import { database } from "../config/Database.js";    
 
 export const Reservations = database.define(
     "Reservations",
     {
-        id_reservation: {
+        ID_Reservation: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        nameclient: {
+        NameClient: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 notEmpty: true,
             },
         },
-        documenttype: {
+        DocumentType: {
             type: DataTypes.ENUM("Cédula de ciudadanía", "Cédula de extranjería", "Pasaporte"), 
             defaultValue: "Cédula de ciudadanía",
             validate: {
                 isIn: [["Cédula de ciudadanía", "Cédula de extranjería", "Pasaporte"]],
             }
         },
-        plan: {
+        Plan: {
             type: DataTypes.ENUM("Día de sol", "Empresarial", "Romántico", "Pasadía Cumpleaños", "Amanecida"),
             allowNull: false,
             validate: {
                 isIn: [["Día de sol", "Empresarial", "Romántico", "Pasadía Cumpleaños", "Amanecida"]],
             }
         },
-        startdate: {
+        StartDate: {
             type: DataTypes.DATEONLY,
             allowNull: false,
             validate: {
@@ -41,7 +41,7 @@ export const Reservations = database.define(
                 }
             }
         },
-        enddate: {
+        EndDate: {
             type: DataTypes.DATEONLY,
             allowNull: false,
             validate: {
@@ -53,7 +53,7 @@ export const Reservations = database.define(
                 }
             }
         },
-        price: {
+        Price: {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false,
             validate: {
@@ -67,7 +67,7 @@ export const Reservations = database.define(
                 }
             }
         },
-        status: {
+        Status: {
             type: DataTypes.ENUM("Reservado", "Confirmado", "Pendiente", "Anulado"),
             allowNull: false,
             defaultValue: "Reservado",

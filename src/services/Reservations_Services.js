@@ -3,7 +3,7 @@ import {
     getReservationsById as getReservationsByIdRepo,
     createReservations as createReservationsRepo,
     updateReservations as updateReservationsRepo
-} from "../repositories/ReservationsRepository.js";
+} from "../repositories/Reservations_Repository.js";
 
 export async function getAllReservations() {
     const result = await getAllReservationsRepo();
@@ -25,7 +25,7 @@ export async function getReservationsById(id) {
 }
 
 export async function createReservations(data) {
-    if (!data.nameclient || !data.documenttype || !data.plan || !data.startdate || !data.enddate || !data.price || !data.status) {
+    if (!data.NameClient || !data.DocumentType || !data.Plan || !data.StartDate || !data.EndDate || !data.Price || !data.Status) {
         throw new Error("Faltan datos");
     }
     const result = await createReservationsRepo(data);

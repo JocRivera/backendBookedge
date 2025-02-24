@@ -5,7 +5,7 @@ import {
   createComfortController,
   updateComfortController,
   deleteComfortController,
-} from "../controllers/comfort_Controller.js";
+} from "../controllers/Comfort_Controller.js";
 
 const router = express.Router();
 router.get("/", getAllComfortsController);

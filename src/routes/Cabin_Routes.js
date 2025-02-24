@@ -7,7 +7,7 @@ import {
   deleteCabin,
   addComforts,
   deleteComforts,
-} from "../controllers/cabinsControllers.js";
+} from "../controllers/Cabins_Controllers.js";
 
 const router = express.Router();
 router.get("/", getAllCabins);

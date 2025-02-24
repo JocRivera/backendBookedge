@@ -6,7 +6,7 @@ import {
   deleteCabin,
   addComforts,
   deleteComforts,
-} from "../repositories/cabinRepository.js";
+} from "../repositories/Cabin_Repository.js";
 
 
 export const getAllCabinsService = async () => {
