@@ -5,9 +5,9 @@ import {
   updateCabin,
   deleteCabin,
   addComforts,
-  deleteComforts,
+  changeStatusCabin,
+  updateComforts,
 } from "../repositories/Cabin_Repository.js";
-
 
 export const getAllCabinsService = async () => {
   return await getAllCabins();
@@ -23,18 +23,30 @@ export const createCabinService = async (cabinData) => {
 
 export const updateCabinService = async (id, cabinData) => {
   return await updateCabin(id, cabinData);
-}
+};
 
 export const deleteCabinService = async (id) => {
   return await deleteCabin(id);
 };
 
-export const addComfortsService = async (id, comfortId, status = true , Date_entry) => {
-  return await addComforts(id, comfortId, status, Date_entry);
+export const addComfortsService = async (
+  id,
+  idComfort,
+  description,
+  dateEntry
+) => {
+  return await addComforts(id, idComfort, description, dateEntry);
 };
 
-export const deleteComfortsService = async (cabinId, comfortId) => {
-  
+export const updateComfortsService = async (
+  id,
+  idComfort,
+  status,
+  dateEntry
+) => {
+  return await updateComforts(id, idComfort, status, dateEntry);
+};
 
-  return await deleteComforts(cabinId, comfortId);
+export const changeStatusCabinService = async (id, status) => {
+  return await changeStatusCabin(id, status);
 };
