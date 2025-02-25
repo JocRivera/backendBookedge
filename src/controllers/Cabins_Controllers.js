@@ -1,3 +1,5 @@
+import { validationResult } from "express-validator";
+import upload from "../middlewares/Multer.js";
 import {
   getAllCabinsService,
   getCabinByIdService,
@@ -5,106 +7,126 @@ import {
   updateCabinService,
   deleteCabinService,
   addComfortsService,
-  deleteComfortsService,
+  updateComfortsService,
+  changeStatusCabinService,
 } from "../services/Cabin_Services.js";
-import upload  from "../middlewares/Multer.js";
 
 export const getAllCabins = async (req, res) => {
   try {
     const cabins = await getAllCabinsService();
     res.status(200).json(cabins);
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener las cabañas" });
+    res.status(400).json({ message: error.message });
   }
 };
 
 export const getCabinById = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   try {
     const cabin = await getCabinByIdService(req.params.id);
-    if (!cabin) {
-      return res.status(404).json({ error: "Cabaña no encontrada" });
-    }
     res.status(200).json(cabin);
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener la cabaña" });
+    res.status(400).json({ message: error.message });
   }
 };
 
-// Crear una nueva cabaña
 export const createCabin = async (req, res) => {
-  upload.single("Imagen")(req, res, async (error) => {
-    if (error) {
-      return res.status(400).json({ error: "Error al subir la imagen" });
-    }
-    try {
-      const cabinData = {
-        ...req.body,
-        Imagen: req.file ? req.file.filename : null, // Guardar el nombre del archivo
-      };
-      const cabin = await createCabinService(cabinData);
-      res.status(201).json(cabin);
-    } catch (error) {
-      res.status(500).json({ error: "Error al crear la cabaña" });
-    }
-  });
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  try {
+    const cabinData = {
+      ...req.body,
+      imagen: req.file ? req.file.filename : null,
+    };
+    const cabin = await createCabinService(cabinData);
+    res.status(201).json(cabin);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 
+
 export const updateCabin = async (req, res) => {
-  upload.single("Imagen")(req, res, async (error) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  upload.single("imagen")(req, res, async (error) => {
     if (error) {
-      return res.status(400).json({ error: "Error al subir la imagen" });
+      return res.status(400).json({ message: error.message });
     }
     try {
       const cabinData = {
         ...req.body,
-        Imagen: req.file ? req.file.filename : req.body.Imagen, //valido aca si se subio una imagen nueva para actulizarla
+        imagen: req.file ? req.file.filename : req.body.imagen,
       };
-      const updatedCabin = await updateCabinService(req.params.id, cabinData);
-      if (!updatedCabin) {
-        return res.status(404).json({ error: "Cabaña no encontrada" });
-      }
-      res.status(200).json(updatedCabin);
+      await updateCabinService(req.params.id, cabinData);
+      res.status(204).end();
     } catch (error) {
-      res.status(500).json({ error: "Error al actualizar la cabaña" });
+      res.status(400).json({ message: error.message });
     }
   });
 };
 
 export const deleteCabin = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   try {
-    const deletedCabin = await deleteCabinService(req.params.id);
-    if (!deletedCabin) {
-      return res.status(404).json({ error: "Cabaña no encontrada" });
-    }
-    res.status(200).json({ message: "Cabaña eliminada exitosamente" });
+    await deleteCabinService(req.params.id);
+    res.status(204).end();
   } catch (error) {
-    res.status(500).json({ error: "Error al eliminar la cabaña" });
+    res.status(400).json({ message: error.message });
   }
 };
 
 export const addComforts = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   try {
-    const { status, Date_entry } = req.body;
     const { id, comfortId } = req.params;
-    const result = await addComfortsService(id, comfortId, status, Date_entry);
-    if (!result) {
-      return res.status(404).json({ error: "Cabaña o comodidad no encontrada" });
-    }
-    res.status(200).json({ message: "Comodidad agregada exitosamente" });
+    const { description, dateEntry } = req.body;
+    await addComfortsService(id, comfortId, description, dateEntry,);
+    res.status(204).end();
   } catch (error) {
-    res.status(500).json({ error: "Error al agregar la comodidad" });
+    res.status(400).json({ message: error.message });
   }
 };
 
-
-export const deleteComforts = async (req, res) => {
+export const updateComforts = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   try {
-    const result = await deleteComfortsService(req.params.id, req.params.comfortId);
-    if (!result) {
-      return res.status(404).json({ error: "Cabaña o comodidad no encontrada" });
-    }
-    res.status(200).json({ message: "Comodidad eliminada exitosamente" });
+    const {  dateEntry, description } = req.body;
+    await updateComfortsService(req.params.id, req.params.comfortId,description, dateEntry);
+    res.status(204).end();
   } catch (error) {
-    res.status(500).json({ error: "Error al eliminar la comodidad" });
+    res.status(400).json({ message: error.message });
   }
 };
+
+export const changeStatusCabin = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    await changeStatusCabinService(req.params.id, req.body.status);
+    res.status(204).end();
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+

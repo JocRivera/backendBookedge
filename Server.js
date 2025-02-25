@@ -5,9 +5,8 @@ import cabinRoutes from './src/routes/Cabin_Routes.js';
 import comfortRoutes from './src/routes/Comfort_Routes.js';
 import customerRoutes from './src/routes/Customers_Routes.js';
 import reservationRoutes from './src/routes/Reservations_Routes.js'
-import {setupAssociations} from './src/models/Setup_Associations.js'
 import serviceRoutes from './src/routes/Service_Route.js';
-
+import  {setupAssociations}  from './src/models/setupAssociations.js';
 export default class Server {
 
     constructor() {
@@ -20,12 +19,12 @@ export default class Server {
         this.setupAssociations();
 
     }
-    setupAssociations(){
+    
+    setupAssociations() {
         try {
             setupAssociations();
-            console.log('Llaves relacionadas exitosamente ');
         } catch (error) {
-            console.log('Error al crear las llaves relacionadas ')
+            console.error('Error al configurar las asociaciones', error);
         }
     }
 

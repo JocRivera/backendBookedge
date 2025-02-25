@@ -1,61 +1,32 @@
 import { DataTypes } from "sequelize";
-import { database } from "../config/Database.js"; 
+import { database } from "../config/Database.js";
 
 export const Cabins = database.define(
   "Cabins",
   {
-    Id_Cabin: {
+    idCabin: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    Name: {
+    name: {
       type: DataTypes.STRING(50),
       allowNull: false,
       unique: true,
-      validate: {
-        notEmpty: {
-          msg: "El nombre no puede estar vacío.",
-        },
-      },
     },
-    Description: {
+    description: {
       type: DataTypes.STRING(250),
       allowNull: false,
-      validate: {
-        notEmpty: {
-          msg: "La descripción no puede estar vacía.",
-        },
-      },
     },
-    Capacity: {
+    capacity: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      validate: {
-        isInt: {
-          msg: "La capacidad debe ser un número entero.",
-        },
-        min: {
-          args: 4,
-          msg: "La capacidad mínima es 4.",
-        },
-        max: {
-          args: 7,
-          msg: "La capacidad máxima es 7.",
-        },
-      },
     },
-    Statuss: {
+    status: {
       type: DataTypes.ENUM("En Servicio", "Fuera de Servicio", "Mantenimiento"),
       defaultValue: "En Servicio",
-      validate: {
-        isIn: {
-          args: [["En Servicio", "Fuera de Servicio", "Mantenimiento"]],
-          msg: "El estado debe ser 'En Servicio', 'Fuera de Servicio' o 'Mantenimiento'.",
-        },
-      },
     },
-    Imagen: {
+    imagen: {
       type: DataTypes.STRING(250),
       allowNull: false,
     },
@@ -65,3 +36,4 @@ export const Cabins = database.define(
     timestamps: false,
   }
 );
+

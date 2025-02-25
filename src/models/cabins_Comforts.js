@@ -1,39 +1,33 @@
 import { DataTypes } from "sequelize";
 import { database } from "../config/Database.js";
 
-export const Cabins_Comforts = database.define(
-  "Cabins_Comforts",
+export const CabinsComforts = database.define(
+  "CabinsComforts",
   {
-    Id_Cabin_Comfort: {
+    idCabinComfort: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    Id_Cabin: {
+    idCabin: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    Id_Comfort: {
+    idComfort: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    Date_entry: {
+    description : {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
+    dateEntry: {
       type: DataTypes.DATE,
       allowNull: false,
-      validate: { 
-        notEmpty: { msg: "La fecha de entrada no puede estar vacía." },
-        isDate: { msg: "La fecha de entrada debe ser una fecha válida. (YYYY-MM-DD)" },
-      },
-    },
-    Status: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: true,
-      validate: { notNull: { msg: "El estado no puede ser nulo." } },
     },
   },
   {
-    tableName: "Cabins_Comforts",
+    tableName: "CabinsComforts", 
     timestamps: false,
   }
 );
