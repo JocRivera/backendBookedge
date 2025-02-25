@@ -56,10 +56,13 @@ export const createCabinValidation = [
 
 export const updateCabinValidation = [
   ...cabinBaseValidation,
+  imageValidation,
   param("id")
     .isInt()
     .withMessage("El ID de la cabaña debe ser un número entero")
     .custom(validateCabinExistence),
+    
+    
 ];
 
 export const deleteCabinValidation = [
@@ -103,14 +106,5 @@ export const addComfortValidation = [
   body("description")
     .notEmpty()
     .withMessage("La descripción de la comodidad es requerida"),
-  body("status")
-    .isBoolean()
-    .withMessage("El estado debe ser un valor booleano"),
 ];
 
-export const changeComfortStatusValidation = [
-  ...comfortValidation,
-  body("status")
-    .isBoolean()
-    .withMessage("El estado debe ser un valor booleano"),
-];

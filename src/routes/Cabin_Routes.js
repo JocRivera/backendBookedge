@@ -24,7 +24,7 @@ const router = express.Router();
 router.get('/', getAllCabins);
 router.get('/:id', getCabinValidation, getCabinById);
 router.post('/', upload.single('imagen'), createCabinValidation, createCabin);
-router.put('/:id', updateCabinValidation, updateCabin);
+router.put('/:id',upload.single('imagen'), updateCabinValidation, updateCabin);
 router.delete('/:id', deleteCabinValidation, deleteCabin);
 router.patch('/:id/status', changeStateCabinValidation, changeStatusCabin);
 

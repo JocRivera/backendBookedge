@@ -37,7 +37,6 @@ export const addComforts = async (
   idCabin,
   idComfort,
   description,
-  status = true,
   dateEntry = new Date()
 ) => {
   const cabin = await Cabins.findByPk(idCabin);
@@ -47,9 +46,9 @@ export const addComforts = async (
 };
 
 
-export const updateComforts = async (idCabin, idComfort, status, dateEntry) => {
+export const updateComforts = async (idCabin, idComfort, description, dateEntry) => {
   return await CabinsComforts.update(
-    { status, dateEntry },
+    { description, dateEntry },
     {
       where: { idCabin: idCabin, idComfort: idComfort },
     }
