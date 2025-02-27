@@ -1,6 +1,6 @@
-import { DataTypes, Sequelize } from "sequelize"; 
-import { sequelize } from '../config/Database.js';
-export const companions = sequelize.define('companions', {
+import { DataTypes} from "sequelize"; 
+import { database } from '../config/database.js';
+export const companions = database.define('Companions', {
     idCompanions: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -29,6 +29,10 @@ export const companions = sequelize.define('companions', {
         type: DataTypes.INTEGER,
         allowNull: false
     }
+},{
+    tableName:"Companions",
+    timestamps: false,
+
 });
 
-export default companions;
+
