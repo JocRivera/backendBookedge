@@ -3,7 +3,8 @@
 // Traduce las peticiones HTTP a llamadas al service
 // Maneja los errores y envía las respuestas apropiadas
 
-import { CustomerService } from "../services/CustomerServices.js";
+import { CustomerService } from "../services/Customer_Services.js";
+import bcrypt from "bcryptjs";
 
 export class CustomersController {
     constructor() {
@@ -32,6 +33,8 @@ export class CustomersController {
     async createCustomer(req, res) {
         try {
             const data = req.body;
+            const hash = bcrypt.hashSync(data.password, 10);
+            data.password = hash;
             const newCustomer = await this.customerService.createCustomer(data);
             res.status(201).json(newCustomer);
         } catch (error) {
@@ -53,8 +56,8 @@ export class CustomersController {
     async deleteCustomer(req, res) {
         try {
             const { id } = req.params;
-            const deletedCustomer = await this.customerService.deleteCustomer(id);
-            res.status(200).json(deletedCustomer);
+            await this.customerService.deleteCustomer(id);
+            res.status(200).json({ message: `Cliente ${id} eliminado con éxito}` });
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
