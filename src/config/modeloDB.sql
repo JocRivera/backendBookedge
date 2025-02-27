@@ -81,10 +81,10 @@ CREATE TABLE Users (
 
     CONSTRAINT CHK_Password CHECK (
         LENGTH(Password) >= 8 AND
-        Password REGEXP '[a-z]' AND  -- Al menos una letra minúscula
-        Password REGEXP '[A-Z]' AND  -- Al menos una letra mayúscula
-        Password REGEXP '[0-9]' AND  -- Al menos un número
-        Password REGEXP '[!@#$%^&*()]'  -- Al menos un carácter especial
+        Password REGEXP '[a-z]' AND  
+        Password REGEXP '[A-Z]' AND 
+        Password REGEXP '[0-9]' AND 
+        Password REGEXP '[!@#$%^&*()]' 
     )
 );
 
