@@ -5,6 +5,7 @@ import cabinRoutes from './src/routes/Cabin_Routes.js';
 import comfortRoutes from './src/routes/Comfort_Routes.js';
 import customerRoutes from './src/routes/Customers_Routes.js';
 import reservationRoutes from './src/routes/Reservations_Routes.js'
+import companionRoutes from './src/routes/Companions_Routes.js'
 import serviceRoutes from './src/routes/Service_Route.js';
 import  {setupAssociations}  from './src/models/setupAssociations.js';
 export default class Server {
@@ -42,6 +43,7 @@ export default class Server {
         this.app.use('/comforts', comfortRoutes);
         this.app.use('/customers', customerRoutes);
         this.app.use('/reservations', reservationRoutes);
+        this.app.use('/companions', companionRoutes);
         this.app.use('/services', serviceRoutes);
     }
 
