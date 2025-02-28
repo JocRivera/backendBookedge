@@ -35,7 +35,7 @@ export class CustomerService {
 
         const customer = await this.customerRepository.getCustomerById(id);
         if (!customer) {
-            throw new Error("El cliente no existe");
+            throw new Error("El cliente no existe. El (id) debe ser entero");
         }
 
         return customer;
@@ -55,7 +55,7 @@ export class CustomerService {
 
         const customer = await this.customerRepository.getCustomerById(id);
         if (!customer) {
-            throw new Error("No existe un cliente con ese id");
+            throw new Error("No existe un cliente con ese id. El (id) debe ser entero");
         }
 
         return this.customerRepository.updateCustomer(id, data);
@@ -65,7 +65,7 @@ export class CustomerService {
 
         const customer = await this.customerRepository.getCustomerById(id);
         if (!customer) {
-            throw new Error("El cliente no existe");
+            throw new Error("El cliente no existe. El (id) debe ser entero");
         }
 
         return this.customerRepository.deleteCustomer(id);
