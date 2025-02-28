@@ -33,26 +33,23 @@ export const changeStatusCabin = async (id, status) => {
   return await Cabins.update({ status }, { where: { idCabin: id } });
 };
 
-export const addComforts = async (
-  idCabin,
-  idComfort,
-  description,
-  status = true,
-  dateEntry = new Date()
-) => {
+export const addComforts = async (idCabin, idComfort, description, dateEntry) => {
   const cabin = await Cabins.findByPk(idCabin);
   return await cabin.addComfort(idComfort, {
-    through: { description, status, dateEntry },
+    through: { description, dateEntry },
   });
 };
 
-
-export const updateComforts = async (idCabin, idComfort, status, dateEntry) => {
+export const updateComforts = async (idCabinComfort, description, dateEntry) => {
   return await CabinsComforts.update(
-    { status, dateEntry },
+    { description, dateEntry },
     {
-      where: { idCabin: idCabin, idComfort: idComfort },
+      where: { idCabinComfort },
     }
   );
 };
-
+export const deleteComfortCabin = async (idCabinComfort) => {
+  return await CabinsComforts.destroy({
+    where: { idCabinComfort },
+  });
+};
