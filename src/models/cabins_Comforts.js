@@ -22,7 +22,8 @@ export const CabinsComforts = database.define(
       allowNull: false
     },
     dateEntry: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
+      defaultValue: DataTypes.NOW,
       allowNull: false,
     },
   },
