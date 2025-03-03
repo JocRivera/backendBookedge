@@ -1,36 +1,37 @@
-import { DataTypes, Sequelize } from "sequelize";  
-import { database } from "../config/Database.js";    
+import { DataTypes} from "sequelize";  
+import { database } from "../config/database.js"; 
+import {Companions} from "../models/Companions_Model.js";
 
 export const Reservations = database.define(
     "Reservations",
     {
-        ID_Reservation: {
+        IdReservation: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        NameClient: {
+        nameClient: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 notEmpty: true,
             },
         },
-        DocumentType: {
+        documentType: {
             type: DataTypes.ENUM("Cédula de ciudadanía", "Cédula de extranjería", "Pasaporte"), 
             defaultValue: "Cédula de ciudadanía",
             validate: {
                 isIn: [["Cédula de ciudadanía", "Cédula de extranjería", "Pasaporte"]],
             }
         },
-        Plan: {
+        plan: {
             type: DataTypes.ENUM("Día de sol", "Empresarial", "Romántico", "Pasadía Cumpleaños", "Amanecida"),
             allowNull: false,
             validate: {
                 isIn: [["Día de sol", "Empresarial", "Romántico", "Pasadía Cumpleaños", "Amanecida"]],
             }
         },
-        StartDate: {
+        startDate: {
             type: DataTypes.DATEONLY,
             allowNull: false,
             validate: {
@@ -41,7 +42,7 @@ export const Reservations = database.define(
                 }
             }
         },
-        EndDate: {
+        endDate: {
             type: DataTypes.DATEONLY,
             allowNull: false,
             validate: {
@@ -53,7 +54,7 @@ export const Reservations = database.define(
                 }
             }
         },
-        Price: {
+        price: {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false,
             validate: {
@@ -67,7 +68,7 @@ export const Reservations = database.define(
                 }
             }
         },
-        Status: {
+        status: {
             type: DataTypes.ENUM("Reservado", "Confirmado", "Pendiente", "Anulado"),
             allowNull: false,
             defaultValue: "Reservado",
@@ -80,8 +81,8 @@ export const Reservations = database.define(
         idCompanions:{
             type: DataTypes.INTEGER,
             references:{
-                model: 'companions',
-                key: 'id',
+                model: 'Companions',
+                key: 'idCompanions',
             }
         }
     }, 
@@ -90,3 +91,5 @@ export const Reservations = database.define(
         timestamps: false,
     }
 );
+Reservations.belongsTo(Companions, { foreignKey: "idCompanions" });  
+Companions.hasMany(Reservations, { foreignKey: "idCompanions" }); 
