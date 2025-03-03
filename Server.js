@@ -7,7 +7,9 @@ import customerRoutes from './src/routes/Customers_Routes.js';
 import reservationRoutes from './src/routes/Reservations_Routes.js'
 import companionRoutes from './src/routes/Companions_Routes.js'
 import serviceRoutes from './src/routes/Service_Route.js';
-import  {setupAssociations}  from './src/models/setupAssociations.js';
+import permissionRoutes from './src/routes/Permission_Route.js';
+import { setupAssociations } from './src/models/setupAssociations.js';
+
 export default class Server {
 
     constructor() {
@@ -18,9 +20,8 @@ export default class Server {
         this.listen();
         this.routes();
         this.setupAssociations();
-
     }
-    
+
     setupAssociations() {
         try {
             setupAssociations();
@@ -45,6 +46,7 @@ export default class Server {
         this.app.use('/reservations', reservationRoutes);
         this.app.use('/companions', companionRoutes);
         this.app.use('/services', serviceRoutes);
+        this.app.use('/permissions', permissionRoutes);
     }
 
     listen() {

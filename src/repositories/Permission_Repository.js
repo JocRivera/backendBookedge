@@ -1,4 +1,4 @@
-import { Permissions } from "../models/Permissions_Model";
+import { Permissions } from "../models/Permissions_Model.js";
 
 export class PermissionRepository {
     async findAll() {

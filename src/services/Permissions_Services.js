@@ -1,4 +1,4 @@
-import { PermissionRepository } from "../repositories/Permission_Repository";
+import { PermissionRepository } from "../repositories/Permission_Repository.js";
 
 export class PermissionService {
     constructor() {
@@ -12,6 +12,20 @@ export class PermissionService {
         }
         return this.PermissionRepository.create(data);
     }
+
+    async getPermissions() {
+        return this.PermissionRepository.findAll();
+    }
+    async getPermissionById(id) {
+        return this.PermissionRepository.findById(id);
+    }
+    async updatePermission(id, data) {
+        return this.PermissionRepository.update(id, data);
+    }
+    async deletePermission(id) {
+        return this.PermissionRepository.delete(id);
+    }
+
 }
 
 

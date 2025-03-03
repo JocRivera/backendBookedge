@@ -25,4 +25,3 @@ database.sync({ force: false })
     console.log("Database synced successfully");
   })
   .catch()
-  
