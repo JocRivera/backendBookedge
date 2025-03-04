@@ -3,6 +3,10 @@ import { Bedrooms } from "./Bedrooms_Model.js";
 import { CabinsComforts } from "./Cabins_Comforts.js";
 import { BedroomsComforts } from "./Bedrooms_Comforts.js";
 import { Comforts } from "./Comfort_Model.js";
+import { Roles } from "./Roles_Model.js";
+import { Permissions } from "./Permissions_Model.js";
+import { PermissionRoles } from "./Permission_Roles.js";
+
 export const setupAssociations = () => {
   Cabins.belongsToMany(Comforts, {
     through: CabinsComforts, // Tabla intermedia
@@ -31,6 +35,21 @@ export const setupAssociations = () => {
     foreignKey: "idComfort", // Clave foránea en Bedrooms_Comforts
     otherKey: "idRoom", // Clave foránea en Bedrooms_Comforts
     as: "Bedrooms", // Alias para la asociación
+  });
+
+  // Asociaciones para Roles y Permissions (relación muchos a muchos)
+  Roles.belongsToMany(Permissions, {
+    through: PermissionRoles,
+    foreignKey: "idRole", // Clave foránea en Roles_Permissions
+    otherKey: "idPermission", // Clave foránea en Roles_Permissions
+    as: "Permissions", // Alias para la asociación
+  });
+
+  Permissions.belongsToMany(Roles, {
+    through: PermissionRoles,
+    foreignKey: "idPermission", // Clave foránea en Roles_Permissions
+    otherKey: "idRole", // Clave foránea en Roles_Permissions
+    as: "Roles", // Alias para la asociación
   });
 
   console.log("Asociaciones configuradas correctamente.");

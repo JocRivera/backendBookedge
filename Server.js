@@ -4,10 +4,9 @@ import morgan from "morgan";
 import cabinRoutes from './src/routes/Cabin_Routes.js';
 import comfortRoutes from './src/routes/Comfort_Routes.js';
 import customerRoutes from './src/routes/Customers_Routes.js';
-import reservationRoutes from './src/routes/Reservations_Routes.js'
-import companionRoutes from './src/routes/Companions_Routes.js'
 import serviceRoutes from './src/routes/Service_Route.js';
 import permissionRoutes from './src/routes/Permission_Route.js';
+import rolesRoutes from './src/routes/Roles_Routes.js';
 import { setupAssociations } from './src/models/setupAssociations.js';
 
 export default class Server {
@@ -43,10 +42,9 @@ export default class Server {
         this.app.use('/cabins', cabinRoutes);
         this.app.use('/comforts', comfortRoutes);
         this.app.use('/customers', customerRoutes);
-        this.app.use('/reservations', reservationRoutes);
-        this.app.use('/companions', companionRoutes);
         this.app.use('/services', serviceRoutes);
         this.app.use('/permissions', permissionRoutes);
+        this.app.use('/roles', rolesRoutes);
     }
 
     listen() {
