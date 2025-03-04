@@ -1,12 +1,12 @@
 import{
     getAllCompanionRepo as getAllCompanionsService,
     getCompanionByIdRepo as getCompanionsByIdService,
-    createCompanionRepo as createCompanionService,
+    createCompanionsRepo as createCompanionService,
     updateCompanionsRepo as updateCompanionService,
     deleteCompanionsRepo as deleteCompanionService,
 } from "../services/Companions_Services.js"
 
-export const getAllCompanionsController = async (req, res) => {
+export const getAllCompanionsController = async (req, res) => {git 
     try {
         const companions = await getAllCompanionsService();
         res.status(200).json(companions);

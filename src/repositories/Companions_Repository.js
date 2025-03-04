@@ -40,10 +40,10 @@ export const getCompanionsById = async (id) => {
 
 export const createCompanion = async (data) => {
     try {
-        const newCompanion = await companions.create(data);
+        const companion = await companions.create(data);
         return {
             success: true,
-            data: newCompanion,
+            data: companion,
         };
     } catch (error) {
         console.error("Error en createCompanions:", error);
