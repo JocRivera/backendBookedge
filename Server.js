@@ -1,5 +1,5 @@
 import express, { json } from 'express';
-import { database } from './src/config/Database.js';
+import { database } from './src/config/database.js';
 import morgan from "morgan";
 import cabinRoutes from './src/routes/Cabin_Routes.js';
 import comfortRoutes from './src/routes/Comfort_Routes.js';

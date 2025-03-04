@@ -1,56 +1,56 @@
-import {getAllCompanions as getAllCompanionsRepo,
-    getCompanionsById as getCompanionsByIdRepo,
-    createCompanion as createCompanionsRepo,
-    updateCompanion as updateCompanionRepo,
-    deleteCompanion as deleteCompanionRepo
+import {getAllCompanions,
+    getCompanionsById,
+    createCompanion,
+    updateCompanion,
+    deleteCompanion,
 } from '../repositories/Companions_Repository.js'
 
-export async function getAllCompanionRepo(){
-    const result = await getAllCompanionsRepo();
+export async function getAllCompanionsService(){
+    const result = await getAllCompanions();
     if(!result.seccess){
         throw new Error(result.message);
     }
     return result.data;
 }
-export async function getCompanionByIdRepo(id){
+export async function getCompanionsByIdService(id){
     if (!id || isNaN(id)) {
         throw new Error('Id de acompañante no valido');
     }
-    const result = await getCompanionsByIdRepo(id);
+    const result = await getCompanionsById(id);
     if(!result.seccess){
         throw new Error(result.message);
     }
     return result.data;
 }
 
-export async function createCompanionRepo(data){
-    if(!data.name || !data.birtdate || !data.age || !data.documentType || !data.documentNumber || !data.idCompanions){
+export async function createCompanionService(data){
+    if(!data.name || !data.birthdate || !data.age || !data.documentType || !data.documentNumber){
         throw new Error('Falta de datos para añadir el acompañante');
 
     }
-    const result = await createCompanionsRepo(data);
+    const result = await createCompanion(data);
     if (!result.seccess){
         throw new Error(result.message);
     }
     return result.data;
 }
 
-export async function updateCompanionsRepo(id,data) {
+export async function updateCompanionService(id,data) {
     if(!id || isNaN(id)){
         throw new Error('Id de acompañante no valido');
     }
-    const result = await updateCompanionRepo(id,data);
+    const result = await updateCompanion(id,data);
     if (!result.seccess){
         throw new Error(result.message);
     }
     return result.data;
 }
 
-export async function deleteCompanionsRepo(id,data) {
+export async function deleteCompanionService(id,data) {
     if(!id || isNaN(id)){
         throw new Error('Id de acompañante no valido');
     }  
-    const result = await deleteCompanionRepo(id,data);
+    const result = await deleteCompanion(id,data);
     if (!result.seccess){
         throw new Error(result.message);
     }
