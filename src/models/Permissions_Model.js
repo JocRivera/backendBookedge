@@ -17,5 +17,8 @@ export const Permissions = database.define('Permissions',
             type: DataTypes.BOOLEAN,
             defaultValue: true
         }
+    },
+    {
+        tableName: 'permissions'
     }
 )

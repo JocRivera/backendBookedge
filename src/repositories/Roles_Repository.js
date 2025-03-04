@@ -36,7 +36,6 @@ export class RolesRepository {
         await role.addPermission(permissionToAdd, {
             through: {
                 permission: permission.permission,
-                description: permission.description
             }
         });
         return role;

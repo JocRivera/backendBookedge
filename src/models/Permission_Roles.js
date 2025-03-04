@@ -13,13 +13,13 @@ export const PermissionRoles = database.define(
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        idRole: {
+        idRol: {
             type: DataTypes.INTEGER,
             allowNull: false
         }
     },
     {
-        tableName: 'PermissionRoles',
+        tableName: 'permissionroles',
         timestamps: false
     }
 );

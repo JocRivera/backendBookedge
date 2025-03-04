@@ -17,8 +17,8 @@ export class RolesService {
         return await this.rolesRepository.create(role);
     }
 
-    async addPermission(permission, idPermission, idRole) {
-        return await this.rolesRepository.addPermission(permission, idPermission, idRole);
+    async addPermission(idPermission, idRole) {
+        return await this.rolesRepository.addPermission(idPermission, idRole);
     }
 
     async removePermission(idPermission, idRole) {

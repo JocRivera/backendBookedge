@@ -40,16 +40,16 @@ export const setupAssociations = () => {
   // Asociaciones para Roles y Permissions (relación muchos a muchos)
   Roles.belongsToMany(Permissions, {
     through: PermissionRoles,
-    foreignKey: "idRole", // Clave foránea en Roles_Permissions
+    foreignKey: "idRol", // Clave foránea en Roles_Permissions
     otherKey: "idPermission", // Clave foránea en Roles_Permissions
-    as: "Permissions", // Alias para la asociación
+    as: "permissions", // Alias para la asociación
   });
 
   Permissions.belongsToMany(Roles, {
     through: PermissionRoles,
     foreignKey: "idPermission", // Clave foránea en Roles_Permissions
-    otherKey: "idRole", // Clave foránea en Roles_Permissions
-    as: "Roles", // Alias para la asociación
+    otherKey: "idRol", // Clave foránea en Roles_Permissions
+    as: "roles", // Alias para la asociación
   });
 
   console.log("Asociaciones configuradas correctamente.");

@@ -17,6 +17,9 @@ export const Roles = database.define('roles',
             allowNull: false
         }
 
+    },
+    {
+        tableName: 'roles',
     }
 
 )

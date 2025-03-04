@@ -35,10 +35,9 @@ export class RolesController {
     }
 
     async addPermission(req, res) {
-        const { idPermission, idRole } = req.params;
-        const permission = req.body;
+        const { idPermission, idRol } = req.body;
         try {
-            const role = await this.rolesService.addPermission(permission, idPermission, idRole);
+            const role = await this.rolesService.addPermission(idPermission, idRol);
             return res.status(200).json(role);
         } catch (error) {
             return res.status(500).json({ error: error.message });
@@ -46,9 +45,9 @@ export class RolesController {
     }
 
     async removePermission(req, res) {
-        const { idPermission, idRole } = req.params;
+        const { idPermission, idRol } = req.params;
         try {
-            await this.rolesService.removePermission(idPermission, idRole);
+            await this.rolesService.removePermission(idPermission, idRol);
             return res.status(204).send();
         } catch (error) {
             return res.status(500).json({ error: error.message });
@@ -56,10 +55,10 @@ export class RolesController {
     }
 
     async updatePermission(req, res) {
-        const { idPermission, idRole } = req.params;
+        const { idPermission, idRol } = req.params;
         const permission = req.body;
         try {
-            const role = await this.rolesService.updatePermission(permission, idPermission, idRole);
+            const role = await this.rolesService.updatePermission(permission, idPermission, idRol);
             return res.status(200).json(role);
         } catch (error) {
             return res.status(500).json({ error: error.message });
