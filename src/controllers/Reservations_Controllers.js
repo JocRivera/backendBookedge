@@ -1,8 +1,8 @@
 import {
-    getAllReservations as getAllReservationsService,
-  getReservationsById as getReservationsByIdService,
-  createReservations as createReservationsService,
-  updateReservations as updateReservationsService,
+    getAllReservationsService,
+    getReservationsByIdService,
+    createReservationsService,
+    updateReservationsService,
 
 } from "../services/Reservations_Services.js"
 

@@ -1,8 +1,8 @@
-import { companions } from "../models/Companions_Model.js";
+import {Companions} from "../models/Companions_Model.js";
 
 export const getAllCompanions = async () => {
     try {
-        const companionsList = await companions.findAll();
+        const companionsList = await Companions.findAll();
         return {
             success: true,
             data: companionsList,
@@ -18,7 +18,7 @@ export const getAllCompanions = async () => {
 
 export const getCompanionsById = async (id) => {
     try {
-        const companion = await companions.findByPk(id);
+        const companion = await Companions.findByPk(id);
         if (!companion) {
             return {
                 success: false,
@@ -40,7 +40,7 @@ export const getCompanionsById = async (id) => {
 
 export const createCompanion = async (data) => {
     try {
-        const companion = await companions.create(data);
+        const newCompanion = await Companions.create(data);
         return {
             success: true,
             data: companion,
@@ -56,7 +56,7 @@ export const createCompanion = async (data) => {
 
 export const updateCompanion = async (id, data) => {
     try {
-        const [updateRows] = await companions.update(data, {
+        const [updateRows] = await Companions.update(data, {
             where: { idCompanions: id },
         });
 
@@ -67,7 +67,7 @@ export const updateCompanion = async (id, data) => {
             };
         }
 
-        const updatedCompanion = await companions.findByPk(id);
+        const updatedCompanion = await Companions.findByPk(id);
         return {
             success: true,
             data: updatedCompanion,
@@ -83,7 +83,7 @@ export const updateCompanion = async (id, data) => {
 
 export const deleteCompanion = async (id) => {
     try {
-        const deletedRows = await companions.destroy({
+        const deletedRows = await Companions.destroy({
             where: { idCompanions: id },
         });
 
