@@ -43,7 +43,7 @@ export const createCompanion = async (data) => {
         const newCompanion = await Companions.create(data);
         return {
             success: true,
-            data: companion,
+            data: Companions,
         };
     } catch (error) {
         console.error("Error en createCompanions:", error);

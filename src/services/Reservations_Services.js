@@ -25,8 +25,8 @@ export async function getReservationsByIdService(id) {
 }
 
 export async function createReservationsService(data) {
-    if (!data.nameClient || !data.documentType || !data.plan || !data.startDate || !data.endDate || !data.price || !data.status || !data.idCompanios) {
-        throw new Error("Faltan datos para crear la reserva");
+    if (!data.nameClient || !data.documentType || !data.plan || !data.startDate || !data.endDate || !data.price || !data.status || !data.idCompanions) {
+        throw new Error("Faltan datos para crear la resevitica");
     }
     const result = await createReservations(data);
     if (!result.success) {

@@ -6,7 +6,7 @@ import{
     deleteCompanionService,
 } from "../services/Companions_Services.js"
 
-export const getAllCompanionsController = async (req, res) => {git 
+export const getAllCompanionsController = async (req, res) => {
     try {
         const companions = await getAllCompanionsService();
         res.status(200).json(companions);
