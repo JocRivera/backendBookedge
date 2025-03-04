@@ -20,7 +20,7 @@ const database = new Sequelize(
 
 export { database };
 
-database.sync({ force: true })
+database.sync({ force: false })
   .then(() => {
     console.log("Database synced successfully");
   })
