@@ -8,6 +8,8 @@ import serviceRoutes from './src/routes/Service_Route.js';
 import permissionRoutes from './src/routes/Permission_Route.js';
 import rolesRoutes from './src/routes/Roles_Routes.js';
 import { setupAssociations } from './src/models/setupAssociations.js';
+import companionsRoutes from './src/routes/Companions_Routes.js';
+import  reservationsRoutes from './src/routes/Reservations_Routes.js';
 
 export default class Server {
 
@@ -43,6 +45,8 @@ export default class Server {
         this.app.use('/comforts', comfortRoutes);
         this.app.use('/customers', customerRoutes);
         this.app.use('/services', serviceRoutes);
+        this.app.use('/companions', companionsRoutes);
+        this.app.use('/reservations', reservationsRoutes);
         this.app.use('/permissions', permissionRoutes);
         this.app.use('/roles', rolesRoutes);
     }
