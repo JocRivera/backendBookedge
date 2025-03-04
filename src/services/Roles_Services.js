@@ -1,5 +1,5 @@
 import { RolesRepository } from '../repositories/Roles_Repository.js';
-
+import { Permissions } from '../models/Permissions_Model.js';
 export class RolesService {
     constructor() {
         this.rolesRepository = new RolesRepository();
@@ -13,8 +13,24 @@ export class RolesService {
         return await this.rolesRepository.findById(id);
     }
 
-    async create(role) {
-        return await this.rolesRepository.create(role);
+    async create(data) {
+        const { name, status, permissions } = data;
+        const role = await this.rolesRepository.create({ name, status });
+        if (permissions && permissions.length > 0) {
+            const existingPermissions = await Permissions.findAll({
+                where: {
+                    idPermission: permissions
+                }
+            });
+            if (existingPermissions.length > 0) {
+                await role.addPermissions(existingPermissions);
+            }
+            await Promise.all(permissions.map(idPermission =>
+                this.rolesRepository.addPermission(idPermission, role.idRol)
+            )
+            );
+        }
+        return this.rolesRepository.findById(role.idRol);
     }
 
     async addPermission(idPermission, idRole) {

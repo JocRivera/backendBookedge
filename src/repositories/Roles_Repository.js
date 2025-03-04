@@ -30,14 +30,10 @@ export class RolesRepository {
         return await Roles.create(role);
     }
 
-    async addPermission(permission, idPermission, idRol) {
+    async addPermission(idPermission, idRol) {
         const role = await Roles.findByPk(idRol);
         const permissionToAdd = await Permissions.findByPk(idPermission);
-        await role.addPermission(permissionToAdd, {
-            through: {
-                permission: permission.permission,
-            }
-        });
+        await role.addPermission(permissionToAdd);
         return role;
     }
 
