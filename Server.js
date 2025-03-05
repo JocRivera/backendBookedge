@@ -1,5 +1,5 @@
 import express, { json } from 'express';
-import { database } from './src/config/Database.js';
+import { database } from './src/config/database.js';
 import morgan from "morgan";
 import cabinRoutes from './src/routes/Cabin_Routes.js';
 import comfortRoutes from './src/routes/Comfort_Routes.js';
@@ -7,6 +7,7 @@ import customerRoutes from './src/routes/Customers_Routes.js';
 import reservationRoutes from './src/routes/Reservations_Routes.js'
 import companionRoutes from './src/routes/Companions_Routes.js'
 import serviceRoutes from './src/routes/Service_Route.js';
+import userRoutes from './src/routes/User_Routes.js';
 import  {setupAssociations}  from './src/models/setupAssociations.js';
 export default class Server {
 
@@ -39,6 +40,7 @@ export default class Server {
     }
 
     routes() {
+        this.app.use('/user',userRoutes);
         this.app.use('/cabins', cabinRoutes);
         this.app.use('/comforts', comfortRoutes);
         this.app.use('/customers', customerRoutes);

@@ -77,13 +77,13 @@ export const Reservations = database.define(
                 },
             },
         },
-        idCompanions:{
-            type: DataTypes.INTEGER,
-            references:{
-                model: 'companions',
-                key: 'id',
-            }
-        }
+        // idCompanions:{
+        //     type: DataTypes.INTEGER,
+        //     references:{
+        //         model: 'companions',
+        //         key: 'id',
+        //     }
+        // }
     }, 
     {
         tableName: "Reservations",

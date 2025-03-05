@@ -4,7 +4,14 @@ import { CabinsComforts } from "../models/Cabins_Comforts.js";
 
 export const getAllCabins = async () => {
   return await Cabins.findAll({
-    include: [{ model: Comforts, as: "Comforts" }],
+    include: [
+      {
+        model: Comforts,
+        as: "Comforts",
+        attributes: ["idComfort", "name"],
+        through: { attributes: [] },
+      },
+    ],
   });
 };
 
@@ -33,14 +40,23 @@ export const changeStatusCabin = async (id, status) => {
   return await Cabins.update({ status }, { where: { idCabin: id } });
 };
 
-export const addComforts = async (idCabin, idComfort, description, dateEntry) => {
+export const addComforts = async (
+  idCabin,
+  idComfort,
+  description,
+  dateEntry
+) => {
   const cabin = await Cabins.findByPk(idCabin);
   return await cabin.addComfort(idComfort, {
     through: { description, dateEntry },
   });
 };
 
-export const updateComforts = async (idCabinComfort, description, dateEntry) => {
+export const updateComforts = async (
+  idCabinComfort,
+  description,
+  dateEntry
+) => {
   return await CabinsComforts.update(
     { description, dateEntry },
     {
