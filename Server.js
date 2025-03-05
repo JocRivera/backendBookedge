@@ -10,6 +10,7 @@ import rolesRoutes from './src/routes/Roles_Routes.js';
 import { setupAssociations } from './src/models/setupAssociations.js';
 import companionsRoutes from './src/routes/Companions_Routes.js';
 import  reservationsRoutes from './src/routes/Reservations_Routes.js';
+import userRoutes from './src/routes/User_Routes.js';
 
 export default class Server {
 
