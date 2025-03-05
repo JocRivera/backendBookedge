@@ -1,6 +1,6 @@
 import { DataTypes} from "sequelize"; 
 import { database } from '../config/database.js';
-export const companions = database.define('Companions', {
+export const Companions = database.define('Companions', {
     idCompanions: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -22,7 +22,7 @@ export const companions = database.define('Companions', {
         type: DataTypes.ENUM("Cédula de ciudadanía", "Cédula de extranjería", "Pasaporte", "Tarjeta de identidad"),
         defaultValue: "Cédula de ciudadanía",
         validate: {
-            isIn: [["Cédula de ciudadanía", "Cédula de extranjería", "Pasaporte"]],
+            isIn: [["Cédula de ciudadanía", "Cédula de extranjería", "Pasaporte", "Tarjeta de identidad"]],
         }
     },
     documentNumber: {

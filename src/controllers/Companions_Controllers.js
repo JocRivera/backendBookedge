@@ -1,9 +1,9 @@
 import{
-    getAllCompanionRepo as getAllCompanionsService,
-    getCompanionByIdRepo as getCompanionsByIdService,
-    createCompanionRepo as createCompanionService,
-    updateCompanionsRepo as updateCompanionService,
-    deleteCompanionsRepo as deleteCompanionService,
+    getAllCompanionsService,
+    getCompanionsByIdService,
+    createCompanionService,
+    updateCompanionService,
+    deleteCompanionService,
 } from "../services/Companions_Services.js"
 
 export const getAllCompanionsController = async (req, res) => {

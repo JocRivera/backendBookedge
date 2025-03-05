@@ -1,45 +1,45 @@
 import {
-    getAllReservations as getAllReservationsRepo,
-    getReservationsById as getReservationsByIdRepo,
-    createReservations as createReservationsRepo,
-    updateReservations as updateReservationsRepo
+    getAllReservations,
+    getReservationsById, 
+    createReservations,
+    updateReservations,
 } from "../repositories/Reservations_Repository.js";
 
-export async function getAllReservations() {
-    const result = await getAllReservationsRepo();
+export async function getAllReservationsService() {
+    const result = await getAllReservations();
     if (!result.success) {
         throw new Error(result.message);
     }
     return result.data;
 }
 
-export async function getReservationsById(id) {
+export async function getReservationsByIdService(id) {
     if (!id || isNaN(id)) {
         throw new Error("ID de reserva inválido");
     }
-    const result = await getReservationsByIdRepo(id);
+    const result = await getReservationsById(id);
     if (!result.success) {
         throw new Error(result.message);
     }
     return result.data;
 }
 
-export async function createReservations(data) {
-    if (!data.nameClient || !data.documentType || !data.plan || !data.startDate || !data.endDate || !data.price || !data.status || !data.idCompanios) {
-        throw new Error("Faltan datos para crear la reserva");
+export async function createReservationsService(data) {
+    if (!data.nameClient || !data.documentType || !data.plan || !data.startDate || !data.endDate || !data.price || !data.status || !data.idCompanions) {
+        throw new Error("Faltan datos para crear la resevitica");
     }
-    const result = await createReservationsRepo(data);
+    const result = await createReservations(data);
     if (!result.success) {
         throw new Error(result.message);
     }
     return result.data;
 }
 
-export async function updateReservations(id, data) {
+export async function updateReservationsService(id, data) {
     if (!id || isNaN(id)) {
         throw new Error("ID de reserva inválido");
     }
-    const result = await updateReservationsRepo(id, data);  
+    const result = await updateReservations(id, data);  
     if (!result.success) {
         throw new Error(result.message);
     }

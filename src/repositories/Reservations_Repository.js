@@ -59,7 +59,7 @@ export const createReservations = async (data) => {
 export const updateReservations = async (id, data) => {
   try {
     const [updatedRows] = await Reservations.update(data, {
-      where: { id_reservation: id }, 
+      where: { idReservation: id }, 
     });
 
     if (updatedRows === 0) {
