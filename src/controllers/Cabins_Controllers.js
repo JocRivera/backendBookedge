@@ -94,14 +94,14 @@ export const changeStatusCabin = async (req, res) => {
   }
 };
 
-export const getAllCabinComfort = async (req,res) =>{
+export const getAllCabinComfort = async (req, res) => {
   try {
-      const comfortData = await getAllCabinComfort();
-      res.status(200).json(comfortData)
+    const comfortData = await getAllCabinComfort();
+    res.status(200).json(comfortData);
   } catch (error) {
-    res.status(400).json({message: error.message});
+    res.status(400).json({ message: error.message });
   }
-}
+};
 export const addComforts = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -110,7 +110,7 @@ export const addComforts = async (req, res) => {
   try {
     const { idCabin, idComfort } = req.params;
     const { description, dateEntry } = req.body;
-    
+
     await addComfortsService(idCabin, idComfort, description, dateEntry);
     res.status(200).json({ message: "Comodidad agregada correctamente" });
   } catch (error) {
@@ -124,7 +124,7 @@ export const updateComfort = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { idCabinComfort } = req.params; 
+    const { idCabinComfort } = req.params;
     const { description, dateEntry } = req.body;
     await updateComfortsService(idCabinComfort, description, dateEntry);
     res.status(200).json({ message: "Comodidad actualizada correctamente" });

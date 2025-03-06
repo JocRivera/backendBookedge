@@ -5,7 +5,7 @@ export const getAllComforts = async () => {
 };
 
 export const getComfortById = async (id) => {
-  return await Comforts.findByPk({ where: { idComfort: id } });
+  return await Comforts.findByPk(id);
 };
 
 export const createComfort = async (data) => {
