@@ -58,7 +58,7 @@ export class RolesRepository {
     async update(role, id) {
         return await Roles.update(role, {
             where: {
-                id: id
+                idRol: id
             }
         });
     }

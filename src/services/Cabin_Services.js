@@ -30,12 +30,12 @@ export const deleteCabinService = async (id) => {
   return await deleteCabin(id);
 };
 
-export const addComfortsService = async (id, idComfort, description, dateEntry) => {
-  return await addComforts(id, idComfort, description, dateEntry);
+export const addComfortsService = async (idCabin, idComfort, cabinComfortData) => {
+  return await addComforts(idCabin, idComfort, cabinComfortData);
 };
 
-export const updateComfortsService = async (idCabinComfort, description, dateEntry) => {
-  return await updateComforts(idCabinComfort, description, dateEntry);
+export const updateComfortsService = async (idCabinComfort, cabinComfortData) => {
+  return await updateComforts(idCabinComfort,cabinComfortData);
 };
 export const deteleComfortCabinService = async (idCabinComfort) => {
   return await deleteComfortCabin(idCabinComfort);

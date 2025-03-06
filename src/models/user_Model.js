@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { database } from "../config/database.js";
+import { Roles } from "./Roles_Model.js";
 export const Users = database.define(
   "Users",
   {
@@ -7,6 +8,11 @@ export const Users = database.define(
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    idRol:{
+      type: DataTypes.INTEGER,
+      allowNull:false,
+      references:{model: Roles, key: 'idRol'}
     },
     name: {
       type: DataTypes.STRING(50),
@@ -41,3 +47,6 @@ export const Users = database.define(
     timestamps: false,
   }
 );
+
+Users.belongsTo(Roles,{foreignKey: "idRol",as: "roles"});
+Roles.hasMany(Users,{foreignKey:"idRol",as: "roles" });
