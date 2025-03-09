@@ -21,12 +21,15 @@ export const createUserService = async (dataUsers) => {
 };
 
 export const updateUserService = async (id, dataUsers) => {
-  dataUsers.password = await bcrypt.hash(dataUsers.password, SALT_ROUNDS);
-  return await updateUser(id, dataUsers);
+  if (dataUsers.password) {
+    dataUsers.password = await bcrypt.hash(dataUsers.password, SALT_ROUNDS);
+  }
+  return updateUser(id, dataUsers);
 };
 
-export const changeStatusUserService = async (id,State) => {
-  return await changeStatusUser(id,State)
-}
+export const changeStatusUserService = async (id, State) => {
+  return await changeStatusUser(id, State);
+};
 export const deleteUserService = async (id) => await deleteUser(id);
 
+//cambios para git

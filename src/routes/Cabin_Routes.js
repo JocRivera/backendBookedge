@@ -34,7 +34,7 @@ router.delete("/:id", deleteCabinValidation, deleteCabin);
 router.patch("/:id/status", changeStateCabinValidation, changeStatusCabin);
 
 // Rutas para comodidades de cabañas
-router.post("/:idCabin/comforts/:idComfort" ,addComfortValidation, addComforts);
-router.put("/comforts/:idCabinComfort",updateComfortValidation, updateComfort);
-router.delete("/comforts/:idCabinComfort",deleteComfortValidation,  deleteComfort);
+router.post("/cabinComforts/" ,addComfortValidation, addComforts);
+router.put("/cabinComforts/:idCabinComfort",updateComfortValidation, updateComfort);
+router.delete("/cabinComforts/:idCabinComfort",deleteComfortValidation,  deleteComfort);
 export default router;

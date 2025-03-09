@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import { database } from "../config/database.js";
-
 export const Bedrooms = database.define(
   "Bedrooms",
   {
@@ -32,6 +31,7 @@ export const Bedrooms = database.define(
       allowNull: false,
     },
   },
+  
   {
     tableName: "Bedrooms",
     timestamps: false,

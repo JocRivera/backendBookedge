@@ -84,19 +84,10 @@ export const changeStateCabinValidation = [
     .custom(validateCabinExistence),
 ];
 
-//VALIDACIONES PUT , DELETE, POST ADDCOMFORTS
-
-export const validateCabinsComforts = async (idCabinComfort) => {
-  const cabinsComforts = await CabinsComforts.findByPk(idCabinComfort);
-  if (!cabinsComforts) {
-    return Promise.reject("No hay relaciones de Cabañas y Comodidades");
-  }
-  return true; // Es importante retornar true para que la validación sea exitosa
-};
 
 export const validateComfortNotExists = async (idCabin, idComfort) => {
   const cabinsComforts = await CabinsComforts.findOne({
-    where: { idCabin, idComfort }
+    where: { idCabin, idComfort },
   });
   if (cabinsComforts) {
     return Promise.reject("La cabaña ya contiene esta comodidad");
@@ -105,23 +96,52 @@ export const validateComfortNotExists = async (idCabin, idComfort) => {
 };
 
 const cabinComfortBaseValidation = [
-  body('description').notEmpty().withMessage("La descripción no puede estar vacía"),
-  body("dateEntry").optional().isDate().withMessage("Debe ser una fecha válida").default(Date.now)
+  body("description")
+    .notEmpty()
+    .withMessage("La descripción no puede estar vacía"),
+  body("dateEntry")
+    .optional()
+    .isDate()
+    .withMessage("Debe ser una fecha válida")
+    .default(Date.now),
 ];
 
 export const addComfortValidation = [
   ...cabinComfortBaseValidation,
-  param("idCabin").isInt().withMessage("El id de la cabaña debe ser un número entero").custom(validateCabinExistence),
-  param("idComfort").isInt().withMessage("El id de la comodidad debe ser un número entero"),
   body("idCabin")
-    .custom((value, { req }) => validateComfortNotExists(req.params.idCabin, req.params.idComfort))
+    .isInt()
+    .withMessage("El id de la cabaña debe ser un número entero"),
+  body("idComfort")
+    .custom(validateCabinExistence)
+    .isInt()
+    .withMessage("El id de la comodidad debe ser un número entero"),
+  body().custom(async (value) => {
+    await validateComfortNotExists(value.idCabin, value.idComfort);
+  }),
 ];
 
 export const updateComfortValidation = [
   ...cabinComfortBaseValidation,
-  param("idCabinComfort").isInt().withMessage("El id de la relación cabaña-comodidad debe ser un número entero").custom(validateCabinsComforts),
+  param("idCabinComfort")
+    .isInt()
+    .withMessage("El id de la relación cabaña-comodidad debe ser un número entero")
+    .custom(validateComfortNotExists), 
+  body("idCabin")
+    .optional()
+    .isInt()
+    .withMessage("El id de la cabaña debe ser un número entero")
+    .custom(validateCabinExistence),
+  body("idComfort")
+    .optional()
+    .isInt()
+    .withMessage("El id de la comodidad debe ser un número entero"),
 ];
 
 export const deleteComfortValidation = [
-  param("idCabinComfort").isInt().withMessage("El id de la relación cabaña-comodidad debe ser un número entero").custom(validateCabinsComforts),
+  param("idCabinComfort")
+    .isInt()
+    .withMessage(
+      "El id de la relación cabaña-comodidad debe ser un número entero"
+    )
+    .custom(),
 ];
