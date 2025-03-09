@@ -1,5 +1,5 @@
 import { body, param } from "express-validator";
-import { Users } from "../models/User_Model";
+import { Users } from "../models/user_Model.js";
 
 export const validateUserExistence = async (id) => {
   const user = await Users.findByPk(id);
@@ -12,7 +12,7 @@ export const validateUserExistence = async (id) => {
 export const validateDocumentExistence = async (document) => {
   const documents = await Users.findOne({ where: { document } });
   if (documents) {
-    return Promise.reject("El documento del usuario  existe");
+    return Promise.reject("El documento del usuario existe");
   }
   return true;
 };
@@ -26,59 +26,83 @@ export const validateEmailExistence = async (email) => {
 };
 
 const usersBaseValidation = [
+  body("idRol")
+    .notEmpty()
+    .withMessage("El Usuario debe contener un Rol"),
+  
   body("name")
     .notEmpty()
-    .withMessage("El nombre no puede estar vacio")
+    .withMessage("El nombre no puede estar vacío")
     .isLength({ min: 3 })
-    .withMessage("el nombre debe tener minimo 3 caracteres"),
+    .withMessage("El nombre debe tener mínimo 3 caracteres"),
+  
   body("email")
     .notEmpty()
-    .withMessage("El correo no puede estar vacio")
+    .withMessage("El correo no puede estar vacío")
     .isEmail()
-    .withMessage("El correo debe ser un correo valido"),
+    .withMessage("El correo debe ser un correo válido"),
+  
   body("phone")
     .notEmpty()
-    .withMessage("El número de teléfono no puede estar vacio")
+    .withMessage("El número de teléfono no puede estar vacío")
     .isLength({ min: 10 })
-    .withMessage("El número debe tener minimo 10 caracteres"),
+    .withMessage("El número debe tener mínimo 10 caracteres"),
+  
   body("document")
     .notEmpty()
-    .withMessage("El documento no puede estar vacio")
+    .withMessage("El documento no puede estar vacío")
     .isLength({ min: 5 })
-    .withMessage("El documento debe tener minimo 5 caracteres"),
-  body("password").notEmpty(),
-  isLength({ min: 8 })
+    .withMessage("El documento debe tener mínimo 5 caracteres"),
+  
+  body("password")
+    .notEmpty()
+    .withMessage("La contraseña no puede estar vacía")
+    .isLength({ min: 8 })
     .withMessage("La contraseña debe tener al menos 8 caracteres")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-    )
-    .withMessage(
-      "La contraseña debe contener al menos una letra mayúscula, una minúscula, un número y un carácter especial"
-    ),
-    body("State")
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/)
+    .withMessage("Debe contener al menos una mayúscula, una minúscula, un número y un carácter especial"),
+
+  body("State")
     .optional()
     .default("Activo")
-    .isInt(["Activo","Inactivo"])
-    .withMessage("El estado del usuario debe ser Activo o Inactivo")
+    .isIn(["Activo", "Inactivo"])
+    .withMessage("El estado del usuario debe ser 'Activo' o 'Inactivo'"),
 ];
 
-const createUserValidation = [
+export const getUserByIdValidation = [
+  param("id")
+    .isInt()
+    .withMessage("El Id debe ser un número entero")
+    .custom(validateUserExistence),
+];
+
+export const createUserValidation = [
   ...usersBaseValidation,
   body("document").custom(validateDocumentExistence),
   body("email").custom(validateEmailExistence),
 ];
 
-const updateUserValidation = [
+export const updateUserValidation = [
   ...usersBaseValidation,
   param("id")
     .isInt()
-    .withMessage("El ID del usuario deber se un número entero"),
+    .withMessage("El ID del usuario debe ser un número entero"),
   body("document").custom(validateDocumentExistence),
   body("email").custom(validateEmailExistence),
 ];
 
-export const deleteUserValidation =[
-    param(id)
+export const deleteUserValidation = [
+  param("id")
     .isInt()
-    .withMessage("El ID del usuario deber ser un número entero")
+    .withMessage("El ID del usuario debe ser un número entero"),
+];
+
+export const changeStatusUserValidation = [
+  body("State")
+  .optional()
+  .default("Activo")
+  .isIn(["Activo", "Inactivo"])
+  .withMessage("El estado del usuario debe ser 'Activo' o 'Inactivo'"),
+  param("id").isInt().withMessage("El ID del usuario debe ser un Número entero"),
+  param("id").custom(validateUserExistence),
 ]

@@ -21,6 +21,10 @@ export const getCabinById = async (id) => {
   });
 };
 
+export const getAllComforts = async (comoidades) => {
+  
+}
+
 export const createCabin = async (cabinData) => {
   return await Cabins.create(cabinData);
 };
@@ -43,22 +47,20 @@ export const changeStatusCabin = async (id, status) => {
 export const addComforts = async (
   idCabin,
   idComfort,
-  description,
-  dateEntry
+  cabinComfortData
 ) => {
   const cabin = await Cabins.findByPk(idCabin);
   return await cabin.addComfort(idComfort, {
-    through: { description, dateEntry },
+    through: cabinComfortData 
   });
 };
 
 export const updateComforts = async (
   idCabinComfort,
-  description,
-  dateEntry
+  cabinComfortData
 ) => {
   return await CabinsComforts.update(
-    { description, dateEntry },
+    cabinComfortData,
     {
       where: { idCabinComfort },
     }
