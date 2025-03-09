@@ -1,85 +1,77 @@
 import { Reservations } from "../models/Reservations_Model.js";
+import { Companions } from "../models/Companions_Model.js";
+import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
 
 export const getAllReservations = async () => {
-  try {
-    const reservations = await Reservations.findAll(); 
-    return {
-      success: true,
-      data: reservations,
-    };
-  } catch (error) {
-    console.error("Error en getAllReservations:", error);
-    return {
-      success: false,
-      error: "Error al obtener las reservas",
-    };
-  }
+  return await Companions.findAll({
+    include: [
+      {
+        model: Companions,
+        as: 'Companions',
+        attributes: ['idCompanions', 'name'],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
+  });
 };
 
 export const getReservationsById = async (id) => {
-  try {
-    const reservation = await Reservations.findByPk(id);
+  return await Reservations.findByPk(id, {
+    include: [
+      {
+        model: Companions,
+        as: 'Companions',
+      },
+    ],
+  });
+};
 
-    if (!reservation) {
-      return {
-        success: false,
-        error: "Reserva no encontrada",
-      };
+export const createReservations = async (reservationsData) => {
+  return await Reservations.create(reservations.Data);
+};
+
+export const updateReservations = async (id, reservationsData) => {
+  const [update] = await Reservations.update(reservationsData,
+    {
+      where: { idReservations: id }
     }
-
-    return {
-      success: true,
-      data: reservation,
-    };
-  } catch (error) {
-    console.error("Error en getReservationById:", error);
-    return {
-      success: false,
-      error: "Error al obtener la reserva",
-    };
-  }
+  )
 };
 
-export const createReservations = async (data) => {
-  try {
-    const reservation = await Reservations.create(data);
-    return {
-      success: true,
-      data: reservation,
-    };
-  } catch (error) {
-    console.error("Error en createReservation:", error);
-    return {
-      success: false,
-      error: "Error al crear la reserva",
-    };
-  }
+
+export const changeStatusReservations = async (id, status) => {
+  return await Reservations.update({ status }, { where: { idReservations: id } });
 };
 
-export const updateReservations = async (id, data) => {
-  try {
-    const [updatedRows] = await Reservations.update(data, {
-      where: { idReservation: id }, 
-    });
-
-    if (updatedRows === 0) {
-      return {
-        success: false,
-        error: "No se encontró la reserva para actualizar",
-      };
-    }
-
-    const updatedReservation = await Reservations.findByPk(id);
-
-    return {
-      success: true,
-      data: updatedReservation,
-    };
-  } catch (error) {
-    console.error("Error en updateReservation:", error);
-    return {
-      success: false,
-      error: "Error al actualizar la reserva",
-    };
-  }
+export const addCompanions = async (
+  idReservations,
+  idCompanions
+) => {
+  const reservations = await Reservations.findByPk(idReservations);
+  return await reservations.addCompanions(idCompanions, {
+    through: { attributes: [] },
+  });
 };
+
+export const updateCompanions = async (
+  idReservationsCompanions,
+  idReservations,
+  idCompanions
+) => {
+  return await ReservationsCompanions.update(
+    {
+      idReservations,
+      idCompanions
+    }, {
+    where: { idReservationsCompanions },
+  }
+  );
+};
+
+export const deleteCompanions= async (idReservationsCompanions) => {
+  return await ReservationsCompanions.destroy({
+    where: { idReservationsCompanions },
+  });
+}
