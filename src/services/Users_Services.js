@@ -30,4 +30,3 @@ export const changeStatusUserService = async (id,State) => {
 }
 export const deleteUserService = async (id) => await deleteUser(id);
 
-//cambios para git

@@ -3,7 +3,7 @@ import{
     getCompanionsByIdService,
     createCompanionService,
     updateCompanionService,
-    deleteCompanionService,
+    deleteCompanionsService,
 } from "../services/Companions_Services.js"
 
 export const getAllCompanionsController = async (req, res) => {
@@ -50,7 +50,7 @@ export const deleteCompanionController = async (req, res) => {
     try{
         const{id}=req.params;
         const data= req.body;
-        const deleteCompanion = await deleteCompanionService(id,data);
+        const deleteCompanion = await deleteCompanionsService(id,data);
         res.status(200).json(deleteCompanion);
     }catch(error){
         res.status(500).json({ error: error.message});
