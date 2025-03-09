@@ -7,7 +7,7 @@ import {
   addCompanionsServices,
   updateCompanionsService,
   deleteCompanionsService,
-  changeStatusReservationsService,
+  changeStatusReservationsService
 
 } from "../services/Reservations_Services.js"
 
