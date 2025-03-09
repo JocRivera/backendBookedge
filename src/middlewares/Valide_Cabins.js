@@ -84,15 +84,6 @@ export const changeStateCabinValidation = [
     .custom(validateCabinExistence),
 ];
 
-//VALIDACIONES PUT , DELETE, POST ADDCOMFORTS
-
-// export const validateCabinsComforts = async (idCabinComfort) => {
-//   const cabinsComforts = await CabinsComforts.findByPk(idCabinComfort);
-//   if (!cabinsComforts) {
-//     return Promise.reject("No hay relaciones de Cabañas y Comodidades");
-//   }
-//   return true; // Es importante retornar true para que la validación sea exitosa
-// };
 
 export const validateComfortNotExists = async (idCabin, idComfort) => {
   const cabinsComforts = await CabinsComforts.findOne({

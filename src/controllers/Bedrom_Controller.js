@@ -1,145 +1,148 @@
 import { validationResult } from "express-validator";
 import {
-  getAllCabinsService,
-  getCabinByIdService,
-  createCabinService,
-  updateCabinService,
-  deleteCabinService,
-  addComfortsService,
-  updateComfortsService,
-  deteleComfortCabinService,
-  changeStatusCabinService,
-} from "../services/Cabin_Services.js";
+  getAllBedromService,
+  getBeedromByIdService,
+  getBeedroomWithComfortsService,
+  createBeedroomService,
+  updateBeedroomService,
+  deleteBeedroomService,
+  changeStatusBeedroomService,
+  addComfortToBeedroomService,
+  updateBeedroomComfortService,
+  removeComfortFromBeedroomService,
+} from "../services/Bedrom_Service.js";
 
-export const getAllCabins = async (req, res) => {
+export const getAllBedrooms = async (req, res) => {
   try {
-    const cabins = await getAllCabinsService();
-    res.status(200).json(cabins);
+    const bedrooms = await getAllBedromService();
+    res.status(200).json(bedrooms);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-export const getCabinById = async (req, res) => {
+export const getBedroomById = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const cabin = await getCabinByIdService(req.params.id);
-    res.status(200).json(cabin);
+    const bedroom = await getBeedromByIdService(req.params.id);
+    res.status(200).json(bedroom);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-export const createCabin = async (req, res) => {
+export const getBedroomWithComforts = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const cabinData = {
+    const bedroom = await getBeedroomWithComfortsService(req.params.id);
+    res.status(200).json(bedroom);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const createBedroom = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    const bedroomData = {
       ...req.body,
       imagen: req.file ? req.file.filename : null,
     };
-    const cabin = await createCabinService(cabinData);
-    res.status(201).json(cabin);
+    const bedroom = await createBeedroomService(bedroomData);
+    res.status(201).json(bedroom);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-export const updateCabin = async (req, res) => {
+export const updateBedroom = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const cabinData = {
+    const bedroomData = {
       ...req.body,
       imagen: req.file ? req.file.filename : null,
     };
-    const cabin = await updateCabinService(req.params.id, cabinData);
-    res.status(200).json(cabin);
-    console.log(cabin);
+    const bedroom = await updateBeedroomService(req.params.id, bedroomData);
+    res.status(200).json(bedroom);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-export const deleteCabin = async (req, res) => {
+export const deleteBedroom = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    await deleteCabinService(req.params.id);
+    await deleteBeedroomService(req.params.id);
     res.status(200).end();
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-export const changeStatusCabin = async (req, res) => {
+export const changeStatusBedroom = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    await changeStatusCabinService(req.params.id, req.body.status);
+    await changeStatusBeedroomService(req.params.id, req.body.status);
     res.status(200).end();
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-export const getAllCabinComfort = async (req, res) => {
-  try {
-    const comfortData = await getAllCabinComfort();
-    res.status(200).json(comfortData);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-export const addComforts = async (req, res) => {
+export const addComfortToBedroom = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { idCabin, idComfort, ...otherData } = req.body;
-
-    await addComfortsService(idCabin, idComfort, otherData);
+    await addComfortToBeedroomService(req.body);
     res.status(200).json({ message: "Comodidad agregada correctamente" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
-
-export const updateComfort = async (req, res) => {
+export const updateBedroomComfort = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { idCabinComfort } = req.params;
+    const { idRoomComforts } = req.params;
     const { ...otherData } = req.body;
-    await updateComfortsService(idCabinComfort, otherData);
+    await updateBeedroomComfortService(idRoomComforts, otherData);
     res.status(200).json({ message: "Comodidad actualizada correctamente" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
-export const deleteComfort = async (req, res) => {
+
+export const removeComfortFromBedroom = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { idCabinComfort } = req.params;
-    await deteleComfortCabinService(idCabinComfort);
-    res.status(200).end();
+    const { idRoomComforts } = req.params;
+    await removeComfortFromBeedroomService(idRoomComforts);
+    res.status(200).json({ message: "Comodidad eliminada correctamente" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

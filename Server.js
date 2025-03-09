@@ -11,6 +11,7 @@ import { setupAssociations } from './src/models/setupAssociations.js';
 import companionsRoutes from './src/routes/Companions_Routes.js';
 import  reservationsRoutes from './src/routes/Reservations_Routes.js';
 import userRoutes from './src/routes/User_Routes.js';
+import bedromRoutes from './src/routes/Bedrom_Routes.js'
 
 export default class Server {
 
@@ -51,6 +52,7 @@ export default class Server {
         this.app.use('/reservations', reservationsRoutes);
         this.app.use('/permissions', permissionRoutes);
         this.app.use('/roles', rolesRoutes);
+        this.app.use('/bedroom',bedromRoutes)
     }
 
     listen() {

@@ -37,8 +37,8 @@ export const Users = database.define(
       allowNull: false,
     },
     State: {
-      type: DataTypes.ENUM("activo", "inactivo"),
-      defaultValue: "activo",
+      type: DataTypes.ENUM("Activo", "Anactivo"),
+      defaultValue: "Activo",
       allowNull: false,
     },
   },
