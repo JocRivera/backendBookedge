@@ -44,12 +44,12 @@ export class CustomerService {
     async updateCustomer(id, data) {
         //VALIDACIÓN DE NEGOCIO AQUÍ
         const existingCustomer = await this.customerRepository.getCustomerByIdentification(data.identification);
-        if (existingCustomer) {
+        if (existingCustomer && existingCustomer.idCustomer != id) {
             throw new Error("Ya existe un cliente registrado con esa identificación");
         }
 
         const existingEmail = await this.customerRepository.getCustomerByEmail(data.email);
-        if (existingEmail) {
+        if (existingEmail && existingEmail.idCustomer != id) {
             throw new Error("Ya existe un cliente registrado con ese correo electrónico");
         }
 

@@ -12,6 +12,7 @@ import companionsRoutes from './src/routes/Companions_Routes.js';
 import  reservationsRoutes from './src/routes/Reservations_Routes.js';
 import userRoutes from './src/routes/User_Routes.js';
 import bedromRoutes from './src/routes/Bedrom_Routes.js'
+import planRoutes from './src/routes/Plan_Routes.js'
 
 export default class Server {
 
@@ -53,6 +54,7 @@ export default class Server {
         this.app.use('/permissions', permissionRoutes);
         this.app.use('/roles', rolesRoutes);
         this.app.use('/bedroom',bedromRoutes)
+        this.app.use('/plan',planRoutes)
     }
 
     listen() {
