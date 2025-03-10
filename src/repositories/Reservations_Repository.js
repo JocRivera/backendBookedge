@@ -29,7 +29,7 @@ export const getReservationsById = async (id) => {
 };
 
 export const createReservations = async (reservationsData) => {
-  return await Reservations.create(reservations.Data);
+  return await Reservations.create(reservationsData);
 };
 
 export const updateReservations = async (id, reservationsData) => {

@@ -27,7 +27,7 @@ export const getReservationsByIdController = async (req, res) => {
   }
   try {
     const reservations = await getReservationsByIdService(req.params.id);
-    res.status(200).json;
+    res.status(200).json (reservations);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -78,7 +78,7 @@ export const changeStatusReservationsController = async (req, res) => {
 
 export const getAllReservationsCompanions = async (req, res) => {
   try {
-    const comfortData = await getAllReservationsCompanions();
+    const companionsData = await getAllReservationsCompanions();
     res.status(200).json(companionsData);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -86,7 +86,7 @@ export const getAllReservationsCompanions = async (req, res) => {
 };
 export const addCompanions = async (req, res) => {
   const errors = validationResult(req);
-  if (!erros.isEmpty()) {
+  if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   try {

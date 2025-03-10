@@ -13,12 +13,13 @@ export const getCompanionsById = async (id) => {
 
 };
 
-export const createCompanion = async (data) => {
-    return await Companions.create(data);
+export const createCompanion = async (companionsData) => {
+    return await Companions.create(companionsData
+    );
 
 };
 
-export const updateCompanion = async (id, data) => {
+export const updateCompanion = async (id, companionsData) => {
     return await Companions.update(data, { where: { idCompanions: id } });
 };
 

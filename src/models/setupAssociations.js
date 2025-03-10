@@ -4,6 +4,9 @@ import { Comforts } from "./Comfort_Model.js";
 import { Roles } from "./Roles_Model.js";
 import { Permissions } from "./Permissions_Model.js";
 import { PermissionRoles } from "./Permission_Roles.js";
+import { Reservations } from "./Reservations_Model.js";
+import { Companions } from "./Companions_Model.js";
+import { ReservationsCompanions } from "./Reservations_Companions_Models.js";
 
 export const setupAssociations = () => {
   Cabins.belongsToMany(Comforts, {
@@ -20,7 +23,7 @@ export const setupAssociations = () => {
     as: "Cabins", // Alias para la asociación
   });
 
- 
+
   // Asociaciones para Roles y Permissions (relación muchos a muchos)
   Roles.belongsToMany(Permissions, {
     through: PermissionRoles,
@@ -36,5 +39,18 @@ export const setupAssociations = () => {
     as: "roles", // Alias para la asociación
   });
 
+
+  //Asociaciones para resevas y acompañantes 
+  Reservations.belongsToMany(Companions, {
+    through: ReservationsCompanions,
+    foreignKey: "idReservation",
+    otherKey: "idCompanions",
+  });
+
+  Companions.belongsToMany(Reservations, {
+    through: ReservationsCompanions,
+    foreignKey: "idCompanions",
+    otherKey: "idReservation",
+  });
   console.log("Asociaciones configuradas correctamente.");
 };

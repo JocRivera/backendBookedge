@@ -14,13 +14,14 @@ export async function getCompanionsByIdService(id) {
    return await getCompanionsById(id);
 }
 
-export async function createCompanionService(id) {
-    return await createCompanion(data);
+export async function createCompanionService(companionsData) {
+    console.log("Data received in service:", companionsData);
+    return await createCompanion(companionsData);
     
 }
 
-export async function updateCompanionService(id, data) {
-    return await updateCompanion(id, data);
+export async function updateCompanionService(id, companionsData) {
+    return await updateCompanion(id, companionsData);
 }
 
 export async function deleteCompanionsService(id) {

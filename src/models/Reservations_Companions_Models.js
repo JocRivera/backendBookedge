@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import { database } from "../config/database.js";
-
+import { Companions } from "./Companions_Model.js";
+import { Reservations } from "./Reservations_Model.js";
 export const ReservationsCompanions = database.define(
     'ReservationsCompanions',
     {
@@ -12,10 +13,19 @@ export const ReservationsCompanions = database.define(
         idReservation:{
             type: DataTypes.INTEGER,
             allowNull:false,
+            references: {
+                model: Reservations, 
+                key: "idReservation",
+            },
         },
         idCompanions: {
             type: DataTypes.INTEGER,
             allowNull:false,
+            references: {
+                model: Companions,
+                key: "idCompanion"
+
+            }
 
         }
     },{

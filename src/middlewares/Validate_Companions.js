@@ -9,8 +9,8 @@ export const validateCompanionExistence = async (id) => {
   return true;
 };
 
-export const validateCompanionDocument = async (document) => {
-  const companion = await Companions.findOne({ where: { document } });
+export const validateCompanionDocument = async (documentNumber) => {
+  const companion = await Companions.findOne({ where: { documentNumber } });
   if (companion) {
     return Promise.reject("El documento del acompañante ya está registrado");
   }
@@ -19,11 +19,11 @@ export const validateCompanionDocument = async (document) => {
 
 const companionBaseValidation = [
   body("name").notEmpty().withMessage("El nombre del acompañante es obligatorio"),
-  body("document").notEmpty().withMessage("El documento del acompañante es obligatorio"),
+  body("documentNumber").notEmpty().withMessage("El documento del acompañante es obligatorio"),
 ];
 
 export const getCompanionById = [
-  param("id")
+  param("idCompanios")
     .isInt()
     .withMessage("El ID del acompañante debe ser un número entero válido")
     .custom(validateCompanionExistence),
@@ -31,20 +31,20 @@ export const getCompanionById = [
 
 export const createCompanionValidation = [
   ...companionBaseValidation,
-  body("document").custom(validateCompanionDocument),
+  body("documentNumber").custom(validateCompanionDocument),
 ];
 
 export const deleteCompanionValidation = [
-  param("id")
+  param("idCompanions")
     .isInt()
     .withMessage("El ID del acompañante debe ser un número entero")
     .custom(validateCompanionExistence),
 ];
 
 export const updateCompanionValidation = [
-  param("id")
+  param("idCompanions")
     .isInt()
     .withMessage("El ID del acompañante debe ser un número entero")
     .custom(validateCompanionExistence),
-  body("document").custom(validateCompanionDocument),
+  body("documentNumber").custom(validateCompanionDocument),
 ];
