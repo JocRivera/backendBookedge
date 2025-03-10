@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
 import {database} from '../config/database.js';
-import { Services } from './Services_Model.js';
 
 export const Plans = database.define('Plans', {
     idPlan: {
@@ -23,23 +22,13 @@ export const Plans = database.define('Plans', {
     },
     total: {
         type: DataTypes.FLOAT,
-        allowNull: false,
     },
     salePrice: {
         type: DataTypes.FLOAT,
         allowNull: false,
-    },
-    idService: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: 'Services',
-            key: 'Id_Service'
-        }
     }
 }, {
     tableName: 'Plans',
     timestamps: false,
     }
 );
-Plans.belongsTo(Services, { foreignKey: 'idService' });
-Services.hasMany(Plans, { foreignKey: 'idService' });

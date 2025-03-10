@@ -1,5 +1,5 @@
 import { body, param, validationResult } from "express-validator";
-import Plans from "../models/Plans_Model.js";
+import {Plans} from "../models/Plans_Model.js";
 
 const validatePlanExistence = async (id) => {
     const plan = await Plans.findByPk(id);

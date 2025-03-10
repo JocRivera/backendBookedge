@@ -13,6 +13,7 @@ import  reservationsRoutes from './src/routes/Reservations_Routes.js';
 import userRoutes from './src/routes/User_Routes.js';
 import bedromRoutes from './src/routes/Bedrom_Routes.js'
 import planRoutes from './src/routes/Plan_Routes.js'
+import planProgramed from './src/routes/Plan_Programed_Routes.js'
 
 export default class Server {
 
@@ -55,6 +56,7 @@ export default class Server {
         this.app.use('/roles', rolesRoutes);
         this.app.use('/bedroom',bedromRoutes)
         this.app.use('/plan',planRoutes)
+        this.app.use('/planProgramed',planProgramed)
     }
 
     listen() {
