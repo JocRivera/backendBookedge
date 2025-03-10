@@ -7,12 +7,13 @@ import{
     deleteCompanionController
 
 } from "../controllers/Companions_Controllers.js";
+import {createCompanionValidation,updateCompanionValidation,getCompanionById,deleteCompanionValidation} from "../middlewares/Validate_Companions.js"
 const router = express.Router();
 
 router.get("/", getAllCompanionsController);
-router.get("/:id", getCompanionsByIdController);
-router.post("/",createCompanionController);
-router.put("/:id", updateCompanionController);
-router.delete("/:id",deleteCompanionController);
+router.get("/:id", getCompanionById,getCompanionsByIdController);
+router.post("/",createCompanionValidation, createCompanionController);
+router.put("/:id",updateCompanionValidation,updateCompanionController);
+router.delete("/:id", deleteCompanionValidation,deleteCompanionController);
 
 export default router;
