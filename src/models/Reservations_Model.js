@@ -1,6 +1,7 @@
+import {Companions} from "../models/Companions_Model.js";
 import { DataTypes} from "sequelize";  
 import { database } from "../config/database.js"; 
-import {Companions} from "../models/Companions_Model.js";
+
 
 export const Reservations = database.define(
     "Reservations",
@@ -48,13 +49,13 @@ export const Reservations = database.define(
             allowNull: false,
             defaultValue: "Reservado",
         },
-        idCompanions:{
-            type: DataTypes.INTEGER,
-            references:{
-                model: 'Companions',
-                key: 'idCompanions',
-            }
-        }
+        // idCompanions:{
+        //     type: DataTypes.INTEGER,
+        //     references:{
+        //         model: Companions,
+        //         key: 'idCompanions',
+        //     }
+        // }
     }, 
     {
         tableName: "Reservations",

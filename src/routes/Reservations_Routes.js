@@ -33,7 +33,7 @@ router.patch("/:id/status", changeStateReservationsValidation, changeStatusReser
 
 
 //Ruta para traer la reserva con su acompañante
-router.get("/:id/acompanantes",getReservationsValidation, addCompanions);
+router.get("/:id/companions",getReservationsValidation, addCompanions);
 router.post("/:idReservation/Companions/id:Companion",addCompanionValidation,addCompanions);
 router.put("/companions/:id/ReservationsCompanios",updateCompanionsValidation,updateCompanion);
 router.delete("/companions/:id/ReservationsCompanios",deleteCompaniosValidation,deleteCompanions)

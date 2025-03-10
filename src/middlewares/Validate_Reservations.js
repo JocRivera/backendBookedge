@@ -1,9 +1,11 @@
-import { body, param, validationResult } from "express-validator";
 import { Reservations } from "../models/Reservations_Model.js";
+import { Companions } from "../models/Companions_Model.js";
 import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
+import { body, param, validationResult } from "express-validator";
+
 
 export const validateReservationsExistence = async (id)=>{
-  const reservations = await Reservations.findById(id);
+  const reservations = await Reservations.findByPk(id);
   if (!reservations) {
     return Promise.reject('La reserva no existe');
   }
@@ -93,7 +95,7 @@ export const updateReservationsValidation = [
     .isInt()
     .withMessage("El ID de la reserva debe ser un número entero")
     .custom(validateReservationsExistence),
-  body("name").custom(validateReservationsName),
+  body("nameClient").custom(validateReservationsName),
 ];
 
 export const deletereservationsValidation = [
@@ -123,7 +125,7 @@ export const changeStateReservationsValidation = [
 ];
 
 
-//VALIDACIONES PUT , DELETE, POST ADDCOMFORTS
+//VALIDACIONES PUT , DELETE, POST ADDCOMPANIONS
 
 export const validateReservationsCompanions = async (idReservationsCompanions) => {
   const reservationsCompanions = await ReservationsCompanions.findByPk(idReservationsCompanions);
