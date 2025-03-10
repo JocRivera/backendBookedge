@@ -44,13 +44,17 @@ export const setupAssociations = () => {
   Reservations.belongsToMany(Companions, {
     through: ReservationsCompanions,
     foreignKey: "idReservation",
-    otherKey: "idCompanions",
+    // otherKey: "idCompanions",
+    // as: "Companions"
   });
 
   Companions.belongsToMany(Reservations, {
     through: ReservationsCompanions,
     foreignKey: "idCompanions",
-    otherKey: "idReservation",
+    // otherKey: "idReservation",
+    // as: "Reservations"
+
+
   });
   console.log("Asociaciones configuradas correctamente.");
 };

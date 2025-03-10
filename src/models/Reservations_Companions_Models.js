@@ -5,31 +5,30 @@ import { Reservations } from "./Reservations_Model.js";
 export const ReservationsCompanions = database.define(
     'ReservationsCompanions',
     {
-        idReservationsCompanions:{
+        idReservationsCompanions: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        idReservation:{
+        idReservation: {
             type: DataTypes.INTEGER,
-            allowNull:false,
+            allowNull: false,
             references: {
-                model: Reservations, 
+                model: Reservations,
                 key: "idReservation",
             },
         },
         idCompanions: {
             type: DataTypes.INTEGER,
-            allowNull:false,
+            allowNull: false,
             references: {
                 model: Companions,
-                key: "idCompanion"
-
+                key: "idCompanions"
             }
-
         }
-    },{
-        tableName: 'ReservationsCompanions',
-        timestamps:false,
-    }
+    }, {
+    tableName: 'ReservationsCompanions',
+    timestamps: false,
+}
 )
+
