@@ -26,11 +26,11 @@ export async function updateReservationsService(id, reservationsData) {
 
 }
 
-export const addCompanionsServices = async(id, idCompanions, name, birthdate, age, documentType,  documentNumber) => {
-    return addCompanions(id, idCompanions, name, birthdate, age, documentType, documentNumber);
+export const addCompanionsServices = async (idCompanions, name, birthdate, age, documentType, documentNumber) => {
+    return addCompanions(idCompanions, name, birthdate, age, documentType, documentNumber);
 }
 
-export const updateCompanionsService = async (idReservationsCompanions, idCompanions, idReservations) =>{
+export const updateCompanionsService = async (idReservationsCompanions, idCompanions, idReservations) => {
     return await updateCompanions(idReservationsCompanions, idCompanions, idReservations);
 }
 
@@ -39,5 +39,5 @@ export const deleteCompanionsService = async (idReservationsCompanions) => {
 }
 
 export const changeStatusReservationsService = async (id, status) => {
-    return await changeStatusReservations (id,status);
+    return await changeStatusReservations(id, status);
 }

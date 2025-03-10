@@ -3,15 +3,12 @@ import { Companions } from "../models/Companions_Model.js";
 import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
 
 export const getAllReservations = async () => {
-  return await Companions.findAll({
+  return await Reservations.findAll({
     include: [
       {
         model: Companions,
-        as: 'Companions',
-        attributes: ['idCompanions', 'name'],
-        through: {
-          attributes: [],
-        },
+        attributes: ['name'],
+        through: { attributes: [] }
       },
     ],
   });
@@ -23,6 +20,7 @@ export const getReservationsById = async (id) => {
       {
         model: Companions,
         as: 'Companions',
+        through: { attributes: [] }
       },
     ],
   });
@@ -70,7 +68,7 @@ export const updateCompanions = async (
   );
 };
 
-export const deleteCompanions= async (idReservationsCompanions) => {
+export const deleteCompanions = async (idReservationsCompanions) => {
   return await ReservationsCompanions.destroy({
     where: { idReservationsCompanions },
   });

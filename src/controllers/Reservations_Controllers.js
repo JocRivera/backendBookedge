@@ -11,6 +11,8 @@ import {
 
 } from "../services/Reservations_Services.js"
 
+import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
+
 export const getAllReservationsController = async (req, res) => {
   try {
     const reservations = await getAllReservationsService();
