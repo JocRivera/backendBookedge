@@ -128,13 +128,13 @@ export const changeStateReservationsValidation = [
 //VALIDACIONES PUT , DELETE, POST ADDCOMPANIONS
 
 export const validateReservationsCompanions = async (idReservationsCompanions) => {
-  const reservationsCompanions = await ReservationsCompanions.findByPk(idReservationsCompanions);
-  if (!reservationsCompanions) {
+  const relation = await ReservationsCompanions.findByPk(idReservationsCompanions);
+  console.log("Buscando relación con ID:", idReservationsCompanions); // Depuración
+  if (!relation) {
     return Promise.reject("No hay relaciones de Reservas y Acompañantes");
   }
-  return true; // Es importante retornar true para que la validación sea exitosa
+  return true;
 };
-
 export const validateCompanionsNotExists = async (idReservation, idCompanions) => {
   const reservationsCompanions = await ReservationsCompanions.findOne({
     where: { idReservation, idCompanions }
@@ -146,11 +146,20 @@ export const validateCompanionsNotExists = async (idReservation, idCompanions) =
 };
 
 export const addCompanionValidation = [
-  ...reservationBaseValidation,
-  param("id").isInt().withMessage("El id de la reserva debe ser un número entero").custom(validateReservationsExistence),
-  param("idCompanions").isInt().withMessage("El id del acompañante debe ser un número entero"),
-  body("ids")
-    .custom((value, { req }) => validateCompanionsNotExists(req.params.idReservation, req.params.idCompanions))
+  param("idReservation")
+    .isInt()
+    .withMessage("El id de la reserva debe ser un número entero")
+    .custom(validateReservationsExistence),
+  param("idCompanion")
+    .isInt()
+    .withMessage("El id del acompañante debe ser un número entero")
+    .custom(async (value) => {
+      const companion = await Companions.findByPk(value);
+      if (!companion) {
+        throw new Error("El acompañante no existe");
+      }
+      return true;
+    }),
 ];
 
 export const updateCompanionsValidation = [
@@ -159,5 +168,8 @@ export const updateCompanionsValidation = [
 ];
 
 export const deleteCompaniosValidation = [
-  param("idReservationsCompanions").isInt().withMessage("El id de la relación Reserva-Acompañante debe ser un número entero").custom(validateReservationsCompanions),
+  param("idReservationsCompanions")
+    .isInt()
+    .withMessage("El id de la relación Reserva-Acompañante debe ser un número entero")
+    .custom(validateReservationsCompanions),
 ];

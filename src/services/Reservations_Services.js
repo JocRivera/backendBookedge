@@ -5,7 +5,8 @@ import {
     updateReservations,
     addCompanions,
     updateCompanions,
-    deleteCompanions
+    deleteCompanions,
+    changeStatusReservations
 } from "../repositories/Reservations_Repository.js";
 
 export async function getAllReservationsService() {
@@ -26,18 +27,18 @@ export async function updateReservationsService(id, reservationsData) {
 
 }
 
-export const addCompanionsServices = async (idCompanions, name, birthdate, age, documentType, documentNumber) => {
-    return addCompanions(idCompanions, name, birthdate, age, documentType, documentNumber);
-}
+export const addCompanionsServices = async (idReservation, idCompanions) => {
+    return addCompanions(idReservation, idCompanions);
+};
 
-export const updateCompanionsService = async (idReservationsCompanions, idCompanions, idReservations) => {
-    return await updateCompanions(idReservationsCompanions, idCompanions, idReservations);
+export const updateCompanionsService = async (idReservationsCompanions, idCompanions, idReservation) => {
+    return await updateCompanions(idReservationsCompanions, idCompanions, idReservation);
 }
 
 export const deleteCompanionsService = async (idReservationsCompanions) => {
     return await deleteCompanions(idReservationsCompanions);
-}
-
+  };
 export const changeStatusReservationsService = async (id, status) => {
+    console.log("ID recibido en el servicio:", idReservationsCompanions); // Depuración
     return await changeStatusReservations(id, status);
 }

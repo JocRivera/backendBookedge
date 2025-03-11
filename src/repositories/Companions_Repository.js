@@ -20,7 +20,7 @@ export const createCompanion = async (companionsData) => {
 };
 
 export const updateCompanion = async (id, companionsData) => {
-    return await Companions.update(data, { where: { idCompanions: id } });
+    return await Companions.update(companionsData, { where: { idCompanions: id } });
 };
 
 export const deleteCompanion = async (id) => {

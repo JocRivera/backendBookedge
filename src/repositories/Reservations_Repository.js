@@ -2,12 +2,14 @@ import { Reservations } from "../models/Reservations_Model.js";
 import { Companions } from "../models/Companions_Model.js";
 import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
 
+
 export const getAllReservations = async () => {
   return await Reservations.findAll({
     include: [
       {
         model: Companions,
-        attributes: ['name'],
+        as: "companions",
+        attributes: ["idCompanions", "name", "documentType", "documentNumber"],
         through: { attributes: [] }
       },
     ],
@@ -19,7 +21,8 @@ export const getReservationsById = async (id) => {
     include: [
       {
         model: Companions,
-        as: 'Companions',
+        as: "companions",
+        attributes: ["idCompanions", "name", "documentType", "documentNumber"],
         through: { attributes: [] }
       },
     ],
@@ -33,34 +36,45 @@ export const createReservations = async (reservationsData) => {
 export const updateReservations = async (id, reservationsData) => {
   const [update] = await Reservations.update(reservationsData,
     {
-      where: { idReservations: id }
+      where: { idReservation: id }
     }
   )
 };
 
 
 export const changeStatusReservations = async (id, status) => {
-  return await Reservations.update({ status }, { where: { idReservations: id } });
+  return await Reservations.update({ status }, { where: { idReservation: id } });
 };
 
-export const addCompanions = async (
-  idReservations,
-  idCompanions
-) => {
-  const reservations = await Reservations.findByPk(idReservations);
-  return await reservations.addCompanions(idCompanions, {
-    through: { attributes: [] },
-  });
+export const addCompanions = async (idReservation, idCompanions) => {
+  try {
+    // Buscar la reserva
+    const reservation = await Reservations.findByPk(idReservation);
+    if (!reservation) throw new Error("Reserva no encontrada");
+
+    // Buscar el acompañante
+    const companion = await Companions.findByPk(idCompanions);
+    if (!companion) throw new Error("Acompañante no encontrado");
+
+    // Asociar en la tabla intermedia
+    return await ReservationsCompanions.create({ idReservation, idCompanions });
+
+
+  } catch (error) {
+    console.error("Error al agregar acompañante:", error.message);
+    throw error;
+  }
 };
+
 
 export const updateCompanions = async (
   idReservationsCompanions,
-  idReservations,
+  idReservation,
   idCompanions
 ) => {
   return await ReservationsCompanions.update(
     {
-      idReservations,
+      idReservation,
       idCompanions
     }, {
     where: { idReservationsCompanions },
@@ -69,7 +83,8 @@ export const updateCompanions = async (
 };
 
 export const deleteCompanions = async (idReservationsCompanions) => {
+  console.log("ID recibido en el repositorio:", idReservationsCompanions); // Depuración
   return await ReservationsCompanions.destroy({
     where: { idReservationsCompanions },
   });
-}
+};

@@ -1,5 +1,6 @@
 import { DataTypes} from "sequelize"; 
 import { database } from '../config/database.js';
+
 export const Companions = database.define('Companions', {
     idCompanions: {
         type: DataTypes.INTEGER,
