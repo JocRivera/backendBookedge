@@ -8,7 +8,6 @@ import {
   updateCompanion,
   deleteCompanions,
   changeStatusReservationsController,
-
 } from "../controllers/Reservations_Controllers.js";
 
 import {
@@ -19,22 +18,26 @@ import {
   addCompanionValidation,
   updateCompanionsValidation,
   deleteCompaniosValidation
-}from '../middlewares/Validate_Reservations.js'
-
+} from '../middlewares/Validate_Reservations.js';
 
 const router = express.Router();
 
-//Rutas para la reserva
+// 🔹 Rutas para las reservas
 router.get("/", getAllReservationsController);
-router.get("/:id",getReservationsValidation, getReservationsByIdController);
-router.post("/",createReservationValidation, createReservationsController);
-router.put("/:id",updateReservationsValidation,updateReservationsController);
+router.get("/:id", getReservationsValidation, getReservationsByIdController);
+router.post("/", createReservationValidation, createReservationsController);
+router.put("/:id", updateReservationsValidation, updateReservationsController);
 router.patch("/:id/status", changeStateReservationsValidation, changeStatusReservationsController);
 
+//Ruta para obtener una reserva con sus acompañantes
+router.get("/:id/companions", getReservationsValidation, getReservationsByIdController);
 
-//Ruta para traer la reserva con su acompañante
-router.get("/:id/companions",getReservationsValidation, addCompanions);
-router.post("/:idReservation/Companions/id:Companion",addCompanionValidation,addCompanions);
-router.put("/companions/:id/ReservationsCompanios",updateCompanionsValidation,updateCompanion);
-router.delete("/companions/:id/ReservationsCompanios",deleteCompaniosValidation,deleteCompanions)
+//Ruta para agregar un acompañante
+router.post("/:idReservation/companions/:idCompanion", addCompanionValidation, addCompanions);
+
+//Ruta para actualizar un acompañante
+router.put("/companions/:id/ReservationsCompanions", updateCompanionsValidation, updateCompanion);
+
+//Ruta para eliminar un acompañante
+router.delete("/companions/:idReservationsCompanions/ReservationsCompanions", deleteCompaniosValidation, deleteCompanions);
 export default router;

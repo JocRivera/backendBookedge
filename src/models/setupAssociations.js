@@ -7,6 +7,7 @@ import { PermissionRoles } from "./Permission_Roles.js";
 import { Reservations } from "./Reservations_Model.js";
 import { Companions } from "./Companions_Model.js";
 import { ReservationsCompanions } from "./Reservations_Companions_Models.js";
+import { Payments } from "./Payments_Model.js";
 
 export const setupAssociations = () => {
   Cabins.belongsToMany(Comforts, {
@@ -41,20 +42,29 @@ export const setupAssociations = () => {
 
 
   //Asociaciones para resevas y acompañantes 
-  Reservations.belongsToMany(Companions, {
-    through: ReservationsCompanions,
-    foreignKey: "idReservation",
-    // otherKey: "idCompanions",
-    // as: "Companions"
-  });
-
   Companions.belongsToMany(Reservations, {
     through: ReservationsCompanions,
-    foreignKey: "idCompanions",
-    // otherKey: "idReservation",
-    // as: "Reservations"
-
-
+    foreignKey: 'idCompanions',
+    otherKey: 'idReservation',
+    as: 'reservations'
   });
+  Reservations.belongsToMany(Companions, {
+    through: ReservationsCompanions,
+    foreignKey: 'idReservation',
+    otherKey: 'idCompanions',
+    as: 'companions'
+  });
+
+  //Asociacion de pagos y reservas
+  Reservations.hasOne(Payments, {
+    foreignKey: "reservation_id",
+    as: "payment",
+  });
+
+  Payments.belongsTo(Reservations, {
+    foreignKey: "reservation_id",
+    as: "reservations", 
+  });
+
   console.log("Asociaciones configuradas correctamente.");
 };

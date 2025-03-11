@@ -1,7 +1,5 @@
-import { Companions } from "../models/Companions_Model.js";
 import { DataTypes } from "sequelize";
 import { database } from "../config/database.js";
-
 
 export const Reservations = database.define(
     "Reservations",
@@ -61,6 +59,5 @@ export const Reservations = database.define(
         tableName: "Reservations",
         timestamps: false,
     }
+
 );
-// Reservations.belongsTo(Companions, { foreignKey: "idCompanions" });
-// Companions.hasMany(Reservations, { foreignKey: "idCompanions" }); 
