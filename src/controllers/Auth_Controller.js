@@ -1,8 +1,6 @@
 import {
   loginService,
   registerCustomerService,
-  editProfileService,
-  getProfileService,
 } from "../services/authService.js";
 
 export const loginController = async (req, res) => {
@@ -25,24 +23,6 @@ export const registerController = async (req, res) => {
   try {
     const result = await registerCustomerService(req.body);
     return res.status(201).json(result);
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
-  }
-};
-export const getProfileController = async (req, res) => {
-  try {
-    const user = await getProfileService(req.user.idUser);
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const editProfileController = async (req, res) => {
-  try {
-    const idUser = req.user.idUser; // Tomamos el ID del usuario autenticado del token que cree
-    const updatedProfile = await editProfileService(idUser, req.body);
-    return res.status(200).json(updatedProfile);
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
