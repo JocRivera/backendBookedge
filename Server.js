@@ -14,9 +14,7 @@ import userRoutes from './src/routes/User_Routes.js';
 import bedromRoutes from './src/routes/Bedrom_Routes.js'
 import planRoutes from './src/routes/Plan_Routes.js'
 import planProgramed from './src/routes/Plan_Programed_Routes.js'
-import authRoutes from './src/routes/authRoutes.js'
-import cookieParser from "cookie-parser";
-
+import PaymentsRoutes from './src/routes/Payments_Rutes.js';
 
 export default class Server {
 
@@ -61,7 +59,7 @@ export default class Server {
         this.app.use('/bedroom',bedromRoutes)
         this.app.use('/plan',planRoutes)
         this.app.use('/planProgramed',planProgramed)
-        this.app.use('/auth',authRoutes)
+        this.app.use('/payments',PaymentsRoutes)
     }
 
     listen() {

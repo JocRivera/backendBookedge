@@ -1,7 +1,5 @@
-import {Companions} from "../models/Companions_Model.js";
-import { DataTypes} from "sequelize";  
-import { database } from "../config/database.js"; 
-
+import { DataTypes } from "sequelize";
+import { database } from "../config/database.js";
 
 export const Reservations = database.define(
     "Reservations",
@@ -19,7 +17,7 @@ export const Reservations = database.define(
             },
         },
         documentType: {
-            type: DataTypes.ENUM("Cédula de ciudadanía", "Cédula de extranjería", "Pasaporte"), 
+            type: DataTypes.ENUM("Cédula de ciudadanía", "Cédula de extranjería", "Pasaporte"),
             defaultValue: "Cédula de ciudadanía",
             validate: {
                 isIn: [["Cédula de ciudadanía", "Cédula de extranjería", "Pasaporte"]],
@@ -56,11 +54,10 @@ export const Reservations = database.define(
         //         key: 'idCompanions',
         //     }
         // }
-    }, 
+    },
     {
         tableName: "Reservations",
         timestamps: false,
     }
+
 );
-Reservations.belongsTo(Companions, { foreignKey: "idCompanions" });  
-Companions.hasMany(Reservations, { foreignKey: "idCompanions" }); 
