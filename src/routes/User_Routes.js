@@ -8,11 +8,11 @@ import {
   changeStatusUser,
 } from "../controllers/User_Controller.js";
 import { getUserByIdValidation,createUserValidation,updateUserValidation,deleteUserValidation,changeStatusUserValidation} from "../middlewares/Validate_User.js";
-
+import {verifyToken} from "../middlewares/authMiddleware.js"
 const router = express.Router();
 
-router.get("/", getAllUsers);
-router.get("/:id",getUserByIdValidation, getUserById);
+router.get("/",verifyToken, getAllUsers);
+router.get("/:id",getUserByIdValidation,verifyToken, getUserById);
 router.post("/", createUserValidation,createUser);
 router.put("/:id", updateUserValidation,updateUser);
 router.delete("/:id",deleteUserValidation, deleteUser);

@@ -3,7 +3,7 @@ import { database } from './src/config/database.js';
 import morgan from "morgan";
 import cabinRoutes from './src/routes/Cabin_Routes.js';
 import comfortRoutes from './src/routes/Comfort_Routes.js';
-import customerRoutes from './src/routes/Customers_Routes.js';
+// import customerRoutes from './src/routes/Customers_Routes.js';
 import serviceRoutes from './src/routes/Service_Route.js';
 import permissionRoutes from './src/routes/Permission_Route.js';
 import rolesRoutes from './src/routes/Roles_Routes.js';
@@ -15,12 +15,15 @@ import bedromRoutes from './src/routes/Bedrom_Routes.js'
 import planRoutes from './src/routes/Plan_Routes.js'
 import planProgramed from './src/routes/Plan_Programed_Routes.js'
 import authRoutes from './src/routes/authRoutes.js'
+import cookieParser from "cookie-parser";
+
 
 export default class Server {
 
     constructor() {
         this.app = express();
         this.app.use(express.json());
+        this.app.use(cookieParser());
         this.app.use(morgan('dev'));
         this.dbConection();
         this.listen();
@@ -49,7 +52,7 @@ export default class Server {
         this.app.use('/user',userRoutes);
         this.app.use('/cabins', cabinRoutes);
         this.app.use('/comforts', comfortRoutes);
-        this.app.use('/customers', customerRoutes);
+        // this.app.use('/customers', customerRoutes);
         this.app.use('/services', serviceRoutes);
         this.app.use('/companions', companionsRoutes);
         this.app.use('/reservations', reservationsRoutes);
