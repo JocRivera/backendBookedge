@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import { database } from "../config/database.js";
 import { Roles } from "./Roles_Model.js";
+
 export const Users = database.define(
   "Users",
   {
@@ -9,37 +10,49 @@ export const Users = database.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    idRol:{
+    idRol: {
       type: DataTypes.INTEGER,
-      allowNull:false,
-      references:{model: Roles, key: 'idRol'}
+      allowNull: false,
+      references: { model: Roles, key: "idRol" },
     },
     name: {
       type: DataTypes.STRING(50),
       allowNull: false,
     },
-    email: {
-      type: DataTypes.STRING(80),
-      allowNull: false,
-      unique: true,
+    eps: {
+      type: DataTypes.STRING(50),
+      allowNull: true, 
     },
-    phone: {
-      type: DataTypes.STRING(20),
+    identificationType: {
+      type: DataTypes.ENUM("CC", "CE"),
       allowNull: false,
     },
-    document: {
+    identification: {
       type: DataTypes.STRING(50),
       allowNull: false,
       unique: true,
     },
-    password: {
-      type: DataTypes.STRING(255),
+    email: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+      unique: true,
+    },
+    cellphone: {
+      type: DataTypes.STRING(50),
       allowNull: false,
     },
-    State: {
-      type: DataTypes.ENUM("Activo", "Anactivo"),
-      defaultValue: "Activo",
+    address: {
+      type: DataTypes.STRING(100),
+      allowNull: true, 
+    },
+    password: {
+      type: DataTypes.STRING(150),
       allowNull: false,
+    },
+    status: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
     },
   },
   {
@@ -48,5 +61,6 @@ export const Users = database.define(
   }
 );
 
-Users.belongsTo(Roles,{foreignKey: "idRol",as: "roles"});
-Roles.hasMany(Users,{foreignKey:"idRol",as: "roles" });
+// Relaciones con Roles
+Users.belongsTo(Roles, { foreignKey: "idRol", as: "roles" });
+Roles.hasMany(Users, { foreignKey: "idRol", as: "roles" });
