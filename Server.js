@@ -1,6 +1,7 @@
 import express, { json } from 'express';
 import { database } from './src/config/database.js';
 import morgan from "morgan";
+import cookieParser from 'cookie-parser';
 import cabinRoutes from './src/routes/Cabin_Routes.js';
 import comfortRoutes from './src/routes/Comfort_Routes.js';
 // import customerRoutes from './src/routes/Customers_Routes.js';
@@ -15,6 +16,7 @@ import bedromRoutes from './src/routes/Bedrom_Routes.js'
 import planRoutes from './src/routes/Plan_Routes.js'
 import planProgramed from './src/routes/Plan_Programed_Routes.js'
 import PaymentsRoutes from './src/routes/Payments_Rutes.js';
+import authRoutes from './src/routes/authRoutes.js'
 
 export default class Server {
 
@@ -60,6 +62,7 @@ export default class Server {
         this.app.use('/plan',planRoutes)
         this.app.use('/planProgramed',planProgramed)
         this.app.use('/payments',PaymentsRoutes)
+        this.app.use('/auth',authRoutes)
     }
 
     listen() {
