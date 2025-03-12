@@ -1,12 +1,45 @@
 export const validateService = (req, res, next) => {
     const { Id_Service, name, Description, Price, StatusServices } = req.body;
-    if (!name || !Description || !Price || !StatusServices) {
-        return res.status(400).json({ error: "Faltan datos obligatorios" });
+    if (!Id_Service || Id_Service < 0 || !Number.isInteger(Id_Service)) {
+        return res.status(400).json({
+            msg: 'verifique el Id_Service, debe ingresar un número entero mayor a 0'
+        })
+    }
+    if (!name) {
+        return res.status(400).json({
+            msg: 'name is required'
+        })
+    }
+    if (/^\d+$/.test(name)) {
+        return res.status(400).json({
+            msg: 'name must be a string'
+        })
+    }
+    if (!Description) {
+        return res.status(400).json({
+            msg: 'Description is required'
+        })
+    }
+    if (/^\d+$/.test(name)) {
+        return res.status(400).json({
+            msg: 'Description must be a string'
+        })
+    }
+    if (!Price) {
+        return res.status(400).json({
+            msg: 'Price is required'
+        })
+    }
+    if (!StatusServices) {
+        return res.status(400).json({
+            msg: 'StatusServices is required'
+        })
     }
 
     if (Price < 0) {
         return res.status(400).json({ error: "El precio no puede ser negativo" });
     }
+
 
     next();
 

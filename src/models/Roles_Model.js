@@ -4,17 +4,19 @@ import { database } from '../config/database.js';
 export const Roles = database.define('roles',
     {
         idRol: {
+            require: true,
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
         name: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
         },
         status: {
             type: DataTypes.BOOLEAN,
-            allowNull: false
+            allowNull: false,
+            defaultValue: true
         }
 
     },
