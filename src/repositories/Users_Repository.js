@@ -1,8 +1,9 @@
 import { Users } from "../models/user_Model.js";
 import { Roles } from "../models/Roles_Model.js";
+import { Permissions } from "../models/Permissions_Model.js";
 
 export const getAllUsers = async () => {
-  return await Users.findAll();
+  return await Users.findAll(); 
 };
 
 export const getUserById = async (id) => {
@@ -10,12 +11,21 @@ export const getUserById = async (id) => {
     include: [
       {
         model: Roles,
-        as: "roles",
+        as: "role",
         attributes: ["name"],
+        include: [
+          {
+            model: Permissions,
+            as: "permissions",
+            attributes: ["name"], 
+            through: { attributes: [] }, 
+          },
+        ],
       },
     ],
   });
 };
+
 
 export const createUser = async (dataUsers) => {
   return await Users.create(dataUsers);
