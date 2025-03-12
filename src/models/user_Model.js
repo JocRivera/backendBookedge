@@ -21,7 +21,7 @@ export const Users = database.define(
     },
     eps: {
       type: DataTypes.STRING(50),
-      allowNull: true, 
+      allowNull: true,
     },
     identificationType: {
       type: DataTypes.ENUM("CC", "CE"),
@@ -43,7 +43,7 @@ export const Users = database.define(
     },
     address: {
       type: DataTypes.STRING(100),
-      allowNull: true, 
+      allowNull: true,
     },
     password: {
       type: DataTypes.STRING(150),
@@ -61,6 +61,6 @@ export const Users = database.define(
   }
 );
 
-// Relaciones con Roles
-Users.belongsTo(Roles, { foreignKey: "idRol", as: "roles" });
-Roles.hasMany(Users, { foreignKey: "idRol", as: "roles" });
+
+Users.belongsTo(Roles, { foreignKey: "idRol", as: "role" });
+Roles.hasMany(Users, { foreignKey: "idRol", as: "users" });
