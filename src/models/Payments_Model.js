@@ -1,10 +1,12 @@
 import { DataTypes } from "sequelize";
 import { database } from "../config/database.js";
 
+
+
 export const Payments = database.define(
   "Payments",
   {
-    id: {
+    idPayments: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -36,14 +38,11 @@ export const Payments = database.define(
       type: DataTypes.DATEONLY,
       allowNull: true, 
     },
-    reservationId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      unique: true, 
-    },
   },
   {
     tableName: "Payments",
     timestamps: false, 
   }
 );
+
+

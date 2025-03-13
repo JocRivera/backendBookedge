@@ -27,8 +27,8 @@ export const updateUserService = async (id, dataUsers) => {
   return updateUser(id, dataUsers);
 };
 
-export const changeStatusUserService = async (id, State) => {
-  return await changeStatusUser(id, State);
+export const changeStatusUserService = async (id, status) => {
+  return await changeStatusUser(id, status);
 };
 export const deleteUserService = async (id) => await deleteUser(id);
 

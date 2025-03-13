@@ -5,13 +5,12 @@ import {
   createCabinService,
   updateCabinService,
   deleteCabinService,
-  addComfortsService,
-  updateComfortsService,
-  deteleComfortCabinService,
-  changeStatusCabinService,
+  addComfortToCabinService,
+  updateComfortToCabinService,
+  deleteComfortToCabinService,
 } from "../services/Cabin_Services.js";
 
-export const getAllCabins = async (req, res) => {
+export const getAllCabinsController = async (req, res) => {
   try {
     const cabins = await getAllCabinsService();
     res.status(200).json(cabins);
@@ -20,7 +19,7 @@ export const getAllCabins = async (req, res) => {
   }
 };
 
-export const getCabinById = async (req, res) => {
+export const getCabinByIdController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -33,7 +32,7 @@ export const getCabinById = async (req, res) => {
   }
 };
 
-export const createCabin = async (req, res) => {
+export const createCabinController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -50,7 +49,7 @@ export const createCabin = async (req, res) => {
   }
 };
 
-export const updateCabin = async (req, res) => {
+export const updateCabinController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -68,7 +67,7 @@ export const updateCabin = async (req, res) => {
   }
 };
 
-export const deleteCabin = async (req, res) => {
+export const deleteCabinController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -81,64 +80,43 @@ export const deleteCabin = async (req, res) => {
   }
 };
 
-export const changeStatusCabin = async (req, res) => {
+
+export const addComfortToCabinController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    await changeStatusCabinService(req.params.id, req.body.status);
-    res.status(200).end();
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-export const getAllCabinComfort = async (req, res) => {
-  try {
-    const comfortData = await getAllCabinComfort();
-    res.status(200).json(comfortData);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-export const addComforts = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  try {
-    const { idCabin, idComfort, ...otherData } = req.body;
-
-    await addComfortsService(idCabin, idComfort, otherData);
+    const cabinComfortData = req.body;
+    await addComfortToCabinService(cabinComfortData);
     res.status(200).json({ message: "Comodidad agregada correctamente" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-export const updateComfort = async (req, res) => {
+export const updateComfortToCabinController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
     const { idCabinComfort } = req.params;
-    const { ...otherData } = req.body;
-    await updateComfortsService(idCabinComfort, otherData);
+    const cabinComfortData = req.body;
+    await updateComfortToCabinService(idCabinComfort, cabinComfortData);
     res.status(200).json({ message: "Comodidad actualizada correctamente" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
-export const deleteComfort = async (req, res) => {
+export const deleteComfortToCabinController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
     const { idCabinComfort } = req.params;
-    await deteleComfortCabinService(idCabinComfort);
+    await deleteComfortToCabinService(idCabinComfort);
     res.status(200).end();
   } catch (error) {
     res.status(400).json({ message: error.message });

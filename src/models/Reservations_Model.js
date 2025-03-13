@@ -1,6 +1,8 @@
 import { DataTypes } from "sequelize";
 import { database } from "../config/database.js";
 
+
+
 export const Reservations = database.define(
     "Reservations",
     {
@@ -46,9 +48,7 @@ export const Reservations = database.define(
             type: DataTypes.ENUM("Reservado", "Confirmado", "Pendiente", "Anulado"),
             allowNull: false,
             defaultValue: "Reservado",
-        }
-        //Debo poner el numero del docuemnto del cliente
-        //Proponer que cada vez que quiera reservar debo estar logeado, para no poner informacion inecesaria en reserva sy solo traer el Id del cliente
+        },
     },
     {
         tableName: "Reservations",
@@ -56,3 +56,4 @@ export const Reservations = database.define(
     }
 
 );
+

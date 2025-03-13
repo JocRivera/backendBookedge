@@ -4,7 +4,6 @@ import {
   getPaymentByIdService,
   updatePaymentService,
   deletePaymentService,
-  getPaymentByReservationIdService,
   getAllPaymentsService,
 } from "../services/Payments_Services.js";
 
@@ -59,18 +58,6 @@ export const deletePaymentController = async (req, res) => {
   try {
     await deletePaymentService(req.params.id);
     res.status(200).json({ message: "Pago eliminado exitosamente" });
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-export const getPaymentByReservationIdController = async (req, res) => {
-  try {
-    const payment = await getPaymentByReservationIdService(req.params.reservation_id);
-    if (!payment) {
-      return res.status(404).json({ message: "Pago no encontrado" });
-    }
-    res.status(200).json(payment);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

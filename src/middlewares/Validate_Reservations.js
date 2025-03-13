@@ -1,5 +1,6 @@
 import { Reservations } from "../models/Reservations_Model.js";
 import { Companions } from "../models/Companions_Model.js";
+import { Payments } from "../models/Payments_Model.js";
 import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
 import { body, param, validationResult } from "express-validator";
 
@@ -49,7 +50,7 @@ const reservationBaseValidation = [
 
   body("endDate")
     .notEmpty().withMessage("La fecha de fin es obligatoria")
-    .isISO8601().withMessage("La fecha de fin debe tener un formato válido (YYYY-MM-DD)")
+    .isISO8601().withMessage("La fecha de fin debe tener un formato válido (Año-Mes-Dia)")
     .custom((value, { req }) => {
       const startDate = new Date(req.body.startDate);
       const endDate = new Date(value);
@@ -69,18 +70,18 @@ const reservationBaseValidation = [
     .isIn(["Reservado", "Confirmado", "Pendiente", "Anulado"])
     .withMessage("Estado no válido"),
 
-  body("idCompanions")
-    .optional()
-    .isInt().withMessage("El ID de acompañantes debe ser un número entero")
-    .custom(async (value) => {
-      if (value) {
-        const companion = await Companions.findByPk(value);
-        if (!companion) {
-          throw new Error("El acompañante seleccionado no existe");
-        }
-      }
-      return true;
-    }),
+  // body("idCompanions")
+  //   .optional()
+  //   .isInt().withMessage("El ID de acompañantes debe ser un número entero")
+  //   .custom(async (value) => {
+  //     if (value) {
+  //       const companion = await Companions.findByPk(value);
+  //       if (!companion) {
+  //         throw new Error("El acompañante seleccionado no existe");
+  //       }
+  //     }
+  //     return true;
+  //   }),
 
 ];
 
@@ -173,3 +174,23 @@ export const deleteCompaniosValidation = [
     .withMessage("El id de la relación Reserva-Acompañante debe ser un número entero")
     .custom(validateReservationsCompanions),
 ];
+
+//Validacion para agregar los pagos
+export const addPaymentsValidation = [
+  param('idReservation')
+  .isInt()
+  .withMessage('El Id de la reserva debe ser un numero entero')
+  .custom(validateReservationsExistence),
+  param('idPayments')
+  .isInt()
+  .withMessage('El Id del pago debe ser un numero entero')
+  .custom(
+    async (value) => {
+      const payment = await Payments.findByPk(value);
+      if (!payment){
+        throw new Error('El pago no existe')
+      }
+      return true; 
+    }
+  ),
+]

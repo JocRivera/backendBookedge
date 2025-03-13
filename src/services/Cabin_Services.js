@@ -1,49 +1,45 @@
 import {
-  getAllCabins,
-  getCabinById,
-  createCabin,
-  updateCabin,
-  deleteCabin,
-  addComforts,
-  changeStatusCabin,
-  updateComforts,
-  deleteComfortCabin,
+  getAllCabinsRepository,
+  getCabinByIdRepository,
+  createCabinRepository,
+  updateCabinRepository,
+  deleteCabinRepository,
+  addComfortToCabinRepository,
+  updateComfortToCabinRepository,
+  deleteComfortToCabinRepository,
 } from "../repositories/Cabin_Repository.js";
 
-export const getAllCabinsService = async () => {
-  return await getAllCabins();
-};
 
-export const getCabinByIdService = async (id) => {
-  return await getCabinById(id);
-};
+export const getAllCabinsService = async() =>{
+  return await getAllCabinsRepository();
+}
 
-export const createCabinService = async (cabinData) => {
-  return await createCabin(cabinData);
-};
+export const getCabinByIdService = async (id) =>{
+  return await getCabinByIdRepository(id);
+}
 
-export const updateCabinService = async (id, cabinData) => {
-  return await updateCabin(id, cabinData);
-};
+export const createCabinService = async (cabinData) =>{
+  return createCabinRepository(cabinData);
+}
 
-export const deleteCabinService = async (id) => {
-  return await deleteCabin(id);
-};
-
-export const addComfortsService = async (idCabin, idComfort, cabinComfortData) => {
-  return await addComforts(idCabin, idComfort, cabinComfortData);
-};
-
-export const updateComfortsService = async (idCabinComfort, cabinComfortData) => {
-  return await updateComforts(idCabinComfort,cabinComfortData);
-};
-export const deteleComfortCabinService = async (idCabinComfort) => {
-  return await deleteComfortCabin(idCabinComfort);
-};
-
-export const changeStatusCabinService = async (id, status) => {
-  return await changeStatusCabin(id, status);
-};
+export const updateCabinService = async (id,cabinData) =>{
+  return await updateCabinRepository(id,cabinData);
+}
 
 
-//comentario de prueba
+export const deleteCabinService = async (id) =>{
+  return await deleteCabinRepository(id);
+}
+
+
+export const addComfortToCabinService = async (cabinComfortData) =>{
+  return await addComfortToCabinRepository(cabinComfortData);
+}
+
+export const updateComfortToCabinService = async (id,cabinComfortData) =>{
+   return await updateComfortToCabinRepository(id,cabinComfortData);
+}
+
+export const deleteComfortToCabinService = async (id) =>{
+  return await deleteComfortToCabinRepository(id);
+}
