@@ -61,15 +61,16 @@ export const setupAssociations = () => {
     through: PaymentsReservations,
     foreignKey: "idPayments",
     otherKey: "idReservation",
-    as: "payments",
+    as: "reservations",
   });
 
   Reservations.belongsToMany(Payments, {
     through: PaymentsReservations,
     foreignKey: "idReservation",
     otherKey: "idPayments",
-    as: "reservations",
+    as: "payments",
   });
+
 
   console.log("Asociaciones configuradas correctamente.");
 };

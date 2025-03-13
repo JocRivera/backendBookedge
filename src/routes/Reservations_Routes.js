@@ -38,7 +38,7 @@ router.get("/:id/companions", getReservationsValidation, getReservationsByIdCont
 router.post("/:idReservation/companions/:idCompanion", addCompanionValidation, addCompanions);
 
 //Ruta para agregar pagos
-router.post("/:idReservation/payments/:idPayments", addPaymentsValidation, addPayments);
+router.post("/Reservationpayments",addPaymentsValidation, addPayments);
 
 //Ruta para actualizar un acompañante
 router.put("/companions/:id/ReservationsCompanions", updateCompanionsValidation, updateCompanion);

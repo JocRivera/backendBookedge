@@ -32,8 +32,8 @@ export const addCompanionsServices = async (idReservation, idCompanions) => {
     return addCompanions(idReservation, idCompanions);
 };
 
-export const addPaymentsServices = async (idReservation, idPayments) => {
-    return addPayments(idReservation,idPayments);
+export const addPaymentsServices = async (addPayment) => {
+    return addPayments(addPayment);
 }
 
 export const updateCompanionsService = async (idReservationsCompanions, idCompanions, idReservation) => {
@@ -42,7 +42,7 @@ export const updateCompanionsService = async (idReservationsCompanions, idCompan
 
 export const deleteCompanionsService = async (idReservationsCompanions) => {
     return await deleteCompanions(idReservationsCompanions);
-  };
+};
 export const changeStatusReservationsService = async (id, status) => {
     console.log("ID recibido en el servicio:", idReservationsCompanions); // Depuración
     return await changeStatusReservations(id, status);
