@@ -18,6 +18,7 @@ import planProgramed from './src/routes/Plan_Programed_Routes.js'
 import PaymentsRoutes from './src/routes/Payments_Rutes.js';
 import authRoutes from './src/routes/authRoutes.js'
 
+
 export default class Server {
 
     constructor() {

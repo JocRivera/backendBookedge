@@ -4,6 +4,7 @@ import {
     createReservations,
     updateReservations,
     addCompanions,
+    addPayments,
     updateCompanions,
     deleteCompanions,
     changeStatusReservations
@@ -30,6 +31,10 @@ export async function updateReservationsService(id, reservationsData) {
 export const addCompanionsServices = async (idReservation, idCompanions) => {
     return addCompanions(idReservation, idCompanions);
 };
+
+export const addPaymentsServices = async (idReservation, idPayments) => {
+    return addPayments(idReservation,idPayments);
+}
 
 export const updateCompanionsService = async (idReservationsCompanions, idCompanions, idReservation) => {
     return await updateCompanions(idReservationsCompanions, idCompanions, idReservation);

@@ -5,6 +5,7 @@ import {
   createReservationsService,
   updateReservationsService,
   addCompanionsServices,
+  addPaymentsServices,
   updateCompanionsService,
   deleteCompanionsService,
   changeStatusReservationsService
@@ -113,6 +114,21 @@ export const addCompanions = async (req, res) => {
   }
 };
 
+ export const addPayments = async (req, res) =>{
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+    return res.status(400).json({errors: errors.array()});
+  }
+  try {
+    const {idReservation, idPayments} = req.body;
+    await addPaymentsServices(idReservation,idPayments);
+    res.status(200).json({message: 'Pago agregado exitosamente'});
+  } catch (error) {
+    console.error('Error al agregar el pago: ', error);
+    res.status(400).json({message: error.message});
+    
+  }
+ };
 
 export const updateCompanion = async (req, res) => {
   const errors = validationResult(req);
@@ -135,7 +151,6 @@ export const deleteCompanions = async (req, res) => {
   }
   try {
     const { idReservationsCompanions  } = req.params;
-    console.log("ID recibido en el controlador:", idReservationsCompanions); // 
     await deleteCompanionsService(idReservationsCompanions );
     res.status(200).json({ message: "Acompañante eliminado exitosamente" });
   } catch (error) {

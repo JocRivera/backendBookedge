@@ -1,11 +1,10 @@
 import { body, param, validationResult } from "express-validator";
-import { Reservations } from "../models/Reservations_Model.js";
 import { Payments } from "../models/Payments_Model.js";
 
-export const validateReservationExistence = async (reservation_id) => {
-  const reservation = await Reservations.findByPk(reservation_id);
-  if (!reservation) {
-    return Promise.reject("Esta reserva no existe");
+export const validatePaymentsExistence = async (id) => {
+  const payments = await Payments.findByPk(id);
+  if (!payments) {
+    return Promise.reject("Este pago no existe");
   }
   return true;
 };
@@ -28,39 +27,34 @@ export const createPaymentValidation = [
     .optional()
     .isIn(["Confirmado", "Pendiente"])
     .withMessage("El estado debe ser 'Confirmado' o 'Pendiente'"),
-  body("confirmation_date")
+  body("confirmationDate")
     .optional()
     .isISO8601()
-    .withMessage("El formato de la fecha de confirmacion debe ser (Año-Mes-Dia)"),
-  body("reservationId")
-    .notEmpty()
-    .withMessage("El id de la reserva es requerido")
-    .isInt()
-    .withMessage("El ID de reserva debe ser un número entero")
-    .custom(validateReservationExistence),
+    .withMessage("El formato de la fecha de confirmacion debe ser (Año-Mes-Dia)")
 ];
 
 export const updatePaymentValidation = [
-  param("id")
+  param("idPayments")
     .isInt()
     .withMessage("El ID de pago debe ser un número entero"),
   ...createPaymentValidation,
 ];
 
 export const getPaymentByIdValidation = [
-  param("id")
+  param("idPayments")
     .isInt()
     .withMessage("El ID de pago debe ser un número entero"),
 ];
 
 export const deletePaymentValidation = [
-  param("id")
+  param("idPayments")
     .isInt()
     .withMessage("El ID de pago debe ser un número entero"),
 ];
 
-export const getPaymentByReservationIdValidation = [
-  param("reservation_id")
+export const addPaymentsValidation = [
+  param("idPayment")
     .isInt()
-    .withMessage("El ID de la reserva debe ser un número entero"),
+    .withMessage("El Id del pago debe ser un número entero")
+    .custom(validatePaymentsExistence), 
 ];

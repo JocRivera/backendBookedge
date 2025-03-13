@@ -1,10 +1,8 @@
+import { where } from "sequelize";
 import { Payments } from "../models/Payments_Model.js";
-import { Reservations } from "../models/Reservations_Model.js";
 
 export const getAllPayments = async () => {
-  return await Payments.findAll({
-    include: [{ model: Reservations, as: "reservations" }], 
-  });
+  return await Payments.findAll()
 };
 
 export const createPayment = async (paymentData) => {
@@ -12,27 +10,14 @@ export const createPayment = async (paymentData) => {
 };
 
 export const getPaymentById = async (id) => {
-  return await Payments.findByPk(id, {
-    include: [{ model: Reservations, as: "reservations" }], 
-  });
+  return await Payments.findByPk()
 };
 
 export const updatePayment = async (id, paymentData) => {
-  const [updated] = await Payments.update(paymentData, {
-    where: { id },
-  });
-  return updated;
+   return await Payments.update(paymentData, {where: {idPayments: id}});
 };
 
 export const deletePayment = async (id) => {
-  return await Payments.destroy({
-    where: { id },
-  });
+  return await Payments.destroy({where: {idPayments: id}})
 };
 
-export const getPaymentByReservationId = async (reservation_id) => {
-  return await Payments.findOne({
-    where: { reservation_id },
-    include: [{ model: Reservations, as: "reservations" }], 
-  });
-};

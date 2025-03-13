@@ -1,6 +1,8 @@
 import { DataTypes } from "sequelize";
 import { database } from "../config/database.js";
 
+
+
 export const Reservations = database.define(
     "Reservations",
     {
@@ -47,13 +49,6 @@ export const Reservations = database.define(
             allowNull: false,
             defaultValue: "Reservado",
         },
-        // idCompanions:{
-        //     type: DataTypes.INTEGER,
-        //     references:{
-        //         model: Companions,
-        //         key: 'idCompanions',
-        //     }
-        // }
     },
     {
         tableName: "Reservations",
@@ -61,3 +56,4 @@ export const Reservations = database.define(
     }
 
 );
+
