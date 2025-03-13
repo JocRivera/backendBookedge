@@ -46,14 +46,9 @@ export const Reservations = database.define(
             type: DataTypes.ENUM("Reservado", "Confirmado", "Pendiente", "Anulado"),
             allowNull: false,
             defaultValue: "Reservado",
-        },
-        // idCompanions:{
-        //     type: DataTypes.INTEGER,
-        //     references:{
-        //         model: Companions,
-        //         key: 'idCompanions',
-        //     }
-        // }
+        }
+        //Debo poner el numero del docuemnto del cliente
+        //Proponer que cada vez que quiera reservar debo estar logeado, para no poner informacion inecesaria en reserva sy solo traer el Id del cliente
     },
     {
         tableName: "Reservations",
