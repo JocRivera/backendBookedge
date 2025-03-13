@@ -73,7 +73,7 @@ export const changeStatusUser = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    await changeStatusUserService(req.params.id, req.body.State);
+    await changeStatusUserService(req.params.id, req.body.status);
     res.status(200).end();
   } catch (error) {
     res.status(400).json({ message: error.message });

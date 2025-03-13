@@ -1,53 +1,56 @@
-import {Bedrooms} from "../models/bedrooms_Model.js";
+import { Bedrooms } from "../models/bedrooms_Model.js";
 import { Comforts } from "../models/Comfort_Model.js";
-import {BedroomsComforts} from "../models/Bedrooms_Comforts.js"
+import { BedroomsComforts } from "../models/Bedrooms_Comforts.js";
 
-export const getAllBeedromsRepository = async () =>{
-    return await Bedrooms.findAll();
-}
+export const getAllBedroomsRepository = async () => {
+  return await Bedrooms.findAll({
+    include: [
+      {
+        model: Comforts,
+        as: "Comforts",
+        attributes: ["idComfort", "name"],
+        through: { attributes: [] },
+      },
+    ],
+  });
+};
 
-export const getBeedromByIdRepository = async (id) =>{
-    return await Bedrooms.findByPk(id)
-}
+export const getBedroomByIdRepository = async (id) => {
+  return await Bedrooms.findByPk(id, {
+    include: [
+      {
+        model: Comforts,
+        as: "Comforts",
+        attributes: ["idComfort", "name"],
+      },
+    ],
+  });
+};
 
-export const createBeedromRepository = async (bedromData) => {
-    return await Bedrooms.create(bedromData);
-}
+export const createBedroomRepository = async (bedroomData) => {
+  return await Bedrooms.create(bedroomData);
+};
 
-export const updateBeedroomRepository = async (id,bedromData) =>{
-    return await Bedrooms.update(bedromData,{where:{idRoom : id}});
-}
+export const updateBedroomRepository = async (id, bedroomData) => {
+  return await Bedrooms.update(bedroomData, { where: { idRoom: id } });
+};
 
-export const deleteBeedroomRepository = async (id) =>{
-     return await Bedrooms.destroy({where:{idRoom:id}});
-}
+export const deleteBedroomRepository = async (id) => {
+  return await Bedrooms.destroy({ where: { idRoom: id } });
+};
 
-export const changeStatusBedrom = async (id,status)=>{
-    return await Bedrooms.update(status,{where:{idRoom:id}})
-}
+export const addComfortToBedroomRepository = async (bedroomComfortData) => {
+  return await BedroomsComforts.create(bedroomComfortData);
+};
 
-export const addComfortBedrom = async (bedromComfortData) => {
-    return await BedroomsComforts.create(bedromComfortData);
-}
+export const updateBedroomComfortRepository = async (idRoomComforts, updateData) => {
+  return await BedroomsComforts.update(updateData, {
+    where: { idRoomComforts },
+  });
+};
 
-export const getBeedroomWithComfortsRepository = async (id) => {
-    return await Bedrooms.findByPk(id, {
-        include: [{
-            model: Comforts,
-            as: "Comforts",
-            through: { attributes: ['description', 'dateEntry'] } 
-        }]
-    });
-}
-
-export const updateBeedroomComfortRepository = async (idRoomComforts, updateData) => {
-    return await BedroomsComforts.update(updateData, {
-        where: { idRoomComforts }
-    });
-}
-
-export const removeComfortFromBeedroomRepository = async (idRoomComforts) => {
-    return await BedroomsComforts.destroy({
-        where: { idRoomComforts }
-    });
-}
+export const removeComfortFromBedroomRepository = async (idRoomComforts) => {
+  return await BedroomsComforts.destroy({
+    where: { idRoomComforts },
+  });
+};

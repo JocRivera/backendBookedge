@@ -8,6 +8,8 @@ export const loginService = async (email, password) => {
     const user = await Users.findOne({ where: { email } });
     if (!user) throw new Error("Correo o contraseña incorrectos");
 
+    if (!user.status) throw new Error("Cuenta inactiva, contacta al administrador");
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new Error("Correo o contraseña incorrectos");
 

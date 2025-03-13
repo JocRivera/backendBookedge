@@ -1,40 +1,38 @@
 import express from "express";
 import {
-  getAllCabins,
-  getCabinById,
-  createCabin,
-  updateCabin,
-  deleteCabin,
-  addComforts,
-  updateComfort,
-  changeStatusCabin,
-  deleteComfort,
+  getAllCabinsController,
+  getCabinByIdController,
+  createCabinController,
+  updateCabinController,
+  deleteCabinController,
+  addComfortToCabinController,
+  updateComfortToCabinController,
+  deleteComfortToCabinController,
 } from "../controllers/Cabins_Controllers.js";
 import {
   createCabinValidation,
   updateCabinValidation,
   deleteCabinValidation,
   getCabinValidation,
-  changeStateCabinValidation,
   addComfortValidation,
   updateComfortValidation,
-  deleteComfortValidation
-  
+  deleteComfortValidation,
 } from "../middlewares/Valide_Cabins.js";
 import upload from "../middlewares/Multer.js";
 
 const router = express.Router();
 
-// Rutas para cabañas
-router.get("/", getAllCabins);
-router.get("/:id", getCabinValidation, getCabinById);
-router.post("/", upload.single("imagen"), createCabinValidation, createCabin);
-router.put("/:id", upload.single("imagen"), updateCabinValidation, updateCabin);
-router.delete("/:id", deleteCabinValidation, deleteCabin);
-router.patch("/:id/status", changeStateCabinValidation, changeStatusCabin);
+router.get("/", getAllCabinsController);
+router.get("/:id", getCabinValidation, getCabinByIdController);
+router.post("/", upload.single("imagen"), createCabinValidation, createCabinController);
+router.put("/:id", upload.single("imagen"), updateCabinValidation, updateCabinController);
+router.delete("/:id", deleteCabinValidation, deleteCabinController);
 
-// Rutas para comodidades de cabañas
-router.post("/cabinComforts/" ,addComfortValidation, addComforts);
-router.put("/cabinComforts/:idCabinComfort",updateComfortValidation, updateComfort);
-router.delete("/cabinComforts/:idCabinComfort",deleteComfortValidation,  deleteComfort);
+
+//agregar comodidades
+router.post("/cabinComforts", addComfortValidation, addComfortToCabinController);
+router.put("/cabinComforts/:idBedroomComfort", updateComfortValidation, updateComfortToCabinController);
+router.delete("/cabinComforts/:idBedroomComfort", deleteComfortValidation, deleteComfortToCabinController);
+
+
 export default router;
