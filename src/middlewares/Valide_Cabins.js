@@ -1,6 +1,7 @@
 import { body, param, validationResult } from "express-validator";
 import { Cabins } from "../models/Cabin_Model.js";
-import { CabinsComforts } from "../models/Cabins_Comforts.js";
+import{CabinsComforts} from "../models/cabins_Comforts.js"
+import { validateComfortsExistence } from "./Validate_Comforts.js";
 
 export const validateCabinExistence = async (id) => {
   const cabin = await Cabins.findByPk(id);
@@ -10,12 +11,11 @@ export const validateCabinExistence = async (id) => {
   return true;
 };
 
-export const validateCabinName = async (name) => {
+const validateCabinName = async (name) => {
   const cabin = await Cabins.findOne({ where: { name } });
   if (cabin) {
     return Promise.reject("La cabaña ya existe");
   }
-  return true;
 };
 
 const cabinBaseValidation = [
@@ -49,14 +49,14 @@ export const createCabinValidation = [
 ];
 
 export const updateCabinValidation = [
-  ...cabinBaseValidation,
-  imageValidation,
   param("id")
     .isInt()
     .withMessage("El ID de la cabaña debe ser un número entero")
-    .custom(validateCabinExistence),
-  body("name").custom(validateCabinName),
+    .custom(validateCabinExistence), 
+  ...cabinBaseValidation,
+  imageValidation,
 ];
+
 
 export const deleteCabinValidation = [
   param("id")
@@ -72,19 +72,16 @@ export const getCabinValidation = [
     .custom(validateCabinExistence),
 ];
 
-export const changeStateCabinValidation = [
-  body("status")
-    .isIn(["En Servicio", "Fuera de Servicio", "Mantenimiento"])
-    .withMessage(
-      "El estado de la cabaña debe ser 'En Servicio', 'Fuera de Servicio' o 'Mantenimiento'"
-    ),
-  param("id")
-    .isInt()
-    .withMessage("El ID de la cabaña debe ser un número entero")
-    .custom(validateCabinExistence),
-];
 
 
+////VALIDACIONES DE PUT,GET,POST,DELETE DE ADDCOMFORTS
+export const validateExistecenComfortCabin = async (id) => {
+  const cabinComforts = await CabinsComforts.findByPk(id);
+  if (!cabinComforts) {
+    return Promise.reject('La relación no existe');
+  }
+  return true; 
+}
 export const validateComfortNotExists = async (idCabin, idComfort) => {
   const cabinsComforts = await CabinsComforts.findOne({
     where: { idCabin, idComfort },
@@ -94,6 +91,11 @@ export const validateComfortNotExists = async (idCabin, idComfort) => {
   }
   return true;
 };
+
+
+
+
+
 
 const cabinComfortBaseValidation = [
   body("description")
@@ -110,13 +112,14 @@ export const addComfortValidation = [
   ...cabinComfortBaseValidation,
   body("idCabin")
     .isInt()
-    .withMessage("El id de la cabaña debe ser un número entero"),
+    .withMessage("El id de la cabaña debe ser un número entero")
+    .custom(validateCabinExistence),
   body("idComfort")
-    .custom(validateCabinExistence)
     .isInt()
-    .withMessage("El id de la comodidad debe ser un número entero"),
+    .withMessage("El id de la comodidad debe ser un número entero")
+    .custom(validateComfortsExistence),
   body().custom(async (value) => {
-    await validateComfortNotExists(value.idCabin, value.idComfort);
+    return await validateComfortNotExists(value.idCabin, value.idComfort);
   }),
 ];
 
@@ -125,7 +128,7 @@ export const updateComfortValidation = [
   param("idCabinComfort")
     .isInt()
     .withMessage("El id de la relación cabaña-comodidad debe ser un número entero")
-    .custom(validateComfortNotExists), 
+    .custom(validateExistecenComfortCabin), // ← Cambiar a esta función
   body("idCabin")
     .optional()
     .isInt()
@@ -134,7 +137,8 @@ export const updateComfortValidation = [
   body("idComfort")
     .optional()
     .isInt()
-    .withMessage("El id de la comodidad debe ser un número entero"),
+    .withMessage("El id de la comodidad debe ser un número entero")
+    .custom(validateComfortsExistence),
 ];
 
 export const deleteComfortValidation = [
@@ -143,5 +147,5 @@ export const deleteComfortValidation = [
     .withMessage(
       "El id de la relación cabaña-comodidad debe ser un número entero"
     )
-    .custom(),
+    .custom(validateExistecenComfortCabin),
 ];

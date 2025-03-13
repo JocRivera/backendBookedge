@@ -2,7 +2,7 @@ import { Cabins } from "../models/Cabin_Model.js";
 import { Comforts } from "../models/Comfort_Model.js";
 import { CabinsComforts } from "../models/Cabins_Comforts.js";
 
-export const getAllCabins = async () => {
+export const getAllCabinsRepository = async () => {
   return await Cabins.findAll({
     include: [
       {
@@ -15,59 +15,40 @@ export const getAllCabins = async () => {
   });
 };
 
-export const getCabinById = async (id) => {
+export const getCabinByIdRepository = async (id) => {
   return await Cabins.findByPk(id, {
-    include: [{ model: Comforts, as: "Comforts" }],
+    include: [
+      {
+        model: Comforts,
+        as: "Comforts",
+        attributes: ["idComfort", "name"],
+      },
+    ],
   });
 };
 
-export const getAllComforts = async (comoidades) => {
-  
-}
-
-export const createCabin = async (cabinData) => {
+export const createCabinRepository = async (cabinData) => {
   return await Cabins.create(cabinData);
 };
 
-export const updateCabin = async (id, cabinData) => {
-  const [updated] = await Cabins.update(cabinData, {
-    where: { idCabin: id },
-  });
-  return updated;
+export const updateCabinRepository = async (id, cabinData) => {
+  return await Cabins.update(cabinData, { where: { idCabin: id } });
 };
 
-export const deleteCabin = async (id) => {
+export const deleteCabinRepository = async (id) => {
   return await Cabins.destroy({ where: { idCabin: id } });
 };
 
-export const changeStatusCabin = async (id, status) => {
-  return await Cabins.update({ status }, { where: { idCabin: id } });
+
+
+export const addComfortToCabinRepository = async (cabinComfortData) => {
+  return await CabinsComforts.create(cabinComfortData);
 };
 
-export const addComforts = async (
-  idCabin,
-  idComfort,
-  cabinComfortData
-) => {
-  const cabin = await Cabins.findByPk(idCabin);
-  return await cabin.addComfort(idComfort, {
-    through: cabinComfortData 
-  });
+export const updateComfortToCabinRepository = async (id, cabinComfortData) => {
+  return await CabinsComforts.update(cabinComfortData, { where: { idCabinComfort: id } });
 };
 
-export const updateComforts = async (
-  idCabinComfort,
-  cabinComfortData
-) => {
-  return await CabinsComforts.update(
-    cabinComfortData,
-    {
-      where: { idCabinComfort },
-    }
-  );
-};
-export const deleteComfortCabin = async (idCabinComfort) => {
-  return await CabinsComforts.destroy({
-    where: { idCabinComfort },
-  });
+export const deleteComfortToCabinRepository = async (id) => {
+  return await CabinsComforts.destroy({ where: { idCabinComfort: id } });
 };
