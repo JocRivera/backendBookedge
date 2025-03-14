@@ -35,6 +35,11 @@ export const validateService = (req, res, next) => {
             msg: 'StatusServices is required'
         })
     }
+    if (typeof StatusServices !== 'boolean') {
+        return res.status(400).json({
+            msg: 'status must be a boolean'
+        });
+    }
 
     if (Price < 0) {
         return res.status(400).json({ error: "El precio no puede ser negativo" });
