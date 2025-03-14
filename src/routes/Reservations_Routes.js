@@ -5,6 +5,7 @@ import {
   createReservationsController,
   updateReservationsController,
   addCompanions,
+  addPayments,
   updateCompanion,
   deleteCompanions,
   changeStatusReservationsController,
@@ -16,24 +17,28 @@ import {
   getReservationsValidation,
   changeStateReservationsValidation,
   addCompanionValidation,
+  addPaymentsValidation,
   updateCompanionsValidation,
   deleteCompaniosValidation
 } from '../middlewares/Validate_Reservations.js';
 
 const router = express.Router();
 
-// 🔹 Rutas para las reservas
+// Rutas para las reservas
 router.get("/", getAllReservationsController);
 router.get("/:id", getReservationsValidation, getReservationsByIdController);
 router.post("/", createReservationValidation, createReservationsController);
 router.put("/:id", updateReservationsValidation, updateReservationsController);
 router.patch("/:id/status", changeStateReservationsValidation, changeStatusReservationsController);
 
-//Ruta para obtener una reserva con sus acompañantes
+//Ruta para obtener una reserva con sus acompañantes y agregar pagos
 router.get("/:id/companions", getReservationsValidation, getReservationsByIdController);
 
 //Ruta para agregar un acompañante
 router.post("/:idReservation/companions/:idCompanion", addCompanionValidation, addCompanions);
+
+//Ruta para agregar pagos
+router.post("/Reservationpayments",addPaymentsValidation, addPayments);
 
 //Ruta para actualizar un acompañante
 router.put("/companions/:id/ReservationsCompanions", updateCompanionsValidation, updateCompanion);

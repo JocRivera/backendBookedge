@@ -1,15 +1,13 @@
 import express from "express";
 import {
-  getAllBedrooms,
-  getBedroomById,
-  getBedroomWithComforts,
-  createBedroom,
-  updateBedroom,
-  deleteBedroom,
-  changeStatusBedroom,
-  addComfortToBedroom,
-  updateBedroomComfort,
-  removeComfortFromBedroom,
+  getAllBedroomsController,
+  getBedroomByIdController,
+  createBedroomController,
+  updateBedroomController,
+  deleteBedroomController,
+  addComfortToBedroomController,
+  updateComfortToBedroomController,
+  removeComfortFromBedroomController,
 } from "../controllers/Bedrom_Controller.js";
 import upload from "../middlewares/Multer.js";
 import {
@@ -17,7 +15,6 @@ import {
   updateBedroomValidation,
   deleteBedroomValidation,
   getBedroomValidation,
-  changeStateBedroomValidation,
   addComfortValidation,
   updateComfortValidation,
   deleteComfortValidation,
@@ -25,18 +22,16 @@ import {
 
 const router = express.Router();
 
-// 🏠 Rutas para habitaciones
-router.get("/", getAllBedrooms);
-router.get("/:id", getBedroomValidation, getBedroomById);
-router.post("/", upload.single("imagen"), createBedroomValidation, createBedroom);
-router.put("/:id", upload.single("imagen"), updateBedroomValidation, updateBedroom);
-router.delete("/:id", deleteBedroomValidation, deleteBedroom);
-router.patch("/:id/status", changeStateBedroomValidation, changeStatusBedroom);
+// Rutas para habitaciones
+router.get("/", getAllBedroomsController);
+router.get("/:id", getBedroomValidation, getBedroomByIdController);
+router.post("/", upload.single("imagen"), createBedroomValidation, createBedroomController);
+router.put("/:id", upload.single("imagen"), updateBedroomValidation, updateBedroomController);
+router.delete("/:id", deleteBedroomValidation, deleteBedroomController);
 
-// 🏡 Rutas para comodidades de habitaciones
-router.get("/:id/comforts", getBedroomWithComforts,getBedroomValidation);
-router.post("/:id/comforts", addComfortValidation, addComfortToBedroom);
-router.put("/:id/comforts/:idRoomComfort", updateComfortValidation, updateBedroomComfort);
-router.delete("/:id/comforts/:idRoomComfort", deleteComfortValidation, removeComfortFromBedroom);
+// Rutas para comodidades de habitaciones
+router.post("/roomComforts", addComfortValidation, addComfortToBedroomController);
+router.put("/roomComforts/:idRoomComforts", updateComfortValidation, updateComfortToBedroomController);
+router.delete("/roomComforts/:idRoomComforts", deleteComfortValidation, removeComfortFromBedroomController);
 
 export default router;

@@ -1,19 +1,32 @@
 import { Reservations } from "../models/Reservations_Model.js";
 import { Companions } from "../models/Companions_Model.js";
+// import { Payments } from "../models/Payments_Model.js";
 import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
+import { PaymentsReservations } from "../models/Payments_Reservations_model.js"
 
 
 export const getAllReservations = async () => {
+  
   return await Reservations.findAll({
+    
     include: [
       {
         model: Companions,
         as: "companions",
         attributes: ["idCompanions", "name", "documentType", "documentNumber"],
-        through: { attributes: [] }
+        through: { attributes: [] } 
       },
+      {
+        model: Payments,
+        as: "payments",
+        attributes: ["idPayments", "paymentMethod", "amount", "status"],
+        through: { attributes: [] } 
+      }
+
     ],
+    
   });
+  
 };
 
 export const getReservationsById = async (id) => {
@@ -23,8 +36,14 @@ export const getReservationsById = async (id) => {
         model: Companions,
         as: "companions",
         attributes: ["idCompanions", "name", "documentType", "documentNumber"],
+        through: { attributes: [] },
+
+        model: PaymentsReservations,
+        as: 'paymentsreservations',
+        attributes: ["idPayments", "paymentMethod", "amount", "status"],
         through: { attributes: [] }
       },
+
     ],
   });
 };
@@ -66,7 +85,6 @@ export const addCompanions = async (idReservation, idCompanions) => {
   }
 };
 
-
 export const updateCompanions = async (
   idReservationsCompanions,
   idReservation,
@@ -87,4 +105,10 @@ export const deleteCompanions = async (idReservationsCompanions) => {
   return await ReservationsCompanions.destroy({
     where: { idReservationsCompanions },
   });
+};
+
+
+export const addPayments = async (paymentsData) => {
+  console.log('Datos recibidos en el repositorio:', paymentsData); // Depuración
+  return await PaymentsReservations.create(paymentsData);
 };

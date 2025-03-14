@@ -3,7 +3,6 @@ import {
     getPaymentById,
     updatePayment,
     deletePayment,
-    getPaymentByReservationId,
     getAllPayments,
   } from "../repositories/Payments_Repository.js";
 
@@ -27,6 +26,3 @@ import {
     return await deletePayment(id);
   };
   
-  export const getPaymentByReservationIdService = async (reservation_id) => {
-    return await getPaymentByReservationId(reservation_id);
-  };

@@ -35,8 +35,8 @@ export const updateUser = async (id, dataUsers) => {
   return await Users.update(dataUsers, { where: { idUser: id } });
 };
 
-export const changeStatusUser = async (id, State) => {
-  return await Users.update({ State }, { where: { idUser: id } });
+export const changeStatusUser = async (id, status) => {
+  return await Users.update({ status }, { where: { idUser: id } });
 };
 
 export const deleteUser = async (id) => {

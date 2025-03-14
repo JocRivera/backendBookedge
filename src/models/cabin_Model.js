@@ -1,4 +1,5 @@
 import { DataTypes } from "sequelize";
+import { CabinsComforts } from "./Cabins_Comforts.js";
 import { database } from "../config/database.js";
 
 export const Cabins = database.define(
@@ -36,4 +37,3 @@ export const Cabins = database.define(
     timestamps: false,
   }
 );
-
