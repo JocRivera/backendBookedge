@@ -1,29 +1,32 @@
 import { Reservations } from "../models/Reservations_Model.js";
 import { Companions } from "../models/Companions_Model.js";
-import { Payments } from "../models/Payments_Model.js";
+// import { Payments } from "../models/Payments_Model.js";
 import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
 import { PaymentsReservations } from "../models/Payments_Reservations_model.js"
 
 
 export const getAllReservations = async () => {
+  
   return await Reservations.findAll({
+    
     include: [
       {
         model: Companions,
         as: "companions",
         attributes: ["idCompanions", "name", "documentType", "documentNumber"],
-        through: { attributes: [] }
+        through: { attributes: [] } 
       },
-    ],
-    include: [
       {
-        model: PaymentsReservations,
-        attributes: ["idPayments"],
-        through: { attributes }
-
+        model: Payments,
+        as: "payments",
+        attributes: ["idPayments", "paymentMethod", "amount", "status"],
+        through: { attributes: [] } 
       }
-    ]
+
+    ],
+    
   });
+  
 };
 
 export const getReservationsById = async (id) => {
@@ -37,7 +40,7 @@ export const getReservationsById = async (id) => {
 
         model: PaymentsReservations,
         as: 'paymentsreservations',
-        attributes: ["idPayments"],
+        attributes: ["idPayments", "paymentMethod", "amount", "status"],
         through: { attributes: [] }
       },
 
@@ -82,33 +85,6 @@ export const addCompanions = async (idReservation, idCompanions) => {
   }
 };
 
-export const addPayments = async (idReservation, idPayments) => {
-  try {
-    // Verificar que la reserva exista
-    const reservation = await Reservations.findByPk(idReservation);
-    if (!reservation) {
-      throw new Error("Reserva no encontrada");
-    }
-
-    // Verificar que el pago exista
-    const payment = await Payments.findByPk(idPayments);
-    if (!payment) {
-      throw new Error("Pago no encontrado");
-    }
-
-    // Crear la asociación en PaymentsReservations
-    const paymentReservation = await PaymentsReservations.create({
-      idReservation,
-      idPayments,
-    });
-
-    return paymentReservation;
-  } catch (error) {
-    console.error("Error al agregar el pago:", error.message);
-    throw error;
-  }
-};
-
 export const updateCompanions = async (
   idReservationsCompanions,
   idReservation,
@@ -129,4 +105,10 @@ export const deleteCompanions = async (idReservationsCompanions) => {
   return await ReservationsCompanions.destroy({
     where: { idReservationsCompanions },
   });
+};
+
+
+export const addPayments = async (paymentsData) => {
+  console.log('Datos recibidos en el repositorio:', paymentsData); // Depuración
+  return await PaymentsReservations.create(paymentsData);
 };

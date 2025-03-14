@@ -69,20 +69,6 @@ const reservationBaseValidation = [
     .optional()
     .isIn(["Reservado", "Confirmado", "Pendiente", "Anulado"])
     .withMessage("Estado no válido"),
-
-  // body("idCompanions")
-  //   .optional()
-  //   .isInt().withMessage("El ID de acompañantes debe ser un número entero")
-  //   .custom(async (value) => {
-  //     if (value) {
-  //       const companion = await Companions.findByPk(value);
-  //       if (!companion) {
-  //         throw new Error("El acompañante seleccionado no existe");
-  //       }
-  //     }
-  //     return true;
-  //   }),
-
 ];
 
 export const createReservationValidation = [
@@ -177,15 +163,14 @@ export const deleteCompaniosValidation = [
 
 //Validacion para agregar los pagos
 export const addPaymentsValidation = [
-  param('idReservation')
+  body('idReservation')
   .isInt()
   .withMessage('El Id de la reserva debe ser un numero entero')
   .custom(validateReservationsExistence),
-  param('idPayments')
+  body('idPayments')
   .isInt()
   .withMessage('El Id del pago debe ser un numero entero')
-  .custom(
-    async (value) => {
+  .custom(async (value) => {
       const payment = await Payments.findByPk(value);
       if (!payment){
         throw new Error('El pago no existe')

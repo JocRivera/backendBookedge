@@ -1,34 +1,33 @@
 import { DataTypes } from "sequelize";
 import { database } from "../config/database.js";
-import { Payments } from "../models/Payments_Model.js";
+import { Plans } from "../models/Plans_Model.js";
 import { Reservations } from "./Reservations_Model.js";
 
-export const PaymentsReservations = database.define(
-    "PaymentsReservations",
+export const PlansReservations = database.define(
+    "PlansReservations",
     {
-        idPaymentsReservations: {
+        idPlansReservations: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        idPayments: {
+        idPlans: {
             type: DataTypes.INTEGER,
             references: {
-                model: Payments,
-                key: "idPayments",
+                model: Plans,
+                key: "idPlans",
+
             }
         },
-        idReservation: {
+        idReservations: {
             type: DataTypes.INTEGER,
             references: {
                 model: Reservations,
-                key: "idReservation",
+                key: "idReservations",
             }
         }
-    }, {
-    tableName: 'PaymentsReservations', //Nombre de la tabla en la base de datos
-    timestamps: false
-
-
-}
+    },{
+        tableName: "PlansReservations",
+        timestamps: false
+    }
 )
