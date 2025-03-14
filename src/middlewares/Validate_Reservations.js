@@ -163,11 +163,11 @@ export const deleteCompaniosValidation = [
 
 //Validacion para agregar los pagos
 export const addPaymentsValidation = [
-  param('idReservation')
+  body('idReservation')
   .isInt()
   .withMessage('El Id de la reserva debe ser un numero entero')
   .custom(validateReservationsExistence),
-  param('idPayment')
+  body('idPayments')
   .isInt()
   .withMessage('El Id del pago debe ser un numero entero')
   .custom(async (value) => {

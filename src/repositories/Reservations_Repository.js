@@ -6,25 +6,27 @@ import { PaymentsReservations } from "../models/Payments_Reservations_model.js"
 
 
 export const getAllReservations = async () => {
+  
   return await Reservations.findAll({
+    
     include: [
       {
         model: Companions,
         as: "companions",
         attributes: ["idCompanions", "name", "documentType", "documentNumber"],
-        through: { attributes: [] }
+        through: { attributes: [] } 
       },
       {
-        model: PaymentsReservations,
-        as: 'paymentsreservations',
-        attributes: ["idPayments"],
-        through: { attributes: [] }
-
+        model: Payments,
+        as: "payments",
+        attributes: ["idPayments", "paymentMethod", "amount", "status"],
+        through: { attributes: [] } 
       }
-      
-    ],
 
+    ],
+    
   });
+  
 };
 
 export const getReservationsById = async (id) => {
@@ -38,7 +40,7 @@ export const getReservationsById = async (id) => {
 
         model: PaymentsReservations,
         as: 'paymentsreservations',
-        attributes: ["idPayments"],
+        attributes: ["idPayments", "paymentMethod", "amount", "status"],
         through: { attributes: [] }
       },
 
@@ -107,6 +109,6 @@ export const deleteCompanions = async (idReservationsCompanions) => {
 
 
 export const addPayments = async (paymentsData) => {
+  console.log('Datos recibidos en el repositorio:', paymentsData); // Depuración
   return await PaymentsReservations.create(paymentsData);
-
 };

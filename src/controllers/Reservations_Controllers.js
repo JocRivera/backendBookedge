@@ -16,6 +16,7 @@ import {
 
 export const getAllReservationsController = async (req, res) => {
   try {
+    console.log('Reservas enviadas al cliente:', reservations);
       const reservations = await getAllReservationsService();
 
       console.log("Datos obtenidos de Sequelize:", JSON.stringify(reservations, null, 2));
@@ -121,6 +122,7 @@ export const addCompanions = async (req, res) => {
   }
   try {
     const {idReservation, idPayments} = req.body;
+    console.log('Datos recibidos en el controlador:', { idReservation, idPayments })
     await addPaymentsServices(idReservation,idPayments);
     res.status(200).json({message: 'Pago agregado exitosamente'});
   } catch (error) {

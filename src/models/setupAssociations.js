@@ -70,7 +70,7 @@ export const setupAssociations = () => {
     otherKey: "idPayments",
     as: "payments",
   });
-
+ 
 
   console.log("Asociaciones configuradas correctamente.");
 };
