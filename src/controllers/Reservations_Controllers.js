@@ -6,41 +6,48 @@ import {
   updateReservationsService,
   addCompanionsServices,
   addPaymentsServices,
+  addPlansServices,
   updateCompanionsService,
   deleteCompanionsService,
   changeStatusReservationsService
 
 } from "../services/Reservations_Services.js"
+import { json } from "sequelize";
 
 
 
 export const getAllReservationsController = async (req, res) => {
   try {
+    const reservations = await getAllReservationsService();
+
     console.log('Reservas enviadas al cliente:', reservations);
-      const reservations = await getAllReservationsService();
+    console.log("Datos obtenidos de Sequelize:", JSON.stringify(reservations, null, 2));
 
-      console.log("Datos obtenidos de Sequelize:", JSON.stringify(reservations, null, 2));
+    if (!reservations || reservations.length === 0) {
+      return res.status(404).json({ message: "No hay reservas registradas" });
+    }
 
-      if (!reservations || reservations.length === 0) {
-          return res.status(404).json({ message: "No hay reservas registradas" });
-      }
-
-      res.status(200).json(reservations);
+    res.status(200).json(reservations);
   } catch (error) {
-      console.error("Error al obtener reservas:", error.message);
-      res.status(500).json({ error: error.message });
+    console.error("Error al obtener reservas:", error.message);
+    res.status(500).json({ error: error.message });
   }
 };
 
 export const getReservationsByIdController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ erros: errors.array() });
+    return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const reservations = await getReservationsByIdService(req.params.id);
-    res.status(200).json(reservations);
+    console.log("ID recibido en el controlador:", req.params.idReservation); 
+    const reservation = await getReservationsByIdService(req.params.idReservation);
+    if (!reservation) {
+      return res.status(404).json({ message: "Reserva no encontrada" });
+    }
+    res.status(200).json(reservation);
   } catch (error) {
+    console.error("Error en el controlador:", error.message);
     res.status(400).json({ message: error.message });
   }
 };
@@ -115,22 +122,40 @@ export const addCompanions = async (req, res) => {
   }
 };
 
- export const addPayments = async (req, res) =>{
+export const addPayments = async (req, res) => {
   const errors = validationResult(req);
-  if(!errors.isEmpty()){
-    return res.status(400).json({errors: errors.array()});
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const {idReservation, idPayments} = req.body;
+    const { idReservation, idPayments } = req.body;
     console.log('Datos recibidos en el controlador:', { idReservation, idPayments })
-    await addPaymentsServices(idReservation,idPayments);
-    res.status(200).json({message: 'Pago agregado exitosamente'});
+    await addPaymentsServices(idReservation, idPayments);
+    res.status(200).json({ message: 'Pago agregado exitosamente' });
   } catch (error) {
     console.error('Error al agregar el pago: ', error);
-    res.status(400).json({message: error.message});
-    
+    res.status(400).json({ message: error.message });
+
   }
- };
+};
+
+export const addPlans = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    const { idReservation, idPlan } = req.body;
+    console.log('Datos recibidos en el controlador:', { idReservation, idPlan })
+    await addPlansServices(idReservation, idPlan);
+    res.status(200).json({ message: 'Plan Agregado exitosamente' })
+  } catch (error) {
+    console.error('Error al agregar el plan: ', error);
+    res.status(400), json({ message: error.message })
+
+  }
+
+}
 
 export const updateCompanion = async (req, res) => {
   const errors = validationResult(req);
@@ -152,8 +177,8 @@ export const deleteCompanions = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { idReservationsCompanions  } = req.params;
-    await deleteCompanionsService(idReservationsCompanions );
+    const { idReservationsCompanions } = req.params;
+    await deleteCompanionsService(idReservationsCompanions);
     res.status(200).json({ message: "Acompañante eliminado exitosamente" });
   } catch (error) {
     res.status(400).json({ message: error.message });
