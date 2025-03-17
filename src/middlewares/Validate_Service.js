@@ -1,10 +1,10 @@
 export const validateService = (req, res, next) => {
-    const { Id_Service, name, Description, Price, StatusServices } = req.body;
-    if (!Id_Service || Id_Service < 0 || !Number.isInteger(Id_Service)) {
-        return res.status(400).json({
-            msg: 'verifique el Id_Service, debe ingresar un número entero mayor a 0'
-        })
-    }
+    const {  name, Description, Price, StatusServices } = req.body;
+    // if (!Id_Service || Id_Service < 0 || !Number.isInteger(Id_Service)) {
+    //     return res.status(400).json({
+    //         msg: 'verifique el Id_Service, debe ingresar un número entero mayor a 0'
+    //     })
+    // }
     if (!name) {
         return res.status(400).json({
             msg: 'name is required'

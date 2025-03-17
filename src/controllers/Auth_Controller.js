@@ -11,7 +11,7 @@ export const loginController = async (req, res) => {
     const { email, password } = req.body;
     const { user, token, refreshToken } = await loginService(email, password);
 
-    // Almacena el token de acceso en una cookie httpOnly
+    // Almacenoooooooooo el token de acceso en una cookie httpOnly
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -40,7 +40,6 @@ export const registerController = async (req, res) => {
       req.body
     );
 
-    // Almacena el token de acceso en una cookie httpOnly
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

@@ -20,13 +20,15 @@ import {
   deleteComfortValidation,
 } from "../middlewares/Valide_Cabins.js";
 import upload from "../middlewares/Multer.js";
+import { authorize } from "../middlewares/RolesPermissionAuth.js";
+import { verifyToken } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
 router.get("/", getAllCabinsController);
 router.get("/:id", getCabinValidation, getCabinByIdController);
-router.post("/", upload.single("imagen"), createCabinValidation, createCabinController);
-router.put("/:id", upload.single("imagen"), updateCabinValidation, updateCabinController);
+router.post("/", upload.single("imagen"),verifyToken,authorize(["create_cabin"]), createCabinValidation, createCabinController);
+router.put("/:id", upload.single("imagen"), updateCabinValidation,verifyToken,authorize(["edit_cabin"]), updateCabinController);
 router.delete("/:id", deleteCabinValidation, deleteCabinController);
 
 
