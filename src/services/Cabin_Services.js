@@ -7,6 +7,7 @@ import {
   addComfortToCabinRepository,
   updateComfortToCabinRepository,
   deleteComfortToCabinRepository,
+  getComfortsToCabinRepository
 } from "../repositories/Cabin_Repository.js";
 
 
@@ -32,6 +33,9 @@ export const deleteCabinService = async (id) =>{
 }
 
 
+export const getComfortsToCabinService = async () =>{
+   return await getComfortsToCabinRepository();
+}
 export const addComfortToCabinService = async (cabinComfortData) =>{
   return await addComfortToCabinRepository(cabinComfortData);
 }

@@ -3,7 +3,7 @@ import { Roles } from "../models/Roles_Model.js";
 import { Permissions } from "../models/Permissions_Model.js";
 
 export const getAllUsers = async () => {
-  return await Users.findAll(); 
+  return await Users.findAll({attributes:{exclude:["password","refreshToken"]}}); 
 };
 
 export const getUserById = async (id) => {

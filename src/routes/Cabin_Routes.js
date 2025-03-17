@@ -5,6 +5,7 @@ import {
   createCabinController,
   updateCabinController,
   deleteCabinController,
+  getComfortsToCabinController,
   addComfortToCabinController,
   updateComfortToCabinController,
   deleteComfortToCabinController,
@@ -30,6 +31,7 @@ router.delete("/:id", deleteCabinValidation, deleteCabinController);
 
 
 //agregar comodidades
+router.get("/cabinComforts/assignment",getComfortsToCabinController)
 router.post("/cabinComforts", addComfortValidation, addComfortToCabinController);
 router.put("/cabinComforts/:idBedroomComfort", updateComfortValidation, updateComfortToCabinController);
 router.delete("/cabinComforts/:idBedroomComfort", deleteComfortValidation, deleteComfortToCabinController);

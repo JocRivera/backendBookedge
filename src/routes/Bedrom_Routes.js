@@ -5,6 +5,7 @@ import {
   createBedroomController,
   updateBedroomController,
   deleteBedroomController,
+  getAllComfortToBedroomController,
   addComfortToBedroomController,
   updateComfortToBedroomController,
   removeComfortFromBedroomController,
@@ -30,6 +31,7 @@ router.put("/:id", upload.single("imagen"), updateBedroomValidation, updateBedro
 router.delete("/:id", deleteBedroomValidation, deleteBedroomController);
 
 // Rutas para comodidades de habitaciones
+router.get("/roomComforts/assignment",getAllComfortToBedroomController)
 router.post("/roomComforts", addComfortValidation, addComfortToBedroomController);
 router.put("/roomComforts/:idRoomComforts", updateComfortValidation, updateComfortToBedroomController);
 router.delete("/roomComforts/:idRoomComforts", deleteComfortValidation, removeComfortFromBedroomController);

@@ -40,7 +40,9 @@ export const deleteCabinRepository = async (id) => {
 };
 
 
-
+export const getComfortsToCabinRepository = async () =>{
+  return await CabinsComforts.findAll();
+}
 export const addComfortToCabinRepository = async (cabinComfortData) => {
   return await CabinsComforts.create(cabinComfortData);
 };
