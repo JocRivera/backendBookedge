@@ -54,13 +54,13 @@ export const Users = database.define(
       allowNull: false,
       defaultValue: true,
     },
+    refreshToken: { type: DataTypes.STRING, allowNull: true },
   },
   {
     tableName: "Users",
     timestamps: false,
   }
 );
-
 
 Users.belongsTo(Roles, { foreignKey: "idRol", as: "role" });
 Roles.hasMany(Users, { foreignKey: "idRol", as: "users" });

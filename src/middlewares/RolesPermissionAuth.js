@@ -9,15 +9,18 @@ export const authorize = (requiredPermissions) => async (req, res, next) => {
       return res.status(403).json({ message: "Usuario no encontrado" });
     }
 
-    const hasPermission = user.role.permissions.some((perm) =>
-      requiredPermissions.includes(perm.name)
-    );
-    console.log(hasPermission);
-    
+    if (!user.role || !user.role.permissions) {
+      return res.status(403).json({ message: "No tienes permisos asignados" });
+    }
+
+    // Optimización: Usar Set para mejorar la búsqueda
+    const userPermissions = new Set(user.role.permissions.map((perm) => perm.name));
+    const hasPermission = requiredPermissions.some((perm) => userPermissions.has(perm));
 
     if (!hasPermission) {
       return res.status(403).json({ message: "No tienes permisos suficientes" });
     }
+
     next();
   } catch (error) {
     console.error("Error en la autorización:", error);

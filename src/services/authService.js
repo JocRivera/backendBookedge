@@ -1,36 +1,59 @@
 import bcrypt from "bcryptjs";
 import { Users } from "../models/user_Model.js";
-import { generateToken } from "../utils/jwt.js";
+import { generateToken, generateRefreshToken } from "../utils/jwt.js";
 import { Roles } from "../models/Roles_Model.js";
 
 export const loginService = async (email, password) => {
   try {
     const user = await Users.findOne({ where: { email } });
-    if (!user) throw new Error("Correo o contraseña incorrectos");
+    if (!user || !user.status)
+      throw new Error("Correo o contraseña incorrectos");
 
-    if (!user.status) throw new Error("Cuenta inactiva, contacta al administrador");
+    if (!(await bcrypt.compare(password, user.password))) {
+      throw new Error("Correo o contraseña incorrectos");
+    }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) throw new Error("Correo o contraseña incorrectos");
+    const token = generateToken(user);
+    const refreshToken = generateRefreshToken(user);
 
-    const token = generateToken(user, user.idRol);
-    const { password: _, ...userWithoutPassword } = user.dataValues;
-    return { user: userWithoutPassword, token };
+    if (user.refreshToken !== refreshToken) {
+      await user.update({ refreshToken });
+    }
+
+    return {
+      user: { idUser: user.idUser, email: user.email, idRol: user.idRol },
+      token, 
+    };
   } catch (error) {
-    throw new Error(error.message);
+    throw new Error(error.message || "Error en el inicio de sesión");
+  }
+};
+
+export const refreshAccessToken = async (refreshToken) => {
+  if (!refreshToken) throw new Error("No hay refresh token");
+
+  const user = await Users.findOne({ where: { refreshToken } });
+  if (!user) throw new Error("Refresh token inválido");
+
+  return { token: generateToken(user) };
+};
+
+export const logoutService = async (userId) => {
+  const user = await Users.findByPk(userId);
+  if (user && user.refreshToken) {
+    await user.update({ refreshToken: null });
   }
 };
 
 export const registerCustomerService = async (userData) => {
   try {
-    const { password, eps, address, email, ...rest } = userData;
+    const { password, email, ...rest } = userData;
 
     if (await Users.findOne({ where: { email } })) {
-      throw new Error("El correo ya se encuentra registrado");
+      throw new Error("El correo ya está registrado");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const clientRol = await Roles.findOne({ where: { name: "Cliente" } });
     if (!clientRol) throw new Error("El rol de cliente no existe");
 
@@ -38,16 +61,23 @@ export const registerCustomerService = async (userData) => {
       ...rest,
       email,
       password: hashedPassword,
-      eps: eps || null,
-      address: address || null,
       idRol: clientRol.idRol,
     });
 
-    const token = generateToken(newUser, clientRol.idRol);
+    const token = generateToken(newUser);
+    const refreshToken = generateRefreshToken(newUser);
 
-    const { password: _, ...userWithoutPassword } = newUser.dataValues;
-    return { user: userWithoutPassword, token };
+    await newUser.update({ refreshToken });
+
+    return {
+      user: {
+        idUser: newUser.idUser,
+        email: newUser.email,
+        idRol: newUser.idRol,
+      },
+      token,
+    };
   } catch (error) {
-    throw new Error(error.message);
+    throw new Error(error.message || "Error en el registro");
   }
 };

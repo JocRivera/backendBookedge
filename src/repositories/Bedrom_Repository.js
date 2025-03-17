@@ -39,6 +39,11 @@ export const deleteBedroomRepository = async (id) => {
   return await Bedrooms.destroy({ where: { idRoom: id } });
 };
 
+
+export const getAllComfortToBedroomRepository = async ()=>{
+  return await BedroomsComforts.findAll();
+}
+
 export const addComfortToBedroomRepository = async (bedroomComfortData) => {
   return await BedroomsComforts.create(bedroomComfortData);
 };

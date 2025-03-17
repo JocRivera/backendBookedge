@@ -5,6 +5,8 @@ import {
   createBedroomService,
   updateBedroomService,
   deleteBedroomService,
+  getAllComfortToBedroomsService,
+  addComfortToBedroomService,
   updateBedroomComfortService,
   removeComfortFromBedroomService,
 } from "../services/Bedrom_Service.js";
@@ -78,6 +80,14 @@ export const deleteBedroomController = async (req, res) => {
   }
 };
 
+export const getAllComfortToBedroomController = async (req, res) => {
+  try {
+    const bedroomsComforts = await getAllComfortToBedroomsService();
+    res.status(200).json(bedroomsComforts);
+  } catch (error) {
+    return res.status(400).json({message:error.message})
+  }
+};
 export const addComfortToBedroomController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -98,7 +108,7 @@ export const updateComfortToBedroomController = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { idRoomComforts } = req.params; 
+    const { idRoomComforts } = req.params;
     const comfortData = req.body;
     await updateBedroomComfortService(idRoomComforts, comfortData);
     res.status(200).json({ message: "Comodidad actualizada correctamente" });
@@ -113,12 +123,10 @@ export const removeComfortFromBedroomController = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { idRoomComforts } = req.params; 
+    const { idRoomComforts } = req.params;
     await removeComfortFromBedroomService(idRoomComforts);
     res.status(200).json({ message: "Comodidad eliminada correctamente" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
-
-

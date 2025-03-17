@@ -5,6 +5,7 @@ import {
   createCabinService,
   updateCabinService,
   deleteCabinService,
+  getComfortsToCabinService,
   addComfortToCabinService,
   updateComfortToCabinService,
   deleteComfortToCabinService,
@@ -80,6 +81,14 @@ export const deleteCabinController = async (req, res) => {
   }
 };
 
+export const getComfortsToCabinController = async (req, res) => {
+  try {
+    const cabinsComforts = await getComfortsToCabinService();
+    res.status(200).json(cabinsComforts);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
 
 export const addComfortToCabinController = async (req, res) => {
   const errors = validationResult(req);

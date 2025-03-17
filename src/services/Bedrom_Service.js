@@ -4,6 +4,7 @@ import {
   createBedroomRepository,
   updateBedroomRepository,
   deleteBedroomRepository,
+  getAllComfortToBedroomRepository,
   addComfortToBedroomRepository,
   updateBedroomComfortRepository,
   removeComfortFromBedroomRepository
@@ -29,6 +30,9 @@ export const deleteBedroomService = async (id) => {
   return await deleteBedroomRepository(id);
 };
 
+export const getAllComfortToBedroomsService = async () =>{
+  return await getAllComfortToBedroomRepository()
+}
 export const addComfortToBedroomService = async (bedroomComfortData) => {
   return await addComfortToBedroomRepository(bedroomComfortData);
 };
