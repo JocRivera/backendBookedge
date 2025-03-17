@@ -1,48 +1,90 @@
 import { Reservations } from "../models/Reservations_Model.js";
 import { Companions } from "../models/Companions_Model.js";
 import { Payments } from "../models/Payments_Model.js";
+import { Plans } from "../models/Plans_Model.js";
+import { Users } from "../models/user_Model.js";
 import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
 import { PaymentsReservations } from "../models/Payments_Reservations_model.js"
 
 
-export const getAllReservations = async () => {
-  return await Reservations.findAll({
-    include: [
-      {
-        model: Companions,
-        as: "companions",
-        attributes: ["idCompanions", "name", "documentType", "documentNumber"],
-        through: { attributes: [] }
-      },
-    ],
-    include: [
-      {
-        model: PaymentsReservations,
-        attributes: ["idPayments"],
-        through: { attributes }
 
-      }
-    ]
-  });
+export const getAllReservations = async () => {
+  try {
+    return await Reservations.findAll({
+      include: [
+        {
+          model: Companions,
+          as: "companions",
+          attributes: ["idCompanions", "name", "documentType", "documentNumber"],
+          through: { attributes: [] },
+        },
+        {
+          model: Payments,
+          as: "payments",
+          attributes: ["idPayments", "paymentMethod", "amount", "status"],
+          through: { attributes: [] },
+        },
+        {
+          model: Plans,
+          as: "plan",
+          attributes: ["idPlan", "name", "salePrice"],
+        },
+        {
+          model: Users,
+          as: 'user',
+          attributes:['idUser','identification']
+
+        }
+      ],
+    });
+  } catch (error) {
+    console.error("Error al obtener reservas:", error.message);
+    throw error;
+  }
 };
 
 export const getReservationsById = async (id) => {
-  return await Reservations.findByPk(id, {
-    include: [
-      {
-        model: Companions,
-        as: "companions",
-        attributes: ["idCompanions", "name", "documentType", "documentNumber"],
-        through: { attributes: [] },
+  try {
+    const reservationId = parseInt(id, 10); 
+    console.log("ID recibido en el repositorio:", id); 
+    const reservation = await Reservations.findByPk(id, {
+      include: [
+        {
+          model: Companions,
+          as: "companions",
+          attributes: ["idCompanions", "name", "documentType", "documentNumber"],
+          through: { attributes: [] },
+        },
+        {
+          model: Payments,
+          as: "payments",
+          attributes: ["idPayments", "paymentMethod", "amount", "status"],
+          through: { attributes: [] },
+        },
+        {
+          model: Plans,
+          as: "plan",
+          attributes: ["idPlan", "name", "salePrice"],
+        },
+        {
+          model: Users,
+          as: 'user',
+          attributes:['idUser','identification']
 
-        model: PaymentsReservations,
-        as: 'paymentsreservations',
-        attributes: ["idPayments"],
-        through: { attributes: [] }
-      },
+        }
+      ],
+    });
 
-    ],
-  });
+    if (!reservation) {
+      throw new Error("Reserva no encontrada"); 
+    }
+
+    console.log("Reserva encontrada:", reservation); 
+    return reservation;
+  } catch (error) {
+    console.error("Error al obtener reserva por ID:", error.message);
+    throw error; 
+  }
 };
 
 export const createReservations = async (reservationsData) => {
@@ -82,33 +124,6 @@ export const addCompanions = async (idReservation, idCompanions) => {
   }
 };
 
-export const addPayments = async (idReservation, idPayments) => {
-  try {
-    // Verificar que la reserva exista
-    const reservation = await Reservations.findByPk(idReservation);
-    if (!reservation) {
-      throw new Error("Reserva no encontrada");
-    }
-
-    // Verificar que el pago exista
-    const payment = await Payments.findByPk(idPayments);
-    if (!payment) {
-      throw new Error("Pago no encontrado");
-    }
-
-    // Crear la asociación en PaymentsReservations
-    const paymentReservation = await PaymentsReservations.create({
-      idReservation,
-      idPayments,
-    });
-
-    return paymentReservation;
-  } catch (error) {
-    console.error("Error al agregar el pago:", error.message);
-    throw error;
-  }
-};
-
 export const updateCompanions = async (
   idReservationsCompanions,
   idReservation,
@@ -129,4 +144,15 @@ export const deleteCompanions = async (idReservationsCompanions) => {
   return await ReservationsCompanions.destroy({
     where: { idReservationsCompanions },
   });
+};
+
+
+export const addPayments = async (paymentsData) => {
+  console.log('Datos recibidos en el repositorio:', paymentsData);
+  return await PaymentsReservations.create(paymentsData);
+};
+
+export const addPlans = async (planData) => {
+  console.log('Datos recibidos en el repositorio:', planData);
+  return await PaymentsReservations.create(planData);
 };

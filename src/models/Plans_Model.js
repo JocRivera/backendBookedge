@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import {database} from '../config/database.js';
 
+
 export const Plans = database.define('Plans', {
     idPlan: {
         type: DataTypes.INTEGER(),

@@ -5,11 +5,13 @@ import { Roles } from "./Roles_Model.js";
 import { Permissions } from "./Permissions_Model.js";
 import { PermissionRoles } from "./Permission_Roles.js";
 import { Reservations } from "./Reservations_Model.js";
+import { Plans } from './Plans_Model.js';
 import { Companions } from "./Companions_Model.js";
 import { ReservationsCompanions } from "./Reservations_Companions_Models.js";
 import { Payments } from "./Payments_Model.js";
-import { PaymentsReservations } from "./Payments_Reservations_model.js";
+import { Users } from "../models/user_Model.js";
 
+import { PaymentsReservations } from "./Payments_Reservations_model.js";
 export const setupAssociations = () => {
   Cabins.belongsToMany(Comforts, {
     through: CabinsComforts, // Tabla intermedia
@@ -61,15 +63,40 @@ export const setupAssociations = () => {
     through: PaymentsReservations,
     foreignKey: "idPayments",
     otherKey: "idReservation",
-    as: "payments",
+    as: "reservations",
   });
 
   Reservations.belongsToMany(Payments, {
     through: PaymentsReservations,
     foreignKey: "idReservation",
     otherKey: "idPayments",
-    as: "reservations",
+    as: "payments",
   });
+
+  Plans.hasMany(Reservations, {
+    foreignKey: 'idPlan',
+    as: 'reservations',
+  });
+
+  Reservations.belongsTo(Plans, {
+    foreignKey: 'idPlan',
+    as: 'plan',
+  });
+
+  //Relacion de reservas de uno a muchos
+
+  Users.hasMany(Reservations, {
+    foreignKey: 'idUser',
+    as: 'reservations',
+  });
+
+  Reservations.belongsTo(Users, {
+    foreignKey: 'idUser',
+    as: 'user',
+  })
+
 
   console.log("Asociaciones configuradas correctamente.");
 };
+
+

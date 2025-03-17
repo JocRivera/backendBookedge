@@ -34,26 +34,26 @@ export const createPaymentValidation = [
 ];
 
 export const updatePaymentValidation = [
-  param("idPayments")
+  body("idPayments")
     .isInt()
     .withMessage("El ID de pago debe ser un número entero"),
   ...createPaymentValidation,
 ];
 
 export const getPaymentByIdValidation = [
-  param("idPayments")
+  body("idPayments")
     .isInt()
     .withMessage("El ID de pago debe ser un número entero"),
 ];
 
 export const deletePaymentValidation = [
-  param("idPayments")
+  body("idPayments")
     .isInt()
     .withMessage("El ID de pago debe ser un número entero"),
 ];
 
 export const addPaymentsValidation = [
-  param("idPayment")
+  body("idPayments")
     .isInt()
     .withMessage("El Id del pago debe ser un número entero")
     .custom(validatePaymentsExistence), 

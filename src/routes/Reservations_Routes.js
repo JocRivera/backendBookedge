@@ -6,6 +6,7 @@ import {
   updateReservationsController,
   addCompanions,
   addPayments,
+  addPlans,
   updateCompanion,
   deleteCompanions,
   changeStatusReservationsController,
@@ -18,18 +19,20 @@ import {
   changeStateReservationsValidation,
   addCompanionValidation,
   addPaymentsValidation,
+  addPlansValidation,
   updateCompanionsValidation,
   deleteCompaniosValidation
 } from '../middlewares/Validate_Reservations.js';
-
+import { authorize } from "../middlewares/RolesPermissionAuth.js";
+import { verifyToken } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 // Rutas para las reservas
-router.get("/", getAllReservationsController);
-router.get("/:id", getReservationsValidation, getReservationsByIdController);
-router.post("/", createReservationValidation, createReservationsController);
-router.put("/:id", updateReservationsValidation, updateReservationsController);
-router.patch("/:id/status", changeStateReservationsValidation, changeStatusReservationsController);
+router.get("/",verifyToken,authorize(["view_reservations"]), getAllReservationsController);
+router.get("/:idReservation", getReservationsValidation, authorize(["view_reservations"]), getReservationsByIdController);
+router.post("/", createReservationValidation,verifyToken,authorize(["create_reservations"]), createReservationsController);
+router.put("/:id", updateReservationsValidation,verifyToken,authorize(["edit_reservations"]), updateReservationsController);
+router.patch("/:id/status", changeStateReservationsValidation,verifyToken,authorize(["change_status_reservations"]), changeStatusReservationsController);
 
 //Ruta para obtener una reserva con sus acompañantes y agregar pagos
 router.get("/:id/companions", getReservationsValidation, getReservationsByIdController);
@@ -38,7 +41,10 @@ router.get("/:id/companions", getReservationsValidation, getReservationsByIdCont
 router.post("/:idReservation/companions/:idCompanion", addCompanionValidation, addCompanions);
 
 //Ruta para agregar pagos
-router.post("/:idReservation/payments/:idPayments", addPaymentsValidation, addPayments);
+router.post("/Reservationpayments",addPaymentsValidation, addPayments);
+
+//Ruta para agregar plan
+router.post("/Reservationplans", addPlansValidation, addPlans);
 
 //Ruta para actualizar un acompañante
 router.put("/companions/:id/ReservationsCompanions", updateCompanionsValidation, updateCompanion);

@@ -1,6 +1,8 @@
 import { Reservations } from "../models/Reservations_Model.js";
 import { Companions } from "../models/Companions_Model.js";
 import { Payments } from "../models/Payments_Model.js";
+import { Plans } from "../models/Plans_Model.js";
+import { Users } from "../models/user_Model.js";
 import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
 import { body, param, validationResult } from "express-validator";
 
@@ -13,28 +15,28 @@ export const validateReservationsExistence = async (idReservation) => {
   return true;
 };
 
-export const validateReservationsName = async (nameClient) => {
-  const reservations = await Reservations.findOne({ where: { nameClient } });
-  if (reservations) {
-    return Promise.reject('La reserva ya existe');
-  }
-  return true;
-}
-
 const reservationBaseValidation = [
-  body("nameClient")
-    .notEmpty().withMessage("El nombre del cliente es obligatorio")
-    .isString().withMessage("El nombre del cliente debe ser un texto"),
-  body("documentType")
-    .notEmpty().withMessage("El tipo de documento es obligatorio")
-    .isIn(["Cédula de ciudadanía", "Cédula de extranjería", "Pasaporte"])
-    .withMessage("Tipo de documento no válido"),
+  body("idUser")
+    .notEmpty().withMessage("El ID del usuario es obligatorio")
+    .isInt().withMessage("El ID del usuario debe ser un número entero")
+    .custom(async (value) => {
+      const user = await Users.findByPk(value);
+      if (!user) {
+        throw new Error("El usuario no existe");
+      }
+      return true;
+    }),
 
-
-  body("plan")
-    .notEmpty().withMessage("El plan es obligatorio")
-    .isIn(["Día de sol", "Empresarial", "Romántico", "Pasadía Cumpleaños", "Amanecida"])
-    .withMessage("Plan no válido"),
+  body("idPlan")
+    .notEmpty().withMessage("El ID del plan es obligatorio")
+    .isInt().withMessage("El ID del plan debe ser un número entero")
+    .custom(async (value) => {
+      const plan = await Plans.findByPk(value);
+      if (!plan) {
+        throw new Error("El plan no existe");
+      }
+      return true;
+    }),
 
   body("startDate")
     .notEmpty().withMessage("La fecha de inicio es obligatoria")
@@ -48,6 +50,7 @@ const reservationBaseValidation = [
       return true;
     }),
 
+
   body("endDate")
     .notEmpty().withMessage("La fecha de fin es obligatoria")
     .isISO8601().withMessage("La fecha de fin debe tener un formato válido (Año-Mes-Dia)")
@@ -60,54 +63,33 @@ const reservationBaseValidation = [
       return true;
     }),
 
-
-  body("price")
-    .notEmpty().withMessage("El precio es obligatorio")
-    .isFloat({ min: 0 }).withMessage("El precio debe ser un número positivo"),
-
   body("status")
     .optional()
     .isIn(["Reservado", "Confirmado", "Pendiente", "Anulado"])
     .withMessage("Estado no válido"),
 
-  // body("idCompanions")
-  //   .optional()
-  //   .isInt().withMessage("El ID de acompañantes debe ser un número entero")
-  //   .custom(async (value) => {
-  //     if (value) {
-  //       const companion = await Companions.findByPk(value);
-  //       if (!companion) {
-  //         throw new Error("El acompañante seleccionado no existe");
-  //       }
-  //     }
-  //     return true;
-  //   }),
-
 ];
-
 export const createReservationValidation = [
   ...reservationBaseValidation,
-  body("nameClient").custom(validateReservationsName),
 ];
 
 export const updateReservationsValidation = [
   ...reservationBaseValidation,
-  param("id")
+  param("idReservation")
     .isInt()
     .withMessage("El ID de la reserva debe ser un número entero")
     .custom(validateReservationsExistence),
-  body("nameClient").custom(validateReservationsName),
 ];
 
 export const deletereservationsValidation = [
-  param("id")
+  param("idReservation")
     .isInt()
     .withMessage("El ID de la reserva debe ser un número entero")
     .custom(validateReservationsExistence),
 ];
 
 export const getReservationsValidation = [
-  param("id")
+  param("idReservation")
     .isInt()
     .withMessage("El ID de la reserva debe ser un número entero")
     .custom(validateReservationsExistence),
@@ -119,7 +101,7 @@ export const changeStateReservationsValidation = [
     .withMessage(
       "El estado de la reserva debe ser 'Reservado', 'Confirmado', 'Pendiente' o 'Anulado'"
     ),
-  param("id")
+  param("idReservation")
     .isInt()
     .withMessage("El ID de la reserva debe ser un número entero")
     .custom(validateReservationsExistence),
@@ -136,6 +118,7 @@ export const validateReservationsCompanions = async (idReservationsCompanions) =
   }
   return true;
 };
+
 export const validateCompanionsNotExists = async (idReservation, idCompanions) => {
   const reservationsCompanions = await ReservationsCompanions.findOne({
     where: { idReservation, idCompanions }
@@ -145,6 +128,7 @@ export const validateCompanionsNotExists = async (idReservation, idCompanions) =
   }
   return true;
 };
+
 
 export const addCompanionValidation = [
   param("idReservation")
@@ -177,20 +161,38 @@ export const deleteCompaniosValidation = [
 
 //Validacion para agregar los pagos
 export const addPaymentsValidation = [
-  param('idReservation')
-  .isInt()
-  .withMessage('El Id de la reserva debe ser un numero entero')
-  .custom(validateReservationsExistence),
-  param('idPayments')
-  .isInt()
-  .withMessage('El Id del pago debe ser un numero entero')
-  .custom(
-    async (value) => {
+  body('idReservation')
+    .isInt()
+    .withMessage('El Id de la reserva debe ser un numero entero')
+    .custom(validateReservationsExistence),
+  body('idPayments')
+    .isInt()
+    .withMessage('El Id del pago debe ser un numero entero')
+    .custom(async (value) => {
       const payment = await Payments.findByPk(value);
-      if (!payment){
+      if (!payment) {
         throw new Error('El pago no existe')
       }
-      return true; 
+      return true;
     }
-  ),
+    ),
 ]
+
+//Validacion para agregar el plan
+export const addPlansValidation = [
+  body('idReservation')
+    .notEmpty().withMessage('El ID de la reservación es obligatorio') 
+    .isInt().withMessage('El ID de la reservación debe ser un número entero') 
+    .custom(validateReservationsExistence),
+
+  body('idPlan')
+    .notEmpty().withMessage('El ID del plan es obligatorio') 
+    .isInt().withMessage('El ID del plan debe ser un número entero') 
+    .custom(async (value) => {
+      const plan = await Plans.findByPk(value);
+      if (!plan) {
+        throw new Error('El plan no existe');
+      }
+      return true;
+    }),
+];

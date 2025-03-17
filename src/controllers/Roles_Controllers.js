@@ -1,4 +1,5 @@
 import { RolesService } from "../services/Roles_Services.js";
+import { validationResult } from "express-validator";
 
 export class RolesController {
     constructor() {
@@ -26,6 +27,10 @@ export class RolesController {
 
     async create(req, res) {
         const role = req.body;
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
         try {
             const newRole = await this.rolesService.create(role);
             return res.status(201).json(newRole);

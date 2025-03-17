@@ -26,7 +26,9 @@ export const PaymentsReservations = database.define(
             }
         }
     }, {
-    tableName: 'PaymentsReservations',
+    tableName: 'PaymentsReservations', //Nombre de la tabla en la base de datos
     timestamps: false
+
+
 }
 )
