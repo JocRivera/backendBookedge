@@ -3,6 +3,8 @@ import {
   registerCustomerService,
   refreshAccessToken,
   logoutService,
+  recoveryPassword,
+  resetPasswordService,
 } from "../services/authService.js";
 import { validationResult } from "express-validator";
 
@@ -87,6 +89,28 @@ export const logoutController = async (req, res) => {
     res.clearCookie("refreshToken");
 
     return res.status(200).json({ message: "Sesión cerrada exitosamente" });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+export const recoveryPasswordController = async (req, res) => {
+  try {
+    const { email } = req.body;
+    await recoveryPassword(email);
+    return res.status(200).json({ message: "correo de recuperación enviado" });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+export const resetPasswordController = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    await resetPasswordService(token, newPassword);
+    return res
+      .status(200)
+      .json({ message: "Contraseña Reestablecida correctamente" });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }

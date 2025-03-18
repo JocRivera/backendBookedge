@@ -55,6 +55,8 @@ export const Users = database.define(
       defaultValue: true,
     },
     refreshToken: { type: DataTypes.STRING, allowNull: true },
+    resetToken : {type: DataTypes.STRING, allowNull:true},
+    resetTokenExpires: { type: DataTypes.DATE, allowNull: true }, 
   },
   {
     tableName: "Users",

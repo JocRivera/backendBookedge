@@ -2,6 +2,8 @@ import bcrypt from "bcryptjs";
 import { Users } from "../models/user_Model.js";
 import { generateToken, generateRefreshToken } from "../utils/jwt.js";
 import { Roles } from "../models/Roles_Model.js";
+import crypto from "crypto";
+import { sendResetPasswordEmail } from "../utils/emails.js";
 
 export const loginService = async (email, password) => {
   try {
@@ -22,7 +24,7 @@ export const loginService = async (email, password) => {
 
     return {
       user: { idUser: user.idUser, email: user.email, idRol: user.idRol },
-      token, 
+      token,
     };
   } catch (error) {
     throw new Error(error.message || "Error en el inicio de sesión");
@@ -80,4 +82,36 @@ export const registerCustomerService = async (userData) => {
   } catch (error) {
     throw new Error(error.message || "Error en el registro");
   }
+};
+
+export const recoveryPassword = async (email) => {
+  const user = await Users.findOne({ where: { email } });
+  if (!user) {
+    throw new Error("El correo no se encuentra registrado");
+  }
+  const resetToken = crypto.randomBytes(32).toString("hex");//genera un token aleatorio criptografico
+  const resetTokenExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutos
+
+  await user.update({ resetToken, resetTokenExpires });
+
+  const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+  console.log("Token de recuperación generado:", resetToken);
+
+  await sendResetPasswordEmail(email, resetLink);
+};
+
+export const resetPasswordService = async (token, newPassword) => {
+  const user = await Users.findOne({ where: { resetToken: token } });
+
+  if (!user) {
+    throw new Error("Token invalido O expirado");
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  await user.update({
+    password: hashedPassword,
+    resetToken: null,
+    resetTokenExpires: null,
+  });
 };
