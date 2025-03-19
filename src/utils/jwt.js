@@ -16,10 +16,10 @@ export const generateToken = (user) => {
     );
 };
 
-export const generateRefreshToken =(user) => {
+export const generateRefreshToken = (user) => {
     return jwt.sign(
-        {idUser:user.idUser},
-        JWT_REFRESH_EXPIRES_IN,
-        {expiresIn: JWT_REFRESH_EXPIRES_IN}
-    )
-}
+        { idUser: user.idUser },
+        JWT_SECRET,  
+        { expiresIn: JWT_REFRESH_EXPIRES_IN }
+    );
+};
