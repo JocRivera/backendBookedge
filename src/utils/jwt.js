@@ -10,6 +10,7 @@ export const generateToken = (user) => {
             idUser: user.idUser, 
             email: user.email,
             idRol: user.idRol,  
+            
         },
         JWT_SECRET,
         { expiresIn: JWT_EXPIRES_IN }
