@@ -115,3 +115,32 @@ export const resetPasswordController = async (req, res) => {
     return res.status(400).json({ message: error.message });
   }
 };
+
+
+export const getMe = async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Devolver información completa del usuario incluyendo su rol y permisos
+    res.status(200).json({
+      idUser: user.idUser,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      document: user.document,
+      status: user.status,
+      role: {
+        idRol: user.role.idRol,
+        name: user.role.name
+      },
+      permissions: user.role.permissions // Aquí asumimos que los permisos están guardados en el rol
+    });
+  } catch (error) {
+    console.error("Error al obtener el perfil del usuario:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+};

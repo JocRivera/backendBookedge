@@ -1,8 +1,11 @@
 import { Comforts } from "../models/Comfort_Model.js";
 
-export const getAllComforts = async () => {
-  return await Comforts.findAll();
+export const getAllComforts = async (orderBy = 'idComfort', orderDirection = 'ASC') => {
+  return await Comforts.findAll({
+    order: [[orderBy, orderDirection]], 
+  });
 };
+
 
 export const getComfortById = async (id) => {
   return await Comforts.findByPk(id);
