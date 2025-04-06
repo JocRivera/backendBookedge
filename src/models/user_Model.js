@@ -49,6 +49,11 @@ export const Users = database.define(
       type: DataTypes.STRING(150),
       allowNull: false,
     },
+    birthdate: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    
     status: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

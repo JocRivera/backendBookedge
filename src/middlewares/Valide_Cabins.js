@@ -26,12 +26,12 @@ const cabinBaseValidation = [
   body("capacity")
     .isInt({ min: 3, max: 7 })
     .withMessage("La capacidad de la cabaña debe estar entre 3 y 7 personas"),
-  body("status")
+    body("status")
     .optional()
     .default("En Servicio")
     .isIn(["En Servicio", "Fuera de Servicio", "Mantenimiento"])
-    .withMessage(
-      "El estado de la cabaña debe ser 'En Servicio', 'Fuera de Servicio' o 'Mantenimiento'"
+      .withMessage(
+      "El estado de la cabaña debe ser 'En Servicio', 'Fuera de Servicio' o 'En Mantenimiento'"
     ),
 ];
 
@@ -54,8 +54,8 @@ export const updateCabinValidation = [
     .withMessage("El ID de la cabaña debe ser un número entero")
     .custom(validateCabinExistence), 
   ...cabinBaseValidation,
-  imageValidation,
-];
+  ];
+
 
 
 export const deleteCabinValidation = [

@@ -24,6 +24,7 @@ export const Cabins = database.define(
       allowNull: false,
     },
     status: {
+      allowNull:false,
       type: DataTypes.ENUM("En Servicio", "Fuera de Servicio", "Mantenimiento"),
       defaultValue: "En Servicio",
     },
