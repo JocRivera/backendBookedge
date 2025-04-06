@@ -28,11 +28,11 @@ import { verifyToken } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 // Rutas para las reservas
-router.get("/",verifyToken,authorize(["view_reservations"]), getAllReservationsController);
-router.get("/:idReservation", getReservationsValidation, authorize(["view_reservations"]), getReservationsByIdController);
-router.post("/", createReservationValidation,verifyToken,authorize(["create_reservations"]), createReservationsController);
-router.put("/:id", updateReservationsValidation,verifyToken,authorize(["edit_reservations"]), updateReservationsController);
-router.patch("/:id/status", changeStateReservationsValidation,verifyToken,authorize(["change_status_reservations"]), changeStatusReservationsController);
+router.get("/", getAllReservationsController);
+router.get("/:idReservation", getReservationsValidation, getReservationsByIdController);
+router.post("/", createReservationValidation, createReservationsController);
+router.put("/:id", updateReservationsValidation, updateReservationsController);
+router.patch("/:id/status", changeStateReservationsValidation, changeStatusReservationsController);
 
 //Ruta para obtener una reserva con sus acompañantes y agregar pagos
 router.get("/:id/companions", getReservationsValidation, getReservationsByIdController);

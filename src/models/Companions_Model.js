@@ -29,6 +29,10 @@ export const Companions = database.define('Companions', {
     documentNumber: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    eps:{
+        type: DataTypes.STRING(100),
+        allowNull: false
     }
 },{
     tableName:"Companions",
