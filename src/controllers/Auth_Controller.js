@@ -6,6 +6,7 @@ import {
   recoveryPassword,
   resetPasswordService,
 } from "../services/authService.js";
+import { getUserByIdService } from "../services/Users_Services.js";
 import { validationResult } from "express-validator";
 
 export const loginController = async (req, res) => {
@@ -116,31 +117,22 @@ export const resetPasswordController = async (req, res) => {
   }
 };
 
-
-export const getMe = async (req, res) => {
+export const getUserProfileController = async (req, res) => {
   try {
-    const user = req.user;
-
+    const userId = req.user.idUser;
+    const user = await getUserByIdService(userId);
+    
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    // Devolver información completa del usuario incluyendo su rol y permisos
-    res.status(200).json({
-      idUser: user.idUser,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      document: user.document,
-      status: user.status,
-      role: {
-        idRol: user.role.idRol,
-        name: user.role.name
-      },
-      permissions: user.role.permissions // Aquí asumimos que los permisos están guardados en el rol
-    });
+    // Convertir a objeto plano con .toJSON() antes de manipular
+    const userPlain = user.toJSON();
+    const { password, ...rest } = userPlain;
+
+    return res.status(200).json(rest);
   } catch (error) {
     console.error("Error al obtener el perfil del usuario:", error);
-    res.status(500).json({ message: "Error interno del servidor" });
+    return res.status(500).json({ message: "Error interno del servidor" });
   }
 };

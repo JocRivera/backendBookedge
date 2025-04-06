@@ -27,16 +27,14 @@ const router = express.Router();
 
 router.get("/", getAllCabinsController);
 router.get("/:id", getCabinValidation, getCabinByIdController);
-router.post("/", upload.single("imagen"),verifyToken,authorize(["create_cabin"]), createCabinValidation, createCabinController);
-router.put("/:id", upload.single("imagen"), updateCabinValidation,verifyToken,authorize(["edit_cabin"]), updateCabinController);
-router.delete("/:id", deleteCabinValidation, deleteCabinController);
-
+router.post("/", upload.single("imagen"), createCabinValidation, createCabinController);
+router.put("/:id", upload.single("imagen"), updateCabinValidation, updateCabinController);
+router.delete("/:id",  deleteCabinValidation, deleteCabinController);
 
 //agregar comodidades
 router.get("/cabinComforts/assignment",getComfortsToCabinController)
 router.post("/cabinComforts", addComfortValidation, addComfortToCabinController);
-router.put("/cabinComforts/:idBedroomComfort", updateComfortValidation, updateComfortToCabinController);
-router.delete("/cabinComforts/:idBedroomComfort", deleteComfortValidation, deleteComfortToCabinController);
-
-
+router.put("/cabinComforts/:idCabinComfort", updateComfortValidation, updateComfortToCabinController);
+router.delete("/cabinComforts/:idCabinComfort", deleteComfortValidation, deleteComfortToCabinController);
+    
 export default router;

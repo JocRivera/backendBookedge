@@ -7,11 +7,21 @@ import { sendResetPasswordEmail } from "../utils/emails.js";
 
 export const loginService = async (email, password) => {
   try {
-    const user = await Users.findOne({ where: { email } });
-    if (!user || !user.status)
-      throw new Error("Correo o contraseña incorrectos");
+    const user = await Users.findOne({ 
+      where: { email },
+      include: [{ 
+        model: Roles, 
+        as: 'role',
+        attributes: ['name'] 
+      }]
+    });
 
-    if (!(await bcrypt.compare(password, user.password))) {
+    if (!user || !user.status) {
+      throw new Error("Correo o contraseña incorrectos");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       throw new Error("Correo o contraseña incorrectos");
     }
 
@@ -23,8 +33,14 @@ export const loginService = async (email, password) => {
     }
 
     return {
-      user: { idUser: user.idUser, email: user.email, idRol: user.idRol },
+      user: {
+        id: user.idUser,       // Mejor usar "id" para consistencia
+        name: user.name,       // Asegura que el modelo tenga esta propiedad
+        email: user.email,
+        role: user.role?.name  // Nombre del rol en lugar del ID
+      },
       token,
+      refreshToken
     };
   } catch (error) {
     throw new Error(error.message || "Error en el inicio de sesión");
@@ -78,6 +94,7 @@ export const registerCustomerService = async (userData) => {
         idRol: newUser.idRol,
       },
       token,
+      refreshToken
     };
   } catch (error) {
     throw new Error(error.message || "Error en el registro");
@@ -103,9 +120,10 @@ export const recoveryPassword = async (email) => {
 export const resetPasswordService = async (token, newPassword) => {
   const user = await Users.findOne({ where: { resetToken: token } });
 
-  if (!user) {
-    throw new Error("Token invalido O expirado");
+  if (!user || user.resetTokenExpires < new Date()) {
+    throw new Error("Token inválido o expirado");
   }
+  
 
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 

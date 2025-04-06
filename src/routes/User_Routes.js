@@ -19,7 +19,7 @@ import { authorize } from "../middlewares/RolesPermissionAuth.js";
 
 const router = express.Router();
 
-router.get("/", verifyToken, authorize(["view_users"]), getAllUsers);
+router.get("/",verifyToken,authorize(["view_users"]),getAllUsers);
 router.get("/:id", getUserByIdValidation, verifyToken, authorize(["view_users"]), getUserById);
 router.post("/", createUserValidation, verifyToken, authorize(["create_users"]), createUser);
 router.put("/:id", updateUserValidation, verifyToken, authorize(["edit_users"]), updateUser);

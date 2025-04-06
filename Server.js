@@ -19,18 +19,23 @@ import planProgramed from "./src/routes/Plan_Programed_Routes.js";
 import PaymentsRoutes from "./src/routes/Payments_Rutes.js";
 import authRoutes from "./src/routes/authRoutes.js";
 
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 export default class Server {
   constructor() {
     this.app = express();
     this.app.use(
       cors({
-        origin: ["http://localhost:5173", "http://localhost:5174"],
-        credentials: true,
+        origin: ["http://localhost:5173", "http://localhost:5180"],
+        credentials: true,      
       })
     );
     this.app.use(express.json());
     this.app.use(cookieParser());
     this.app.use(morgan("dev"));
+    this.app.use("/uploads", express.static(path.join(__dirname, "./uploads")));
     this.dbConection();
     this.listen();
     this.routes();
@@ -77,3 +82,5 @@ export default class Server {
     });
   }
 }
+
+
