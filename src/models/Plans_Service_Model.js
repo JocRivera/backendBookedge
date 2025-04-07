@@ -22,7 +22,11 @@ export const PlanServicesModel = database.define('PlanServices', {
             model: 'Services',
             key: 'Id_Service'
         }
-    }
+    },
+    quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
 }, {
     tableName: 'PlanServices',
     timestamps: false,

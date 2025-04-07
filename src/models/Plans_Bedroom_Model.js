@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
-import {database} from '../config/database.js';
-import { Bedrooms } from './bedrooms_Model.js';
-import { Plans } from './Plans_Model.js';
+import { database } from '../config/database.js';
+// import { Bedrooms } from './bedrooms_Model.js';
+// import { Plans } from './Plans_Model.js';
 
 export const PlanBedroomModel = database.define('PlanBedroom', {
     idPlanService: {
@@ -16,18 +16,24 @@ export const PlanBedroomModel = database.define('PlanBedroom', {
             key: 'idPlan'
         }
     },
-    idBedroom: {
+    // idBedroom: {
+    //     type: DataTypes.INTEGER,
+    //     references: {
+    //         model: 'Bedrooms',
+    //         key: 'idRoom'
+    //     }
+    // },
+    capacity: {
         type: DataTypes.INTEGER,
-        references: {
-            model: 'Bedrooms',
-            key: 'idRoom'
-        }
-    }
+    },
+    quantity: {
+        type: DataTypes.INTEGER,
+    },
 }, {
     tableName: 'PlanBedroom',
     timestamps: false,
 });
 
 // Establecer relación muchos a muchos
-Plans.belongsToMany(Bedrooms, { through: PlanBedroomModel, foreignKey: 'idPlan' });
-Bedrooms.belongsToMany(Plans, { through: PlanBedroomModel, foreignKey: 'idService' });
+// Plans.belongsToMany(Bedrooms, { through: PlanBedroomModel, foreignKey: 'idPlan' });
+// Bedrooms.belongsToMany(Plans, { through: PlanBedroomModel, foreignKey: 'idService' });
