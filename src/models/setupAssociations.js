@@ -4,6 +4,8 @@ import { Comforts } from "./Comfort_Model.js";
 import { Roles } from "./Roles_Model.js";
 import { Permissions } from "./Permissions_Model.js";
 import { PermissionRoles } from "./Permission_Roles.js";
+import { PermissionPrivileges } from "./Permission_Privileges.js";
+import { Privileges } from "./Privileges_Model.js";
 import { Reservations } from "./Reservations_Model.js";
 import { Plans } from './Plans_Model.js';
 import { Companions } from "./Companions_Model.js";
@@ -29,7 +31,7 @@ export const setupAssociations = () => {
 
   CabinsComforts.belongsTo(Cabins, { foreignKey: 'idCabin' });
   CabinsComforts.belongsTo(Comforts, { foreignKey: 'idComfort' });
-  
+
   // Asociaciones para Roles y Permissions (relación muchos a muchos)
   Roles.belongsToMany(Permissions, {
     through: PermissionRoles,
@@ -44,6 +46,21 @@ export const setupAssociations = () => {
     otherKey: "idRol", // Clave foránea en Roles_Permissions
     as: "roles", // Alias para la asociación
   });
+  // Asociaciones para Permissions y Privileges (relación muchos a muchos)
+  Permissions.belongsToMany(Permissions, {
+    through: PermissionPrivileges,
+    foreignKey: "idPrivilege",
+    otherKey: "idPermission",
+    as: "permissions",
+  });
+
+  Permissions.belongsToMany(Privileges, {
+    through: PermissionPrivileges,
+    foreignKey: "idPermission",
+    otherKey: "idPrivilege",
+    as: "privileges",
+  });
+
 
 
   //Asociaciones para resevas y acompañantes 
