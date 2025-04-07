@@ -24,6 +24,10 @@ export const Plans = database.define('Plans', {
     total: {
         type: DataTypes.FLOAT,
     },
+    capacity: {
+        type: DataTypes.INTEGER,
+        defaultValue: 30,
+    },
     salePrice: {
         type: DataTypes.FLOAT,
         allowNull: false,
