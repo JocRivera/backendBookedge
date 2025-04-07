@@ -47,7 +47,7 @@ export const setupAssociations = () => {
     as: "roles", // Alias para la asociación
   });
   // Asociaciones para Permissions y Privileges (relación muchos a muchos)
-  Permissions.belongsToMany(Permissions, {
+  Privileges.belongsToMany(Permissions, {
     through: PermissionPrivileges,
     foreignKey: "idPrivilege",
     otherKey: "idPermission",

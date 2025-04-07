@@ -1,5 +1,6 @@
 import { RolesRepository } from '../repositories/Roles_Repository.js';
 import { Permissions } from '../models/Permissions_Model.js';
+import { Privileges } from '../models/Privileges_Model.js';
 export class RolesService {
     constructor() {
         this.rolesRepository = new RolesRepository();

@@ -1,18 +1,16 @@
 import { Roles } from "../models/Roles_Model.js";
 import { Permissions } from "../models/Permissions_Model.js";
-import { PermissionRoles } from "../models/Permission_Roles.js";
-
+import { Privileges } from "../models/Privileges_Model.js";
 export class RolesRepository {
   async findAll() {
     return await Roles.findAll({
       include: {
         model: Permissions,
         as: "permissions",
-        // through: {
-        //     model: RolesPermissions,
-        //     as: 'roles_permissions',
-        //     attributes: []
-        // }
+        include: {
+          model: Privileges,
+          as: "privileges",
+        },
       },
     });
   }
@@ -22,6 +20,10 @@ export class RolesRepository {
       include: {
         model: Permissions,
         as: "permissions",
+        include: {
+          model: Privileges,
+          as: "privileges",
+        },
       },
     });
   }
