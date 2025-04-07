@@ -10,5 +10,5 @@ router.get("/:id", permissionController.getPermissionById.bind(permissionControl
 router.post("/", validatePermission, permissionController.createPermission.bind(permissionController));
 router.put("/:id", validatePermission, permissionController.updatePermission.bind(permissionController));
 router.delete("/:id", permissionController.deletePermission.bind(permissionController));
-
+router.post("/privilege", permissionController.addPrivilege.bind(permissionController));
 export default router;

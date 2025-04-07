@@ -18,7 +18,7 @@ import planRoutes from "./src/routes/Plan_Routes.js";
 import planProgramed from "./src/routes/Plan_Programed_Routes.js";
 import PaymentsRoutes from "./src/routes/Payments_Rutes.js";
 import authRoutes from "./src/routes/authRoutes.js";
-
+import PrivilegeRoutes from "./src/routes/Privileges_Routes.js";
 import path from "path";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
@@ -29,7 +29,7 @@ export default class Server {
     this.app.use(
       cors({
         origin: ["http://localhost:5173", "http://localhost:5180"],
-        credentials: true,      
+        credentials: true,
       })
     );
     this.app.use(express.json());
@@ -70,6 +70,7 @@ export default class Server {
     this.app.use("/permissions", permissionRoutes);
     this.app.use("/roles", rolesRoutes);
     this.app.use("/bedroom", bedromRoutes);
+    this.app.use("/privileges", PrivilegeRoutes);
     this.app.use("/plan", planRoutes);
     this.app.use("/planProgramed", planProgramed);
     this.app.use("/payments", PaymentsRoutes);

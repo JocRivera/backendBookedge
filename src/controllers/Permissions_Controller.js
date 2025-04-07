@@ -50,5 +50,14 @@ export class PermissionsController {
             res.status(400).json({ message: error.message });
         }
     }
+    async addPrivilege(req, res) {
+        try {
+            const { idPrivilege, idPermission } = req.body;
+            const privilege = await this.PermissionService.addPrivilege(idPrivilege, idPermission);
+            res.status(200).json(privilege);
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
+    }
 
 }

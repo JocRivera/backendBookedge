@@ -1,5 +1,6 @@
 import { RolesRepository } from '../repositories/Roles_Repository.js';
 import { Permissions } from '../models/Permissions_Model.js';
+import { Privileges } from '../models/Privileges_Model.js';
 export class RolesService {
     constructor() {
         this.rolesRepository = new RolesRepository();
@@ -14,23 +15,54 @@ export class RolesService {
     }
 
     async create(data) {
-        const { name, status, permissions } = data;
+        const { name, status, permissions, permissionPrivileges } = data;
+
+        // 1. Crear el rol básico
         const role = await this.rolesRepository.create({ name, status });
+
+        // 2. Si hay permisos, asociarlos al rol
         if (permissions && permissions.length > 0) {
             const existingPermissions = await Permissions.findAll({
                 where: {
                     idPermission: permissions
                 }
             });
+
             if (existingPermissions.length > 0) {
                 await role.addPermissions(existingPermissions);
+
+                // 3. Procesar privilegios para cada permiso
+                if (permissionPrivileges) {
+                    // Para cada permiso, configurar sus privilegios
+                    for (const permission of existingPermissions) {
+                        const permId = permission.idPermission;
+
+                        // Si hay privilegios definidos para este permiso
+                        if (permissionPrivileges[permId]) {
+                            const privObj = permissionPrivileges[permId];
+
+                            // Para cada tipo de privilegio (post, read, put, delete)
+                            for (const [privName, isActive] of Object.entries(privObj)) {
+                                if (isActive) {
+                                    // Buscar el privilegio por nombre
+                                    const privilege = await Privileges.findOne({
+                                        where: { name: privName }
+                                    });
+
+                                    if (privilege) {
+                                        // Asociar el privilegio al permiso (usando el método de la asociación)
+                                        await permission.addPrivilege(privilege);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            await Promise.all(permissions.map(idPermission =>
-                this.rolesRepository.addPermission(idPermission, role.idRol)
-            )
-            );
         }
-        return this.rolesRepository.findById(role.idRol);
+
+        // 4. Devolver el rol completo con sus asociaciones
+        return await this.rolesRepository.findById(role.idRol);
     }
 
     async addPermission(idPermission, idRole) {
