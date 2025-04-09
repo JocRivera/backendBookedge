@@ -10,5 +10,6 @@ router.post("/", createRolValidation, rolesController.create.bind(rolesControlle
 router.post("/permission", rolesController.addPermission.bind(rolesController));
 router.put("/:id", rolesController.update.bind(rolesController));
 router.delete("/:id", rolesController.delete.bind(rolesController));
+router.patch("/:id", rolesController.changeStatus.bind(rolesController));
 
 export default router;
