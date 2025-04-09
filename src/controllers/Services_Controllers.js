@@ -54,6 +54,17 @@ export class ServicesController {
             res.status(500).json({ error: error.message });
         }
     }
+    async changeStatus(req, res){
+        const {id} = req.params;
+        const {status}= req.body;
+        try{
+            await this.ServiceService.changeStatus(id, status)
+            return res.status(204).sed();    
+        }
+        catch(error){
+            return res.status(500).json({error: error.message})
+        }
+    }
 
 }
 
