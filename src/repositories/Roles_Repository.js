@@ -72,4 +72,14 @@ export class RolesRepository {
       },
     });
   }
+  async changeStatus(id, status) {
+    return await Roles.update(
+      { status },
+      {
+        where: {
+          idRol: id,
+        },
+      }
+    );
+  }
 }

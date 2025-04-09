@@ -85,4 +85,8 @@ export class RolesService {
     async delete(id) {
         return await this.rolesRepository.delete(id);
     }
+
+    async changeStatus(id, status) {
+        return await this.rolesRepository.changeStatus(id, status);
+    }
 }
