@@ -1,22 +1,42 @@
 import { Permissions } from "../models/Permissions_Model.js";
 import { Privileges } from "../models/Privileges_Model.js";
-
+import { PermissionRoles } from "../models/Permission_Roles.js";
 export class PermissionRepository {
     async findAll() {
         return await Permissions.findAll({
             include: {
-                model: Privileges,
-                as: "privileges",
-            },
+                model: PermissionRoles,
+                as: "permissionRoles",
+                include: [
+                    {
+                        model: Permissions,
+                        as: "permissions",
+                    },
+                    {
+                        model: Privileges,
+                        as: "privileges",
+                    }
+                ]
+            }
         });
     }
 
     async findById(id) {
         return await Permissions.findByPk(id, {
             include: {
-                model: Privileges,
-                as: "privileges",
-            },
+                model: PermissionRoles,
+                as: "permissionRoles",
+                include: [
+                    {
+                        model: Permissions,
+                        as: "permissions",
+                    },
+                    {
+                        model: Privileges,
+                        as: "privileges",
+                    }
+                ]
+            }
         });
     }
 

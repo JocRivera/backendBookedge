@@ -16,7 +16,11 @@ export const PermissionRoles = database.define(
         idRol: {
             type: DataTypes.INTEGER,
             allowNull: false
-        }
+        },
+        idPrivilege: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
     },
     {
         tableName: 'permissionroles',

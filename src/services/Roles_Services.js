@@ -1,6 +1,7 @@
 import { RolesRepository } from '../repositories/Roles_Repository.js';
 import { Permissions } from '../models/Permissions_Model.js';
 import { Privileges } from '../models/Privileges_Model.js';
+import { PermissionRoles } from '../models/Permission_Roles.js';
 export class RolesService {
     constructor() {
         this.rolesRepository = new RolesRepository();
@@ -15,58 +16,30 @@ export class RolesService {
     }
 
     async create(data) {
-        const { name, status, permissions, permissionPrivileges } = data;
-
-        // 1. Crear el rol básico
+        const { name, status, permissionRoles } = data;
         const role = await this.rolesRepository.create({ name, status });
 
-        // 2. Si hay permisos, asociarlos al rol
-        if (permissions && permissions.length > 0) {
-            const existingPermissions = await Permissions.findAll({
-                where: {
-                    idPermission: permissions
-                }
-            });
+        if (permissionRoles && permissionRoles.length > 0) {
+            for (const { idPermission, idPrivilege } of permissionRoles) {
+                const permission = await Permissions.findByPk(idPermission);
+                const privilege = await Privileges.findByPk(idPrivilege);
 
-            if (existingPermissions.length > 0) {
-                await role.addPermissions(existingPermissions);
-
-                // 3. Procesar privilegios para cada permiso
-                if (permissionPrivileges) {
-                    // Para cada permiso, configurar sus privilegios
-                    for (const permission of existingPermissions) {
-                        const permId = permission.idPermission;
-
-                        // Si hay privilegios definidos para este permiso
-                        if (permissionPrivileges[permId]) {
-                            const privObj = permissionPrivileges[permId];
-
-                            // Para cada tipo de privilegio (post, read, put, delete)
-                            for (const [privName, isActive] of Object.entries(privObj)) {
-                                if (isActive) {
-                                    // Buscar el privilegio por nombre
-                                    const privilege = await Privileges.findOne({
-                                        where: { name: privName }
-                                    });
-
-                                    if (privilege) {
-                                        // Asociar el privilegio al permiso (usando el método de la asociación)
-                                        await permission.addPrivilege(privilege);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                if (permission && privilege) {
+                    await PermissionRoles.create({
+                        idRol: role.idRol,
+                        idPermission,
+                        idPrivilege
+                    });
                 }
             }
         }
 
-        // 4. Devolver el rol completo con sus asociaciones
         return await this.rolesRepository.findById(role.idRol);
     }
 
-    async addPermission(idPermission, idRole) {
-        return await this.rolesRepository.addPermission(idPermission, idRole);
+
+    async addPermission(idPermission, idRole, idPrivilege) {
+        return await this.rolesRepository.addPermission(idPermission, idRole, idPrivilege);
     }
 
     async removePermission(idPermission, idRole) {
@@ -78,12 +51,56 @@ export class RolesService {
         );
     }
 
-    async update(role, id) {
-        return await this.rolesRepository.update(role, id);
+    async update(data, id) {
+        const { name, status, permissionRoles } = data;
+
+        // 1. Actualizar los campos básicos del rol
+        await this.rolesRepository.update({ name, status }, id);
+
+        // 2. Si hay permisos para actualizar, primero eliminamos los existentes
+        if (permissionRoles) {
+            // Eliminar todos los permisos actuales para este rol
+            await PermissionRoles.destroy({
+                where: {
+                    idRol: id
+                }
+            });
+
+            // 3. Agregar los nuevos permisos y privilegios
+            if (permissionRoles.length > 0) {
+                for (const { idPermission, idPrivilege } of permissionRoles) {
+                    const permission = await Permissions.findByPk(idPermission);
+                    const privilege = await Privileges.findByPk(idPrivilege);
+
+                    if (permission && privilege) {
+                        await PermissionRoles.create({
+                            idRol: id,
+                            idPermission,
+                            idPrivilege
+                        });
+                    }
+                }
+            }
+        }
+
+        // 4. Devolver el rol actualizado con todos sus permisos
+        return await this.rolesRepository.findById(id);
     }
 
     async delete(id) {
-        return await this.rolesRepository.delete(id);
+        try {
+            // 1. Primero, eliminar todos los registros relacionados en la tabla permissionroles
+            await PermissionRoles.destroy({
+                where: {
+                    idRol: id
+                }
+            });
+
+            // 2. Luego eliminar el rol
+            return await this.rolesRepository.delete(id);
+        } catch (error) {
+            throw new Error(`Error al eliminar el rol: ${error.message}`);
+        }
     }
 
     async changeStatus(id, status) {
