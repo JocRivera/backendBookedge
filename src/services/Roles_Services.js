@@ -51,8 +51,40 @@ export class RolesService {
         );
     }
 
-    async update(role, id) {
-        return await this.rolesRepository.update(role, id);
+    async update(data, id) {
+        const { name, status, permissionRoles } = data;
+
+        // 1. Actualizar los campos básicos del rol
+        await this.rolesRepository.update({ name, status }, id);
+
+        // 2. Si hay permisos para actualizar, primero eliminamos los existentes
+        if (permissionRoles) {
+            // Eliminar todos los permisos actuales para este rol
+            await PermissionRoles.destroy({
+                where: {
+                    idRol: id
+                }
+            });
+
+            // 3. Agregar los nuevos permisos y privilegios
+            if (permissionRoles.length > 0) {
+                for (const { idPermission, idPrivilege } of permissionRoles) {
+                    const permission = await Permissions.findByPk(idPermission);
+                    const privilege = await Privileges.findByPk(idPrivilege);
+
+                    if (permission && privilege) {
+                        await PermissionRoles.create({
+                            idRol: id,
+                            idPermission,
+                            idPrivilege
+                        });
+                    }
+                }
+            }
+        }
+
+        // 4. Devolver el rol actualizado con todos sus permisos
+        return await this.rolesRepository.findById(id);
     }
 
     async delete(id) {
