@@ -88,7 +88,19 @@ export class RolesService {
     }
 
     async delete(id) {
-        return await this.rolesRepository.delete(id);
+        try {
+            // 1. Primero, eliminar todos los registros relacionados en la tabla permissionroles
+            await PermissionRoles.destroy({
+                where: {
+                    idRol: id
+                }
+            });
+
+            // 2. Luego eliminar el rol
+            return await this.rolesRepository.delete(id);
+        } catch (error) {
+            throw new Error(`Error al eliminar el rol: ${error.message}`);
+        }
     }
 
     async changeStatus(id, status) {
