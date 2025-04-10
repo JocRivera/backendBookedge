@@ -19,6 +19,7 @@ import planProgramed from "./src/routes/Plan_Programed_Routes.js";
 import PaymentsRoutes from "./src/routes/Payments_Rutes.js";
 import authRoutes from "./src/routes/authRoutes.js";
 import PrivilegeRoutes from "./src/routes/Privileges_Routes.js";
+import cabinComfortsRoutes from "./src/routes/CabinComforts_Routes.js"
 import path from "path";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
@@ -75,6 +76,7 @@ export default class Server {
     this.app.use("/planProgramed", planProgramed);
     this.app.use("/payments", PaymentsRoutes);
     this.app.use("/auth", authRoutes);
+    this.app.use("/cabin-comforts",cabinComfortsRoutes)
   }
 
   listen() {

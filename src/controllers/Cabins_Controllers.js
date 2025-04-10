@@ -5,12 +5,8 @@ import {
   createCabinService,
   updateCabinService,
   deleteCabinService,
-  getComfortsToCabinService,
-  addComfortToCabinService,
-  updateComfortToCabinService,
-  deleteComfortToCabinService,
-  getComfortsByCabinIdService
 } from "../services/Cabin_Services.js";
+import { getGroupedComfortsByCabinService } from "../services/CabinComfort_Service.js";
 
 export const getAllCabinsController = async (req, res) => {
   try {
@@ -82,7 +78,6 @@ export const updateCabinController = async (req, res) => {
     // 4. Actualizar
     const updatedCabin = await updateCabinService(req.params.id, cabinData);
     res.status(200).json(updatedCabin);
-
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -93,66 +88,21 @@ export const deleteCabinController = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
+
   try {
-    const cabinComforts = await getComfortsByCabinIdService(req.params.id);
-    if (cabinComforts.length > 0) {  // Verifica si hay comodidades
+    const idCabin = req.params.id;
+
+    const comforts = await getGroupedComfortsByCabinService(idCabin);
+
+    if (comforts.length > 0) {
       return res.status(400).json({
-        message: "No se puede eliminar la cabaña porque tiene comodidades asignadas"
+        message:
+          "No se puede eliminar la cabaña porque tiene comodidades asignadas",
       });
     }
-    await deleteCabinService(req.params.id);
-    res.status(200).end();
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
 
-export const getComfortsToCabinController = async (req, res) => {
-  try {
-    const cabinsComforts = await getComfortsToCabinService();
-    res.status(200).json(cabinsComforts);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-export const addComfortToCabinController = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  try {
-    const cabinComfortData = req.body;
-    await addComfortToCabinService(cabinComfortData);
-    res.status(200).json({ message: "Comodidad agregada correctamente" });
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-export const updateComfortToCabinController = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  try {
-    const { idCabinComfort } = req.params;
-    const cabinComfortData = req.body;
-    await updateComfortToCabinService(idCabinComfort, cabinComfortData);
-    res.status(200).json({ message: "Comodidad actualizada correctamente" });
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-export const deleteComfortToCabinController = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  try {
-    const { idCabinComfort } = req.params;
-    await deleteComfortToCabinService(idCabinComfort);
-    res.status(200).end();
+    await deleteCabinService(idCabin);
+    res.status(200).json({ message: "Cabaña eliminada correctamente" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
