@@ -4,7 +4,6 @@ import { Comforts } from "./Comfort_Model.js";
 import { Roles } from "./Roles_Model.js";
 import { Permissions } from "./Permissions_Model.js";
 import { PermissionRoles } from "./Permission_Roles.js";
-import { PermissionPrivileges } from "./Permission_Privileges.js";
 import { Privileges } from "./Privileges_Model.js";
 import { Reservations } from "./Reservations_Model.js";
 import { Plans } from './Plans_Model.js';
@@ -32,35 +31,31 @@ export const setupAssociations = () => {
   CabinsComforts.belongsTo(Cabins, { foreignKey: 'idCabin' });
   CabinsComforts.belongsTo(Comforts, { foreignKey: 'idComfort' });
 
-  // Asociaciones para Roles y Permissions (relación muchos a muchos)
-  Roles.belongsToMany(Permissions, {
-    through: PermissionRoles,
-    foreignKey: "idRol", // Clave foránea en Roles_Permissions
-    otherKey: "idPermission", // Clave foránea en Roles_Permissions
-    as: "permissions", // Alias para la asociación
+  // Asociaciones para Roles-permisos-privilegios (relación muchos a muchos)
+  PermissionRoles.belongsTo(Roles, {
+    foreignKey: 'idRol',
+    as: 'roles'
   });
-
-  Permissions.belongsToMany(Roles, {
-    through: PermissionRoles,
-    foreignKey: "idPermission", // Clave foránea en Roles_Permissions
-    otherKey: "idRol", // Clave foránea en Roles_Permissions
-    as: "roles", // Alias para la asociación
+  Roles.hasMany(PermissionRoles, {
+    foreignKey: 'idRol',
+    as: 'permissionRoles'
   });
-  // Asociaciones para Permissions y Privileges (relación muchos a muchos)
-  Privileges.belongsToMany(Permissions, {
-    through: PermissionPrivileges,
-    foreignKey: "idPrivilege",
-    otherKey: "idPermission",
-    as: "permissions",
+  PermissionRoles.belongsTo(Permissions, {
+    foreignKey: 'idPermission',
+    as: 'permissions'
   });
-
-  Permissions.belongsToMany(Privileges, {
-    through: PermissionPrivileges,
-    foreignKey: "idPermission",
-    otherKey: "idPrivilege",
-    as: "privileges",
+  Permissions.hasMany(PermissionRoles, {
+    foreignKey: 'idPermission',
+    as: 'permissionRoles'
   });
-
+  PermissionRoles.belongsTo(Privileges, {
+    foreignKey: 'idPrivilege',
+    as: 'privileges'
+  });
+  Privileges.hasMany(PermissionRoles, {
+    foreignKey: 'idPrivilege',
+    as: 'permissionRoles'
+  });
 
 
   //Asociaciones para resevas y acompañantes 
