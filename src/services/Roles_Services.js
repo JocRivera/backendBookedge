@@ -1,6 +1,7 @@
 import { RolesRepository } from '../repositories/Roles_Repository.js';
 import { Permissions } from '../models/Permissions_Model.js';
 import { Privileges } from '../models/Privileges_Model.js';
+import { PermissionRoles } from '../models/Permission_Roles.js';
 export class RolesService {
     constructor() {
         this.rolesRepository = new RolesRepository();
@@ -18,6 +19,7 @@ export class RolesService {
         const { name, status, permissions, permissionPrivileges } = data;
 
         // 1. Crear el rol básico
+        // 1. Crear el rol básico
         const role = await this.rolesRepository.create({ name, status });
 
         // 2. Si hay permisos, asociarlos al rol
@@ -29,33 +31,35 @@ export class RolesService {
             });
 
             if (existingPermissions.length > 0) {
-                await role.addPermissions(existingPermissions);
+                for (const permission of existingPermissions) {
+                    const permId = permission.idPermission;
 
-                // 3. Procesar privilegios para cada permiso
-                if (permissionPrivileges) {
-                    // Para cada permiso, configurar sus privilegios
-                    for (const permission of existingPermissions) {
-                        const permId = permission.idPermission;
+                    if (permissionPrivileges && permissionPrivileges[permId]) {
+                        const privObj = permissionPrivileges[permId];
 
-                        // Si hay privilegios definidos para este permiso
-                        if (permissionPrivileges[permId]) {
-                            const privObj = permissionPrivileges[permId];
+                        // Agregar cada privilegio activo manualmente a PermissionRoles
+                        for (const [privName, isActive] of Object.entries(privObj)) {
+                            if (isActive) {
+                                const privilege = await Privileges.findOne({
+                                    where: { name: privName }
+                                });
 
-                            // Para cada tipo de privilegio (post, read, put, delete)
-                            for (const [privName, isActive] of Object.entries(privObj)) {
-                                if (isActive) {
-                                    // Buscar el privilegio por nombre
-                                    const privilege = await Privileges.findOne({
-                                        where: { name: privName }
+                                if (privilege) {
+                                    await PermissionRoles.create({
+                                        idRol: role.idRol,
+                                        idPermission: permission.idPermission,
+                                        idPrivilege: privilege.idPrivilege
                                     });
-
-                                    if (privilege) {
-                                        // Asociar el privilegio al permiso (usando el método de la asociación)
-                                        await permission.addPrivilege(privilege);
-                                    }
                                 }
                             }
                         }
+                    } else {
+                        // Si no hay privilegios definidos, igual se puede guardar la relación sin privilegio
+                        await PermissionRoles.create({
+                            idRol: role.idRol,
+                            idPermission: permission.idPermission,
+                            idPrivilege: null
+                        });
                     }
                 }
             }
@@ -65,8 +69,8 @@ export class RolesService {
         return await this.rolesRepository.findById(role.idRol);
     }
 
-    async addPermission(idPermission, idRole) {
-        return await this.rolesRepository.addPermission(idPermission, idRole);
+    async addPermission(idPermission, idRole, idPrivilege) {
+        return await this.rolesRepository.addPermission(idPermission, idRole, idPrivilege);
     }
 
     async removePermission(idPermission, idRole) {

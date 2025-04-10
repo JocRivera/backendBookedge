@@ -1,30 +1,51 @@
 import { Roles } from "../models/Roles_Model.js";
 import { Permissions } from "../models/Permissions_Model.js";
 import { Privileges } from "../models/Privileges_Model.js";
+import { PermissionRoles } from "../models/Permission_Roles.js";
 export class RolesRepository {
   async findAll() {
     return await Roles.findAll({
-      include: {
-        model: Permissions,
-        as: "permissions",
-        include: {
-          model: Privileges,
-          as: "privileges",
+      include: [
+        {
+          model: PermissionRoles,
+          as: "permissionRoles",
+          include: [
+            {
+              model: Permissions,
+              as: "permissions",
+              attributes: ["idPermission", "name"],
+            },
+            {
+              model: Privileges,
+              as: "privileges",
+              attributes: ["idPrivilege", "name"],
+            },
+          ],
         },
-      },
+      ],
     });
   }
 
   async findById(id) {
     return await Roles.findByPk(id, {
-      include: {
-        model: Permissions,
-        as: "permissions",
-        include: {
-          model: Privileges,
-          as: "privileges",
+      include: [
+        {
+          model: PermissionRoles,
+          as: "permissionRoles",
+          include: [
+            {
+              model: Permissions,
+              as: "permissions",
+              attributes: ["idPermission", "name"],
+            },
+            {
+              model: Privileges,
+              as: "privileges",
+              attributes: ["idPrivilege", "name"],
+            },
+          ],
         },
-      },
+      ],
     });
   }
 
@@ -32,10 +53,16 @@ export class RolesRepository {
     return await Roles.create(role);
   }
 
-  async addPermission(idPermission, idRol) {
+  async addPermission(idPermission, idRol, idPrivilege) {
     const role = await Roles.findByPk(idRol);
     const permissionToAdd = await Permissions.findByPk(idPermission);
-    await role.addPermission(permissionToAdd);
+    const privilegeToAdd = await Privileges.findByPk(idPrivilege);
+
+    await role.addPermission(permissionToAdd, {
+      through: {
+        idPrivilege: privilegeToAdd.idPrivilege,
+      },
+    });
     return role;
   }
 
