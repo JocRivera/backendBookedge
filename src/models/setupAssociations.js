@@ -40,6 +40,7 @@ export const setupAssociations = () => {
     foreignKey: 'idRol',
     as: 'permissionRoles'
   });
+  
   PermissionRoles.belongsTo(Permissions, {
     foreignKey: 'idPermission',
     as: 'permissions'
@@ -48,6 +49,7 @@ export const setupAssociations = () => {
     foreignKey: 'idPermission',
     as: 'permissionRoles'
   });
+  
   PermissionRoles.belongsTo(Privileges, {
     foreignKey: 'idPrivilege',
     as: 'privileges'
@@ -56,7 +58,20 @@ export const setupAssociations = () => {
     foreignKey: 'idPrivilege',
     as: 'permissionRoles'
   });
-
+  
+  Roles.belongsToMany(Permissions, { 
+    through: PermissionRoles,
+    foreignKey: 'idRol',
+    otherKey: 'idPermission',
+    as: 'permissions'
+  });
+  
+  Permissions.belongsToMany(Roles, {
+    through: PermissionRoles,
+    foreignKey: 'idPermission',
+    otherKey: 'idRol',
+    as: 'roles'
+  });
 
   //Asociaciones para resevas y acompañantes 
   Companions.belongsToMany(Reservations, {

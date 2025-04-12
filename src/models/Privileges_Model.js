@@ -8,7 +8,7 @@ export const Privileges = database.define("Privileges", {
         autoIncrement: true
     },
     name: {
-        type: DataTypes.ENUM('post', 'read', 'put', 'delete'),
+        type: DataTypes.ENUM('post', 'read', 'put', 'delete','changeStatus'),
         allowNull: false,
         unique: true
     },

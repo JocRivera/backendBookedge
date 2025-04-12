@@ -19,13 +19,12 @@ import { authorize } from "../middlewares/RolesPermissionAuth.js";
 
 const router = express.Router();
 
-router.get("/",
-  verifyToken,authorize(["view_users"]),
-getAllUsers);
-router.get("/:id", getUserByIdValidation, verifyToken, authorize(["view_users"]), getUserById);
-router.post("/", createUserValidation, verifyToken, authorize(["create_users"]), createUser);
-router.put("/:id", updateUserValidation, verifyToken, authorize(["edit_users"]), updateUser);
-router.delete("/:id", deleteUserValidation, verifyToken, authorize(["delete_users"]), deleteUser);
-router.patch("/:id", changeStatusUserValidation, verifyToken, authorize(["change_status_users"]), changeStatusUser);
+// Rutas protegidas por permisos + privilegios
+router.get("/", verifyToken, authorize("Usuarios", "read"), getAllUsers);
+router.get("/:id", getUserByIdValidation, verifyToken, authorize("Usuarios", "read"), getUserById);
+router.post("/", createUserValidation, verifyToken, authorize("Usuarios", "post"), createUser);
+router.put("/:id", updateUserValidation, verifyToken, authorize("Usuarios", "edit"), updateUser);
+router.delete("/:id", deleteUserValidation, verifyToken, authorize("Usuarios", "delete"), deleteUser);
+router.patch("/change-status/:id",changeStatusUserValidation,verifyToken,authorize("Usuarios", "changeStatus"),changeStatusUser);
 
 export default router;
