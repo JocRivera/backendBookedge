@@ -28,6 +28,27 @@ export const validateEmailExistence = async (email) => {
   return true;
 };
 
+// Verificar existencia de email en edición
+export const validateEmailExistenceOnUpdate = async (email, { req }) => {
+  const user = await Users.findOne({ where: { email } });
+
+  if (user && user.idUser !== parseInt(req.params.id)) {
+    return Promise.reject("El email ya está registrado por otro usuario");
+  }
+  return true;
+};
+
+// Verificar existencia de identificación en edición
+export const validateIdentificationExistenceOnUpdate = async (identification, { req }) => {
+  const user = await Users.findOne({ where: { identification } });
+
+  if (user && user.idUser !== parseInt(req.params.id)) {
+    return Promise.reject("La identificación ya está registrada por otro usuario");
+  }
+  return true;
+};
+
+
 // Base de validaciones
 const usersBaseValidation = [
   body("idRol")
@@ -64,6 +85,13 @@ const usersBaseValidation = [
     .isLength({ min: 5 })
     .withMessage("La identificación debe tener mínimo 5 caracteres"),
 
+  body("status")
+    .optional()
+    .isBoolean()
+    .withMessage("El estado debe ser un valor booleano"),
+];
+
+const passwordRequiredValidation = [
   body("password")
     .notEmpty()
     .withMessage("La contraseña no puede estar vacía")
@@ -71,12 +99,17 @@ const usersBaseValidation = [
     .withMessage("La contraseña debe tener al menos 8 caracteres")
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/)
     .withMessage("Debe contener al menos una mayúscula, una minúscula, un número y un carácter especial"),
-
-  body("status")
-    .optional()
-    .isBoolean()
-    .withMessage("El estado debe ser un valor booleano"),
 ];
+
+const passwordOptionalValidation = [
+  body("password")
+    .optional()
+    .isLength({ min: 8 })
+    .withMessage("La contraseña debe tener al menos 8 caracteres")
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/)
+    .withMessage("Debe contener al menos una mayúscula, una minúscula, un número y un carácter especial"),
+];
+
 
 // Validaciones específicas
 export const getUserByIdValidation = [
@@ -88,18 +121,22 @@ export const getUserByIdValidation = [
 
 export const createUserValidation = [
   ...usersBaseValidation,
+  ...passwordRequiredValidation,
   body("identification").custom(validateIdentificationExistence),
   body("email").custom(validateEmailExistence),
 ];
 
+
 export const updateUserValidation = [
   ...usersBaseValidation,
+  ...passwordOptionalValidation,
   param("id")
     .isInt()
     .withMessage("El ID del usuario debe ser un número entero"),
-  body("identification").custom(validateIdentificationExistence),
-  body("email").custom(validateEmailExistence),
+  body("identification").custom(validateIdentificationExistenceOnUpdate),
+  body("email").custom(validateEmailExistenceOnUpdate),
 ];
+
 
 export const deleteUserValidation = [
   param("id")

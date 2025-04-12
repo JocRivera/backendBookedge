@@ -23,8 +23,8 @@ const router = express.Router();
 router.get("/", verifyToken, authorize("Usuarios", "read"), getAllUsers);
 router.get("/:id", getUserByIdValidation, verifyToken, authorize("Usuarios", "read"), getUserById);
 router.post("/", createUserValidation, verifyToken, authorize("Usuarios", "post"), createUser);
-router.put("/:id", updateUserValidation, verifyToken, authorize("Usuarios", "edit"), updateUser);
+router.put("/:id", updateUserValidation, verifyToken, authorize("Usuarios", "put"), updateUser);
 router.delete("/:id", deleteUserValidation, verifyToken, authorize("Usuarios", "delete"), deleteUser);
-router.patch("/change-status/:id",changeStatusUserValidation,verifyToken,authorize("Usuarios", "changeStatus"),changeStatusUser);
+router.patch("/:id",changeStatusUserValidation,verifyToken,authorize("Usuarios", "changeStatus"),changeStatusUser);
 
 export default router;
