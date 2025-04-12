@@ -26,6 +26,7 @@ export const getAllUsers = async () => {
 
 export const getUserById = async (id) => {
   return await Users.findByPk(id, {
+    attributes: { exclude: ["password", "refreshToken"] },
     include: [
       {
         model: Roles,
@@ -53,6 +54,7 @@ export const getUserById = async (id) => {
     ]
   });
 };
+
 
 
 

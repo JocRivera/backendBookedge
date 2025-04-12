@@ -1,23 +1,23 @@
 import { getUserByIdService } from "../services/Users_Services.js";
 
-export const authorize = (requiredPermissions) => async (req, res, next) => {
+export const authorize = (requiredPermission, requiredPrivilege) => async (req, res, next) => {
   try {
     const userId = req.user.idUser;
     const user = await getUserByIdService(userId);
 
-    if (!user) {
-      return res.status(403).json({ message: "Usuario no encontrado" });
-    }
-
-    if (!user.role || !user.role.permissions) {
+    if (!user || !user.role || !user.role.permissionRoles) {
       return res.status(403).json({ message: "No tienes permisos asignados" });
     }
 
-    // Optimización: Usar Set para mejorar la búsqueda
-    const userPermissions = new Set(user.role.permissions.map((perm) => perm.name));
-    const hasPermission = requiredPermissions.some((perm) => userPermissions.has(perm));
+    // Recorremos los permisos del rol del usuario
+    const hasAccess = user.role.permissionRoles.some((permRole) => {
+      return (
+        permRole.permissions?.name === requiredPermission &&
+        permRole.privileges?.name === requiredPrivilege
+      );
+    });
 
-    if (!hasPermission) {
+    if (!hasAccess) {
       return res.status(403).json({ message: "No tienes permisos suficientes" });
     }
 
