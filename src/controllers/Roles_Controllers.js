@@ -40,9 +40,9 @@ export class RolesController {
     }
 
     async addPermission(req, res) {
-        const { idPermission, idRol } = req.body;
+        const { idPermission, idRol, idPrivilege } = req.body;
         try {
-            const role = await this.rolesService.addPermission(idPermission, idRol);
+            const role = await this.rolesService.addPermission(idPermission, idRol, idPrivilege);
             return res.status(200).json(role);
         } catch (error) {
             return res.status(500).json({ error: error.message });
