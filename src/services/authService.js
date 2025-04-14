@@ -4,6 +4,7 @@ import { generateToken, generateRefreshToken } from "../utils/jwt.js";
 import { Roles } from "../models/Roles_Model.js";
 import crypto from "crypto";
 import { sendResetPasswordEmail } from "../utils/emails.js";
+import jwt from "jsonwebtoken";  // Asegúrate de importar jwt para decodificar el refresh token
 
 export const loginService = async (email, password) => {
   try {
@@ -26,10 +27,17 @@ export const loginService = async (email, password) => {
     }
 
     const token = generateToken(user);
+    console.log("Token generado:", token);
+
     const refreshToken = generateRefreshToken(user);
+
+    // Decodificar el refreshToken para obtener la expiración
+    const decodedRefreshToken = jwt.decode(refreshToken);
+    console.log("Refresh token expira en:", new Date(decodedRefreshToken.exp * 1000).toLocaleString()); // Muestra la fecha de expiración del refreshToken
 
     if (user.refreshToken !== refreshToken) {
       await user.update({ refreshToken });
+      console.log("Refresh token actualizado en la base de datos");
     }
 
     return {
@@ -106,7 +114,7 @@ export const recoveryPassword = async (email) => {
   if (!user) {
     throw new Error("El correo no se encuentra registrado");
   }
-  const resetToken = crypto.randomBytes(32).toString("hex");//genera un token aleatorio criptografico
+  const resetToken = crypto.randomBytes(32).toString("hex"); // Genera un token aleatorio criptográfico
   const resetTokenExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutos
 
   await user.update({ resetToken, resetTokenExpires });
@@ -123,7 +131,6 @@ export const resetPasswordService = async (token, newPassword) => {
   if (!user || user.resetTokenExpires < new Date()) {
     throw new Error("Token inválido o expirado");
   }
-  
 
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 

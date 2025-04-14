@@ -3,6 +3,11 @@ import { Users } from "../models/user_Model.js";
 import { Roles } from "../models/Roles_Model.js";
 
 export const  verifyToken = async (req, res, next) => {
+
+  if (req.path === "/auth/refresh") {
+    return next();
+  }
+
   const token = req.cookies.authToken; // Obtener el token desde las cookies
 
   if (!token) {
