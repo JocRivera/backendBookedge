@@ -148,8 +148,10 @@ export const addCompanionValidation = [
 ];
 
 export const updateCompanionsValidation = [
-  ...reservationBaseValidation,
-  param("idReservationsCompanions").isInt().withMessage("El id de la relación Reserva-Acompañante debe ser un número entero").custom(validateReservationsCompanions),
+  param("idReservationsCompanions")
+    .isInt()
+    .withMessage("El id de la relación Reserva-Acompañante debe ser un número entero")
+    .custom(validateReservationsCompanions),
 ];
 
 export const deleteCompaniosValidation = [

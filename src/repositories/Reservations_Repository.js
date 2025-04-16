@@ -92,11 +92,10 @@ export const createReservations = async (reservationsData) => {
 };
 
 export const updateReservations = async (id, reservationsData) => {
-  const [update] = await Reservations.update(reservationsData,
-    {
-      where: { idReservation: id }
-    }
-  )
+  await Reservations.update(reservationsData, {
+    where: { idReservation: id },
+  });
+  return await Reservations.findByPk(id); 
 };
 
 

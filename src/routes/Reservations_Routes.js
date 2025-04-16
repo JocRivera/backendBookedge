@@ -31,7 +31,7 @@ const router = express.Router();
 router.get("/", getAllReservationsController);
 router.get("/:idReservation", getReservationsValidation, getReservationsByIdController);
 router.post("/", createReservationValidation, createReservationsController);
-router.put("/:id", updateReservationsValidation, updateReservationsController);
+router.put("/:idReservation", updateReservationsValidation, updateReservationsController);
 router.patch("/:id/status", changeStateReservationsValidation, changeStatusReservationsController);
 
 //Ruta para obtener una reserva con sus acompañantes y agregar pagos
@@ -47,7 +47,11 @@ router.post("/Reservationpayments",addPaymentsValidation, addPayments);
 router.post("/Reservationplans", addPlansValidation, addPlans);
 
 //Ruta para actualizar un acompañante
-router.put("/companions/:id/ReservationsCompanions", updateCompanionsValidation, updateCompanion);
+router.put(
+  "/:idReservation/companions/:idReservationsCompanions",
+  updateCompanionsValidation,
+  updateCompanion
+);
 
 //Ruta para eliminar un acompañante
 router.delete("/companions/:idReservationsCompanions/ReservationsCompanions", deleteCompaniosValidation, deleteCompanions);

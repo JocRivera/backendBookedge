@@ -43,13 +43,13 @@ export const addPlansServices = async (idReservation, idPlan) => {
 }
 
 export const updateCompanionsService = async (idReservationsCompanions, idCompanions, idReservation) => {
-    return await updateCompanions(idReservationsCompanions, idCompanions, idReservation);
-}
+    return await updateCompanions(idReservationsCompanions, idReservation, idCompanions);
+};
 
 export const deleteCompanionsService = async (idReservationsCompanions) => {
     return await deleteCompanions(idReservationsCompanions);
 };
 export const changeStatusReservationsService = async (id, status) => {
-    console.log("ID recibido en el servicio:", idReservationsCompanions); 
+    console.log("ID recibido en el servicio:", id); 
     return await changeStatusReservations(id, status);
 }

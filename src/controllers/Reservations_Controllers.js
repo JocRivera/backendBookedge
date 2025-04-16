@@ -75,9 +75,9 @@ export const updateReservationsController = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { id } = req.params;
+    const { idReservation } = req.params;
     const reservationData = req.body;
-    const reservations = await updateReservationsService(id, reservationData);
+    const reservations = await updateReservationsService(idReservation, reservationData);
     res.status(200).json(reservations);
   } catch (error) {
     res.status(400).json({ error: error.message });
