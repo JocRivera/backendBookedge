@@ -74,78 +74,10 @@ export const getCabinValidation = [
 
 
 
-////VALIDACIONES DE PUT,GET,POST,DELETE DE ADDCOMFORTS
-export const validateExistecenComfortCabin = async (id) => {
-  const cabinComforts = await CabinsComforts.findByPk(id);
-  if (!cabinComforts) {
-    return Promise.reject('La relación no existe');
-  }
-  return true; 
-}
-export const validateComfortNotExists = async (idCabin, idComfort) => {
-  const cabinsComforts = await CabinsComforts.findOne({
-    where: { idCabin, idComfort },
-  });
-  if (cabinsComforts) {
-    return Promise.reject("La cabaña ya contiene esta comodidad");
-  }
-  return true;
-};
 
 
 
 
 
 
-const cabinComfortBaseValidation = [
-  body("description")
-    .notEmpty()
-    .withMessage("La descripción no puede estar vacía"),
-  body("dateEntry")
-    .optional()
-    .isDate()
-    .withMessage("Debe ser una fecha válida")
-    .default(Date.now),
-];
 
-export const addComfortValidation = [
-  ...cabinComfortBaseValidation,
-  body("idCabin")
-    .isInt()
-    .withMessage("El id de la cabaña debe ser un número entero")
-    .custom(validateCabinExistence),
-  body("idComfort")
-    .isInt()
-    .withMessage("El id de la comodidad debe ser un número entero")
-    .custom(validateComfortsExistence),
-  body().custom(async (value) => {
-    return await validateComfortNotExists(value.idCabin, value.idComfort);
-  }),
-];
-
-export const updateComfortValidation = [
-  ...cabinComfortBaseValidation,
-  param("idCabinComfort")
-    .isInt()
-    .withMessage("El id de la relación cabaña-comodidad debe ser un número entero")
-    .custom(validateExistecenComfortCabin), // ← Cambiar a esta función
-  body("idCabin")
-    .optional()
-    .isInt()
-    .withMessage("El id de la cabaña debe ser un número entero")
-    .custom(validateCabinExistence),
-  body("idComfort")
-    .optional()
-    .isInt()
-    .withMessage("El id de la comodidad debe ser un número entero")
-    .custom(validateComfortsExistence),
-];
-
-export const deleteComfortValidation = [
-  param("idCabinComfort")
-    .isInt()
-    .withMessage(
-      "El id de la relación cabaña-comodidad debe ser un número entero"
-    )
-    .custom(validateExistecenComfortCabin),
-];

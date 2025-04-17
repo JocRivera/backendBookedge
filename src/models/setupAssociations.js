@@ -31,6 +31,8 @@ export const setupAssociations = () => {
   CabinsComforts.belongsTo(Cabins, { foreignKey: 'idCabin' });
   CabinsComforts.belongsTo(Comforts, { foreignKey: 'idComfort' });
 
+
+
   // Asociaciones para Roles-permisos-privilegios (relación muchos a muchos)
   PermissionRoles.belongsTo(Roles, {
     foreignKey: 'idRol',
