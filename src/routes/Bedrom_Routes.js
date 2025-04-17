@@ -5,10 +5,6 @@ import {
   createBedroomController,
   updateBedroomController,
   deleteBedroomController,
-  getAllComfortToBedroomController,
-  addComfortToBedroomController,
-  updateComfortToBedroomController,
-  removeComfortFromBedroomController,
 } from "../controllers/Bedrom_Controller.js";
 import upload from "../middlewares/Multer.js";
 import {
@@ -16,9 +12,6 @@ import {
   updateBedroomValidation,
   deleteBedroomValidation,
   getBedroomValidation,
-  addComfortValidation,
-  updateComfortValidation,
-  deleteComfortValidation,
 } from "../middlewares/Validate_Bedrom.js";
 
 const router = express.Router();
@@ -30,10 +23,5 @@ router.post("/", upload.single("imagen"), createBedroomValidation, createBedroom
 router.put("/:id", upload.single("imagen"), updateBedroomValidation, updateBedroomController);
 router.delete("/:id", deleteBedroomValidation, deleteBedroomController);
 
-// Rutas para comodidades de habitaciones
-router.get("/roomComforts/assignment",getAllComfortToBedroomController)
-router.post("/roomComforts", addComfortValidation, addComfortToBedroomController);
-router.put("/roomComforts/:idRoomComforts", updateComfortValidation, updateComfortToBedroomController);
-router.delete("/roomComforts/:idRoomComforts", deleteComfortValidation, removeComfortFromBedroomController);
 
 export default router;

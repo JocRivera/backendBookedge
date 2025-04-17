@@ -4,10 +4,6 @@ import {
   createBedroomRepository,
   updateBedroomRepository,
   deleteBedroomRepository,
-  getAllComfortToBedroomRepository,
-  addComfortToBedroomRepository,
-  updateBedroomComfortRepository,
-  removeComfortFromBedroomRepository
 } from "../repositories/Bedrom_Repository.js";
 
 export const getAllBedroomsService = async () => {
@@ -30,17 +26,3 @@ export const deleteBedroomService = async (id) => {
   return await deleteBedroomRepository(id);
 };
 
-export const getAllComfortToBedroomsService = async () =>{
-  return await getAllComfortToBedroomRepository()
-}
-export const addComfortToBedroomService = async (bedroomComfortData) => {
-  return await addComfortToBedroomRepository(bedroomComfortData);
-};
-
-export const updateBedroomComfortService = async (idRoomComforts, updateData) => {
-  return await updateBedroomComfortRepository(idRoomComforts, updateData);
-};
-
-export const removeComfortFromBedroomService = async (idRoomComforts) => {
-  return await removeComfortFromBedroomRepository(idRoomComforts);
-};

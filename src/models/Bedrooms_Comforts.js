@@ -1,8 +1,7 @@
 import { DataTypes } from "sequelize";
 import { database } from "../config/database.js";
-import { Bedrooms } from "./bedrooms_Model.js";
 import { Comforts } from "./Comfort_Model.js";
-
+import { Bedrooms } from "./bedrooms_Model.js";
 export const BedroomsComforts = database.define(
   "BedroomsComforts",
   {
@@ -14,12 +13,10 @@ export const BedroomsComforts = database.define(
     idRoom: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references:{model: Bedrooms,key: "idRoom"}
     },
     idComfort: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references:{model: Comforts,key: "idComfort"}
 
     },
     description: {
@@ -39,17 +36,18 @@ export const BedroomsComforts = database.define(
   }
 );
 
-// Definir la relación muchos a muchos
-Bedrooms.belongsToMany(Comforts, { 
-    through: BedroomsComforts,
-    foreignKey: "idRoom",
-    otherKey: "idComfort",
-    as: "Comforts"  // El mismo alias que usas en tu include
+
+Bedrooms.belongsToMany(Comforts, {
+  through: BedroomsComforts, 
+  foreignKey: "idRoom", 
+  otherKey: "idComfort",
+  as: "Comforts", 
 });
 
 Comforts.belongsToMany(Bedrooms, {
-    through: BedroomsComforts,
-    foreignKey: "idComfort",
-    otherKey: "idRoom",
-    as: "Bedrooms"
+  through: BedroomsComforts, 
+  foreignKey: "idComfort", 
+  otherKey: "idRoom", 
+  as: "Rooms", 
 });
+

@@ -1,6 +1,5 @@
 import { Bedrooms } from "../models/bedrooms_Model.js";
 import { Comforts } from "../models/Comfort_Model.js";
-import { BedroomsComforts } from "../models/Bedrooms_Comforts.js";
 
 export const getAllBedroomsRepository = async () => {
   return await Bedrooms.findAll({
@@ -9,7 +8,7 @@ export const getAllBedroomsRepository = async () => {
         model: Comforts,
         as: "Comforts",
         attributes: ["idComfort", "name"],
-        through: { attributes: [] },
+        through: { attributes: [] }, // Oculta datos de la tabla intermedia
       },
     ],
   });
@@ -37,25 +36,4 @@ export const updateBedroomRepository = async (id, bedroomData) => {
 
 export const deleteBedroomRepository = async (id) => {
   return await Bedrooms.destroy({ where: { idRoom: id } });
-};
-
-
-export const getAllComfortToBedroomRepository = async ()=>{
-  return await BedroomsComforts.findAll();
-}
-
-export const addComfortToBedroomRepository = async (bedroomComfortData) => {
-  return await BedroomsComforts.create(bedroomComfortData);
-};
-
-export const updateBedroomComfortRepository = async (idRoomComforts, updateData) => {
-  return await BedroomsComforts.update(updateData, {
-    where: { idRoomComforts },
-  });
-};
-
-export const removeComfortFromBedroomRepository = async (idRoomComforts) => {
-  return await BedroomsComforts.destroy({
-    where: { idRoomComforts },
-  });
 };
