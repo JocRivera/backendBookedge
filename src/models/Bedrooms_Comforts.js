@@ -37,17 +37,5 @@ export const BedroomsComforts = database.define(
 );
 
 
-Bedrooms.belongsToMany(Comforts, {
-  through: BedroomsComforts, 
-  foreignKey: "idRoom", 
-  otherKey: "idComfort",
-  as: "Comforts", 
-});
 
-Comforts.belongsToMany(Bedrooms, {
-  through: BedroomsComforts, 
-  foreignKey: "idComfort", 
-  otherKey: "idRoom", 
-  as: "Rooms", 
-});
 

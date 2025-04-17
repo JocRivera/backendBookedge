@@ -7,7 +7,7 @@ import {
   deleteBedroomService,
 } from "../services/Bedrom_Service.js";
 
-import { getBedroomsWithoutComfortsService } from "../services/BedroomComfort_Service.js";
+import { getGroupedComfortsByBedroomService } from "../services/BedroomComfort_Service.js";
 
 export const getAllBedroomsController = async (req, res) => {
   try {
@@ -91,8 +91,8 @@ export const deleteBedroomController = async (req, res) => {
   try {
     const idBedroom = req.params.id;
 
-    const relatedData = await getBedroomsWithoutComfortsService(idBedroom);
-    if (relatedData.length > 0) {
+    const comforts = await getGroupedComfortsByBedroomService(idBedroom);
+    if (comforts.length > 0) {
       return res.status(400).json({
         message: "No se puede eliminar la habitación porque tiene datos relacionados",
       });
