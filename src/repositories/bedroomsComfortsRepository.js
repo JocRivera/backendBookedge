@@ -1,5 +1,5 @@
 import { BedroomsComforts } from "../models/Bedrooms_Comforts.js";
-import { Bedrooms } from "../models/Bedrooms_Model.js";
+import { Bedrooms } from "../models/bedrooms_Model.js";
 import { Comforts } from "../models/Comfort_Model.js";
 import { Op } from "sequelize";
 

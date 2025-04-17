@@ -1,6 +1,8 @@
 import { Cabins } from "./Cabin_Model.js";
 import { CabinsComforts } from "./Cabins_Comforts.js";
 import { Comforts } from "./Comfort_Model.js";
+import { Bedrooms } from "./bedrooms_Model.js";
+import { BedroomsComforts } from "./Bedrooms_Comforts.js";
 import { Roles } from "./Roles_Model.js";
 import { Permissions } from "./Permissions_Model.js";
 import { PermissionRoles } from "./Permission_Roles.js";
@@ -32,6 +34,21 @@ export const setupAssociations = () => {
   CabinsComforts.belongsTo(Comforts, { foreignKey: 'idComfort' });
 
 
+  Bedrooms.belongsToMany(Comforts, {
+    through: BedroomsComforts, 
+    foreignKey: "idRoom", 
+    otherKey: "idComfort",
+    as: "Comforts", 
+  });
+  
+  Comforts.belongsToMany(Bedrooms, {
+    through: BedroomsComforts, 
+    foreignKey: "idComfort", 
+    otherKey: "idRoom", 
+    as: "Rooms", 
+  });
+  BedroomsComforts.belongsTo(Bedrooms, { foreignKey: 'idRoom' });
+  BedroomsComforts.belongsTo(Comforts, { foreignKey: 'idComfort' });
 
   // Asociaciones para Roles-permisos-privilegios (relación muchos a muchos)
   PermissionRoles.belongsTo(Roles, {
