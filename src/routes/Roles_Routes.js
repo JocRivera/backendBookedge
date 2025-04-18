@@ -8,7 +8,7 @@ router.get("/", rolesController.findAll.bind(rolesController));
 router.get("/:id", rolesController.findById.bind(rolesController));
 router.post("/", createRolValidation, rolesController.create.bind(rolesController));
 router.post("/permission", rolesController.addPermission.bind(rolesController));
-router.put("/:id", rolesController.update.bind(rolesController));
+router.put("/:id", updateRolValidation, rolesController.update.bind(rolesController));
 router.delete("/:id", rolesController.delete.bind(rolesController));
 router.patch("/:id", rolesController.changeStatus.bind(rolesController));
 

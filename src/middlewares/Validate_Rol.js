@@ -28,7 +28,9 @@ export const createRolValidation = [
 
 export const updateRolValidation = [
     ...rolBaseValidation,
-    param("id").isInt().withMessage("El id del rol debe ser un número entero").custom(validateRolExistence),
+    param("id").isInt().withMessage("El id del rol debe ser un número entero")
+        .custom(validateRolExistence),
+    body("name").custom(validateUniqueRolName)
 ];
 
 export const deleteRolValidation = [

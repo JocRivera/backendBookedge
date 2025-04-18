@@ -1,46 +1,49 @@
-export const validateService = (req, res, next) => {
-    const { name, Description, Price, StatusServices } = req.body;
-    // if (!Id_Service || Id_Service < 0 || !Number.isInteger(Id_Service)) {
-    //     return res.status(400).json({
-    //         msg: 'verifique el Id_Service, debe ingresar un número entero mayor a 0'
-    //     })
-    // }
-    if (!name) {
-        return res.status(400).json({
-            msg: 'name is required'
-        })
-    }
-    if (/^\d+$/.test(name)) {
-        return res.status(400).json({
-            msg: 'name must be a string'
-        })
-    }
-    if (!Description) {
-        return res.status(400).json({
-            msg: 'Description is required'
-        })
-    }
-    if (/^\d+$/.test(name)) {
-        return res.status(400).json({
-            msg: 'Description must be a string'
-        })
-    }
-    if (!Price) {
-        return res.status(400).json({
-            msg: 'Price is required'
-        })
-    }
-    if (typeof StatusServices !== 'boolean') {
-        return res.status(400).json({
-            msg: 'status must be a boolean'
-        });
-    }
+import { body, param, validationResult } from "express-validator";
+import { Services } from "../models/Services_Model.js";
 
-    if (Price < 0) {
-        return res.status(400).json({ error: "El precio no puede ser negativo" });
+const validateServiceExistence = async (id) => {
+    const service = await Services.findByPk(id);
+    if (!service) {
+        return Promise.reject("El servicio no existe");
     }
-
-
-    next();
-
 }
+
+const validateUniqueServiceName = async (name) => {
+    const service = await Services.findOne({ where: { name } });
+    if (service) {
+        return Promise.reject("El servicio ya existe");
+    }
+}
+
+const serviceBaseValidation = [
+    body("name").isLength({ min: 3 }).withMessage("El nombre debe tener al menos 3 caracteres")
+        .matches(/^[a-zA-Z\s]+$/).withMessage("El nombre solo puede contener letras y espacios"),
+    body("status").default(true).isBoolean().withMessage("El estado debe ser un booleano"),
+];
+
+export const validateService = [
+    ...serviceBaseValidation,
+    body("name").custom(validateUniqueServiceName),
+];
+
+export const updateServiceValidation = [
+    ...serviceBaseValidation,
+    param("id").isInt().withMessage("El id del servicio debe ser un número entero").custom(validateServiceExistence),
+
+];
+
+export const deleteServiceValidation = [
+    param("id").isInt().withMessage("El id del servicio debe ser un número entero").custom(validateServiceExistence),
+];
+
+export const getServiceByIdValidation = [
+    param("id").isInt().withMessage("El id del servicio debe ser un número entero").custom(validateServiceExistence),
+];
+
+// export const validateServiceMiddleware = (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//         return res.status(400).json({ errors: errors.array() });
+//     }
+//     next();
+// };

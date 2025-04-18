@@ -1,5 +1,5 @@
 import { ServiceService } from '../services/Service_Services.js';
-
+import { validationResult } from 'express-validator';
 export class ServicesController {
     constructor() {
         this.ServiceService = new ServiceService();
@@ -25,12 +25,16 @@ export class ServicesController {
     }
 
     async createService(req, res) {
+        const service = req.body;
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
         try {
-            const data = req.body;
-            const newService = await this.ServiceService.createService(data);
+            const newService = await this.ServiceService.createService(service);
             res.status(201).json(newService);
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            res.status(500).json({ error: error.message });
         }
     }
 
