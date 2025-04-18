@@ -19,7 +19,7 @@ export class ServiceService {
     async deleteService(id) {
         return this.serviceRepository.deleteService(id);
     }
-    async changeStatus(id, status){
-        return await this.serviceRepository.changeStatus(id, status)
+    async changeStatus(id, StatusServices) {
+        return await this.serviceRepository.changeStatus(id, StatusServices)
     }
 }

@@ -11,5 +11,5 @@ router.get("/:id", servicesController.getServiceById.bind(servicesController));
 router.post("/", validateService, servicesController.createService.bind(servicesController));
 router.put("/:id", validateService, servicesController.updateService.bind(servicesController));
 router.delete("/:id", servicesController.deleteService.bind(servicesController));
-
+router.patch("/:id", servicesController.changeStatus.bind(servicesController));
 export default router;
