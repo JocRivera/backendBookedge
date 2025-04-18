@@ -56,7 +56,6 @@ export const updateBedroomValidation = [
     .withMessage("El ID debe ser un número entero")
     .custom(validateBedroomExistence),
   ...bedroomBaseValidation,
-  imageValidation,
 ];
 
 // Eliminar habitación
