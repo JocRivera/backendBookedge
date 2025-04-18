@@ -35,10 +35,14 @@ router.put("/:idReservation", updateReservationsValidation, updateReservationsCo
 router.patch("/:id/status", changeStateReservationsValidation, changeStatusReservationsController);
 
 //Ruta para obtener una reserva con sus acompañantes y agregar pagos
-router.get("/:id/companions", getReservationsValidation, getReservationsByIdController);
+router.get("/:idReservation/companions", getReservationsValidation, getReservationsByIdController);
 
 //Ruta para agregar un acompañante
-router.post("/:idReservation/companions/:idCompanion", addCompanionValidation, addCompanions);
+router.post(
+  "/:idReservation/companions",
+  addCompanionValidation,
+  addCompanions
+);
 
 //Ruta para agregar pagos
 router.post("/Reservationpayments",addPaymentsValidation, addPayments);
