@@ -37,13 +37,3 @@ export const Cabins = database.define(
 );
 
 
-///comentasdasd
-///comentasdasd
-///comentasdasd
-///comentasdasd
-///comentasdasd
-///comentasdasd
-///comentasdasd
-///comentasdasd
-///comentasdasd
-///comentasdasd
