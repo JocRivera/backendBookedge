@@ -1,6 +1,7 @@
 import { BedroomsComforts } from "../models/Bedrooms_Comforts.js";
 import { Bedrooms } from "../models/bedrooms_Model.js";
-import { Comforts } from "../models/Comfort_Model.js";
+import { Comforts } from "../models/comfort_Model.js";
+import { RoomImages } from "../models/RoomImage_Model.js";
 import { Op } from "sequelize";
 
 export const assignComfortsToBedroomRepository = async ({ idRoom, comforts, description }) => {
@@ -23,17 +24,38 @@ export const getBedroomsWithoutComfortsRepository = async () => {
   return await Bedrooms.findAll({
     where: {
       idRoom: {
-        [Op.notIn]: assignedIds,
+        [Op.notIn]: assignedIds.length > 0 ? assignedIds : [0],
       },
     },
+    include: [{
+      model: RoomImages,
+      as: "images",
+      attributes: ["idRoomImage", "imagePath"],
+      where: { isPrimary: true },
+      required: false
+    }]
   });
 };
 
+// En bedroomsComforts_Repository.js
 export const getAllComfortsForBedroomsRepository = async () => {
   return await BedroomsComforts.findAll({
     include: [
-      { model: Bedrooms, attributes: ["idRoom", "name", "imagen"] },
-      { model: Comforts, attributes: ["idComfort", "name"] },
+      { 
+        model: Bedrooms, 
+        attributes: ["idRoom", "name"],
+        include: [{
+          model: RoomImages,
+          as: "images",  // <-- Añade esta línea
+          attributes: ["idRoomImage", "imagePath"],
+          where: { isPrimary: true },
+          required: false
+        }]
+      },
+      { 
+        model: Comforts, 
+        attributes: ["idComfort", "name"] 
+      },
     ],
   });
 };
@@ -41,11 +63,21 @@ export const getAllComfortsForBedroomsRepository = async () => {
 export const getGroupedComfortsByBedroomRepository = async (idRoom) => {
   const comforts = await BedroomsComforts.findAll({
     where: { idRoom },
-    include: [{ model: Comforts, attributes: ["name"] }],
+    include: [{ model: Comforts, attributes: ["name"] }
+  ],
   });
+  
+  if (comforts.length === 0) {
+    return {
+      description: null,
+      dateEntry: null,
+      comforts: []
+    };
+  }
+  
   return {
-    description: comforts[0]?.description,
-    dateEntry: comforts[0]?.dateEntry,
+    description: comforts[0].description,
+    dateEntry: comforts[0].dateEntry,
     comforts: comforts.map((c) => c.Comfort.name),
   };
 };

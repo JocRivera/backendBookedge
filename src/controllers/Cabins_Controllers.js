@@ -36,7 +36,6 @@ export const createCabinController = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    // Ya no necesitamos manejar imágenes aquí
     const cabinData = {
       name: req.body.name,
       description: req.body.description,

@@ -25,4 +25,3 @@ export const updateBedroomService = async (id, bedroomData) => {
 export const deleteBedroomService = async (id) => {
   return await deleteBedroomRepository(id);
 };
-
