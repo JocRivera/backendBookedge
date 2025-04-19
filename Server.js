@@ -21,6 +21,9 @@ import authRoutes from "./src/routes/authRoutes.js";
 import PrivilegeRoutes from "./src/routes/Privileges_Routes.js";
 import cabinComfortsRoutes from "./src/routes/CabinComforts_Routes.js"
 import bedroomComfortsRoute from "./src/routes/BedroomComfortsRoutes.js"
+import cabinImages from "./src/routes/CabinImage_Routes.js"
+import roomImages from "./src/routes/RoomImage_Routes.js"
+
 import path from "path";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
@@ -79,6 +82,9 @@ export default class Server {
     this.app.use("/auth", authRoutes);
     this.app.use("/cabin-comforts",cabinComfortsRoutes)
     this.app.use("/bedroom-comforts",bedroomComfortsRoute)
+    this.app.use("/cabin-images",cabinImages)
+    this.app.use("/room-images",roomImages)
+
   }
 
   listen() {

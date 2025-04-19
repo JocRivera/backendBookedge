@@ -35,17 +35,11 @@ const bedroomBaseValidation = [
 ];
 
 // Validación de imagen
-const imageValidation = body("imagen").custom((value, { req }) => {
-  if (!req.file) {
-    throw new Error("La imagen de la habitación es requerida");
-  }
-  return true;
-});
+;
 
 // Crear habitación
 export const createBedroomValidation = [
   ...bedroomBaseValidation,
-  imageValidation,
   body("name").custom(validateBedroomName),
 ];
 

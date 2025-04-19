@@ -28,10 +28,7 @@ export const Cabins = database.define(
       type: DataTypes.ENUM("En Servicio", "Fuera de Servicio", "Mantenimiento"),
       defaultValue: "En Servicio",
     },
-    imagen: {
-      type: DataTypes.STRING(250),
-      allowNull: false,
-    },
+   
   },
   {
     tableName: "Cabins",

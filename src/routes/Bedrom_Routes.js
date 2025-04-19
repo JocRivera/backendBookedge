@@ -19,8 +19,8 @@ const router = express.Router();
 // Rutas para habitaciones
 router.get("/", getAllBedroomsController);
 router.get("/:id", getBedroomValidation, getBedroomByIdController);
-router.post("/", upload.single("imagen"), createBedroomValidation, createBedroomController);
-router.put("/:id", upload.single("imagen"), updateBedroomValidation, updateBedroomController);
+router.post("/",  createBedroomValidation, createBedroomController);
+router.put("/:id", updateBedroomValidation, updateBedroomController);
 router.delete("/:id", deleteBedroomValidation, deleteBedroomController);
 
 

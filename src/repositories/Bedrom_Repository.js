@@ -1,16 +1,29 @@
 import { Bedrooms } from "../models/bedrooms_Model.js";
 import { Comforts } from "../models/Comfort_Model.js";
+import { RoomImages } from "../models/RoomImage_Model.js";
 
 export const getAllBedroomsRepository = async () => {
-  return await Bedrooms.findAll({
+  const bedrooms = await Bedrooms.findAll({
     include: [
       {
         model: Comforts,
         as: "Comforts",
         attributes: ["idComfort", "name"],
-        through: { attributes: [] }, // Oculta datos de la tabla intermedia
+        through: { attributes: [] },
+      },
+      {
+        model: RoomImages,
+        as: "images",
+        attributes: ["idRoomImage"],
       },
     ],
+  });
+  
+  return bedrooms.map(bedroom => {
+    const plainBedroom = bedroom.get({ plain: true });
+    plainBedroom.imageCount = plainBedroom.images ? plainBedroom.images.length : 0;
+    delete plainBedroom.images; 
+    return plainBedroom;
   });
 };
 
