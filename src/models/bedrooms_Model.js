@@ -26,10 +26,7 @@ export const Bedrooms = database.define(
       defaultValue: "En Servicio",
       allowNull: false,
     },
-    imagen: {
-      type: DataTypes.STRING(250),
-      allowNull: false,
-    },
+   
   },
   
   {
