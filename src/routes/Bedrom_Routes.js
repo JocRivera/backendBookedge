@@ -6,7 +6,6 @@ import {
   updateBedroomController,
   deleteBedroomController,
 } from "../controllers/Bedrom_Controller.js";
-import upload from "../middlewares/Multer.js";
 import {
   createBedroomValidation,
   updateBedroomValidation,
@@ -19,9 +18,8 @@ const router = express.Router();
 // Rutas para habitaciones
 router.get("/", getAllBedroomsController);
 router.get("/:id", getBedroomValidation, getBedroomByIdController);
-router.post("/",  createBedroomValidation, createBedroomController);
+router.post("/", createBedroomValidation, createBedroomController);
 router.put("/:id", updateBedroomValidation, updateBedroomController);
 router.delete("/:id", deleteBedroomValidation, deleteBedroomController);
-
 
 export default router;

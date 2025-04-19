@@ -1,7 +1,7 @@
-// RoomImage_Model.js
 import { DataTypes } from "sequelize";
 import { database } from "../config/database.js";
 import { Bedrooms } from "./bedrooms_Model.js";
+
 export const RoomImages = database.define(
   "RoomImages",
   {
@@ -33,6 +33,5 @@ export const RoomImages = database.define(
   }
 );
 
-// Establecer relaciones
 Bedrooms.hasMany(RoomImages, { foreignKey: 'idRoom', as: 'images' });
 RoomImages.belongsTo(Bedrooms, { foreignKey: 'idRoom' });
