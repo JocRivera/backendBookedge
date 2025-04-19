@@ -35,16 +35,10 @@ const cabinBaseValidation = [
     ),
 ];
 
-const imageValidation = body("imagen").custom((value, { req }) => {
-  if (!req.file) {
-    throw new Error("La imagen de la cabaña es requerida");
-  }
-  return true;
-});
+
 
 export const createCabinValidation = [
   ...cabinBaseValidation,
-  imageValidation,
   body("name").custom(validateCabinName),
 ];
 

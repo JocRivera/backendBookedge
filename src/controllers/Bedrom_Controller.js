@@ -1,3 +1,4 @@
+// Bedroom_Controller.js (versión corregida)
 import { validationResult } from "express-validator";
 import {
   getAllBedroomsService,
@@ -6,7 +7,6 @@ import {
   updateBedroomService,
   deleteBedroomService,
 } from "../services/Bedrom_Service.js";
-
 import { getGroupedComfortsByBedroomService } from "../services/BedroomComfort_Service.js";
 
 export const getAllBedroomsController = async (req, res) => {
@@ -25,6 +25,9 @@ export const getBedroomByIdController = async (req, res) => {
   }
   try {
     const bedroom = await getBedroomByIdService(req.params.id);
+    if (!bedroom) {
+      return res.status(404).json({ message: "Habitación no encontrada" });
+    }
     res.status(200).json(bedroom);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -38,9 +41,12 @@ export const createBedroomController = async (req, res) => {
   }
   try {
     const bedroomData = {
-      ...req.body,
-      imagen: req.file ? req.file.filename : null,
+      name: req.body.name,
+      description: req.body.description,
+      capacity: req.body.capacity,
+      status: req.body.status || "En Servicio",
     };
+
     const bedroom = await createBedroomService(bedroomData);
     res.status(201).json(bedroom);
   } catch (error) {
@@ -55,26 +61,18 @@ export const updateBedroomController = async (req, res) => {
   }
 
   try {
-    // 1. Obtener la habitación existente
     const existingBedroom = await getBedroomByIdService(req.params.id);
     if (!existingBedroom) {
       return res.status(404).json({ message: "Habitación no encontrada" });
     }
 
-    // 2. Preparar datos actualizados
     const bedroomData = {
       name: req.body.name || existingBedroom.name,
       description: req.body.description || existingBedroom.description,
       capacity: req.body.capacity || existingBedroom.capacity,
       status: req.body.status || existingBedroom.status,
-      ...(req.file && { imagen: req.file.filename }),
     };
 
-    if (!req.file) {
-      delete bedroomData.imagen;
-    }
-
-    // 3. Actualizar
     const updatedBedroom = await updateBedroomService(req.params.id, bedroomData);
     res.status(200).json(updatedBedroom);
   } catch (error) {
@@ -90,11 +88,11 @@ export const deleteBedroomController = async (req, res) => {
 
   try {
     const idBedroom = req.params.id;
-
     const comforts = await getGroupedComfortsByBedroomService(idBedroom);
+    
     if (comforts.length > 0) {
       return res.status(400).json({
-        message: "No se puede eliminar la habitación porque tiene datos relacionados",
+        message: "No se puede eliminar la habitación porque tiene comodidades asignadas",
       });
     }
 

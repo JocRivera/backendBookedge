@@ -16,11 +16,11 @@ export class ServiceRepository {
     async deleteService(id) {
         return await Services.destroy({ where: { id_service: id } });
     }
-    async changeStatus(id, status){
+    async changeStatus(id, StatusServices) {
         return await Services.update(
-            {status},
+            { StatusServices },
             {
-                where:{
+                where: {
                     id_service: id,
                 }
             }

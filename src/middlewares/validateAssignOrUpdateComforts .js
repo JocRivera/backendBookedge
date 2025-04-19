@@ -12,9 +12,9 @@ export const validateAssignOrUpdateComforts = [
 
 
 export const validateAssignOrUpdateComfortsToBedroom = [
-  body("idBedroom")
-    .notEmpty().withMessage("El idBedroom es obligatorio")
-    .isInt().withMessage("El idBedroom debe ser un número entero"),
+  body("idRoom")
+    .notEmpty().withMessage("El idRoom es obligatorio")
+    .isInt().withMessage("El idRoom debe ser un número entero"),
 
   body("comforts")
     .isArray({ min: 1 }).withMessage("Debe incluir al menos una comodidad")

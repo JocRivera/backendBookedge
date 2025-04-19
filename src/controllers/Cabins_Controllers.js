@@ -36,13 +36,20 @@ export const createCabinController = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
+    // Ya no necesitamos manejar imágenes aquí
     const cabinData = {
-      ...req.body,
-      imagen: req.file ? req.file.filename : null,
+      name: req.body.name,
+      description: req.body.description,
+      capacity: req.body.capacity,
+      status: req.body.status || "En Servicio"
     };
+    
+    console.log("Datos a crear:", cabinData); // Para depuración
+    
     const cabin = await createCabinService(cabinData);
     res.status(201).json(cabin);
   } catch (error) {
+    console.error("Error en createCabinController:", error);
     res.status(400).json({ message: error.message });
   }
 };
@@ -60,25 +67,21 @@ export const updateCabinController = async (req, res) => {
       return res.status(404).json({ message: "Cabaña no encontrada" });
     }
 
-    // 2. Preparar datos actualizados (¡SOLUCIÓN CLAVE AQUÍ!)
+    // 2. Preparar datos actualizados (ya no manejamos imágenes aquí)
     const cabinData = {
       name: req.body.name || existingCabin.name,
       description: req.body.description || existingCabin.description,
       capacity: req.body.capacity || existingCabin.capacity,
-      status: req.body.status || existingCabin.status,
-      // Solo actualiza 'imagen' si hay archivo nuevo, de lo contrario mantiene el valor existente
-      ...(req.file && { imagen: req.file.filename }), // <-- Esto evita enviar NULL
+      status: req.body.status || existingCabin.status
     };
 
-    // 3. Si no hay imagen nueva, eliminamos la clave 'imagen' del objeto para no sobrescribir
-    if (!req.file) {
-      delete cabinData.imagen; // ¡Importante! Así no envías NULL
-    }
+    console.log("Datos a actualizar:", cabinData); // Para depuración
 
-    // 4. Actualizar
+    // 3. Actualizar
     const updatedCabin = await updateCabinService(req.params.id, cabinData);
     res.status(200).json(updatedCabin);
   } catch (error) {
+    console.error("Error en updateCabinController:", error);
     res.status(400).json({ message: error.message });
   }
 };
