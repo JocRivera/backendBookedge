@@ -3,6 +3,7 @@ import { Roles } from "../models/Roles_Model.js";
 import { Permissions } from "../models/Permissions_Model.js";
 import { PermissionRoles } from "../models/Permission_Roles.js";
 import { Privileges } from "../models/Privileges_Model.js";
+import { Op } from "sequelize";
 
 export const getAllUsers = async () => {
   return await Users.findAll({
@@ -11,6 +12,11 @@ export const getAllUsers = async () => {
         model: Roles,
         as: "role",
         attributes: ["name"],
+        where: {
+          name: {
+            [Op.not]: "Cliente",
+          },
+        },
         include: [
           {
             model: Permissions,
@@ -24,6 +30,59 @@ export const getAllUsers = async () => {
   });
 };
 
+export const getAllCustomers = async () => {
+  return await Users.findAll({
+    include: [
+      {
+        model: Roles,
+        as: "role",
+        attributes: ["name"],
+        where: {name: "Cliente"},
+        include: [
+          {
+            model: Permissions,
+            as: "permissions",
+            attributes: ["name"],
+            through: { attributes: [] },
+          },
+        ],
+      },
+    ], attributes: { exclude: ["password", "refreshToken"] }
+  });
+};
+
+export const getCustomerById = async (id) => {
+  return await Users.findByPk(id, {
+    attributes: { exclude: ["password", "refreshToken"] },
+    include: [
+      {
+        model: Roles,
+        as: "role",
+        attributes: ["name"],
+        where: {name: "Cliente"},
+        include: [
+          {
+            model: PermissionRoles,
+            as: "permissionRoles",
+            include: [
+              {
+                model: Permissions,
+                as: "permissions",
+                attributes: ["name"]
+              },
+              {
+                model: Privileges,
+                as: "privileges",
+                attributes: ["name"]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  });
+};
+
 export const getUserById = async (id) => {
   return await Users.findByPk(id, {
     attributes: { exclude: ["password", "refreshToken"] },
@@ -32,6 +91,11 @@ export const getUserById = async (id) => {
         model: Roles,
         as: "role",
         attributes: ["name"],
+        where: {
+          name: {
+            [Op.not]: "Cliente",
+          },
+        },
         include: [
           {
             model: PermissionRoles,
