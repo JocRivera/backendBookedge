@@ -27,3 +27,5 @@ database.sync({ force:false })
   })
   .catch()
 //nada
+
+//resolviendo conflictos 
