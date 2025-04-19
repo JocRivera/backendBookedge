@@ -18,6 +18,7 @@ const database = new Sequelize(
   }
 );
 
+//nada
 export { database };
 
 database.sync({ force:false })
@@ -25,3 +26,4 @@ database.sync({ force:false })
     console.log("Database synced successfully");
   })
   .catch()
+//nada

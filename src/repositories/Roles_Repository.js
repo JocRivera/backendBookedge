@@ -2,6 +2,7 @@ import { Roles } from "../models/Roles_Model.js";
 import { Permissions } from "../models/Permissions_Model.js";
 import { Privileges } from "../models/Privileges_Model.js";
 import { PermissionRoles } from "../models/Permission_Roles.js";
+import { Users } from "../models/user_Model.js";
 export class RolesRepository {
   async findAll() {
     return await Roles.findAll({
@@ -100,13 +101,23 @@ export class RolesRepository {
     });
   }
   async changeStatus(id, status) {
-    return await Roles.update(
+    await Roles.update(
       { status },
       {
         where: {
           idRol: id,
         },
       }
-    );
+    )
+    if (status === false) {
+      await Users.update(
+        { status },
+        {
+          where: {
+            idRol: id,
+          },
+        }
+      );
+    }
   }
 }

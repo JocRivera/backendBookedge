@@ -6,13 +6,19 @@ import {
   updateUser,
   deleteUser,
   changeStatusUser,
+  getAllCustomers,
+  getCustomerById,
 } from "../repositories/Users_Repository.js";
 
 const SALT_ROUNDS = 10;
 
 export const getAllUsersService = async () => await getAllUsers();
 
+export const getAllCustomersService = async () => await getAllCustomers();
+
 export const getUserByIdService = async (id) => await getUserById(id);
+
+export const getCustomerByIdService = async (id) => await getCustomerById(id);
 
 export const createUserService = async (dataUsers) => {
   const hashedPassword = await bcrypt.hash(dataUsers.password, SALT_ROUNDS);

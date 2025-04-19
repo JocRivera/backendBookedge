@@ -107,18 +107,47 @@ export const getAllReservationsCompanions = async (req, res) => {
 };
 
 
+// controllers/Reservations_Controllers.js
 export const addCompanions = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
   try {
-    const { idReservation, idCompanion } = req.params;
-    await addCompanionsServices(idReservation, idCompanion);
-    res.status(200).json({ message: 'Acompañante agregado exitosamente' });
+    const { idReservation } = req.params;
+    const { idCompanions } = req.body; 
+    
+    console.log("Datos recibidos:", { idReservation, idCompanions });
+
+    if (!idCompanions) {
+      return res.status(400).json({ message: "Falta el ID del acompañante" });
+    }
+
+    // Validar que sean números
+    const reservationId = Number(idReservation);
+    const companionId = Number(idCompanions);
+    
+    if (isNaN(reservationId)) {
+      return res.status(400).json({ message: "ID de reserva inválido" });
+    }
+    
+    if (isNaN(companionId)) {
+      return res.status(400).json({ message: "ID de acompañante inválido" });
+    }
+
+    await addCompanionsServices(reservationId, companionId);
+    res.status(200).json({ 
+      message: "Acompañante agregado exitosamente",
+      idReservation: reservationId,
+      idCompanions: companionId
+    });
   } catch (error) {
-    console.error('Error al agregar acompañante: ', error);
-    res.status(400).json({ message: error.message });
+    console.error("Error detallado:", {
+      message: error.message,
+      stack: error.stack,
+      requestBody: req.body
+    });
+    
+    res.status(400).json({ 
+      message: error.message,
+      details: error.response?.data || error.stack 
+    });
   }
 };
 

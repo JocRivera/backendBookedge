@@ -6,6 +6,8 @@ import {
   updateUser,
   deleteUser,
   changeStatusUser,
+  getAllCustomers,
+  getCustomerById,
 } from "../controllers/User_Controller.js";
 import {
   getUserByIdValidation,
@@ -26,5 +28,15 @@ router.post("/", createUserValidation,  createUser);
 router.put("/:id", updateUserValidation, verifyToken, authorize("Usuarios", "put"), updateUser);
 router.delete("/:id", deleteUserValidation, verifyToken, authorize("Usuarios", "delete"), deleteUser);
 router.patch("/:id",changeStatusUserValidation,verifyToken,authorize("Usuarios", "changeStatus"),changeStatusUser);
+
+//Customer
+router.get("/customers/get",
+  // verifyToken,
+  // authorize("Clientes", "read"),
+  getAllCustomers);
+router.get("/customers/getId/:id", getUserByIdValidation,
+  // verifyToken,
+  // authorize("Clientes", "read"),
+  getCustomerById);
 
 export default router;
