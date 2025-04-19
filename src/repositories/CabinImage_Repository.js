@@ -3,8 +3,12 @@ import { CabinImages } from "../models/CabinImage_Model.js";
 export const getCabinImagesRepository = async (cabinId) => {
   return await CabinImages.findAll({ 
     where: { idCabin: cabinId },
-    order: [['isPrimary', 'DESC']]
+    order: [['isPrimary', 'DESC']] 
   });
+};
+
+export const getCabinImageByIdRepository = async (imageId) => {
+  return await CabinImages.findByPk(imageId); // 👈 Nuevo método añadido
 };
 
 export const createCabinImageRepository = async (imageData) => {
@@ -16,12 +20,23 @@ export const deleteCabinImageRepository = async (id) => {
 };
 
 export const setPrimaryImageRepository = async (cabinId, imageId) => {
-  // Primero, establece todas las imágenes como no primarias
+  // Verificar que la imagen pertenece a la cabaña (👈 Seguridad añadida)
+  const image = await CabinImages.findOne({
+    where: {
+      idCabinImage: imageId,
+      idCabin: cabinId
+    }
+  });
+
+  if (!image) throw new Error("La imagen no pertenece a esta cabaña");
+
+  // 1. Desmarcar todas como no primarias
   await CabinImages.update(
     { isPrimary: false },
     { where: { idCabin: cabinId } }
   );
-  // Establece la imagen seleccionada como primaria
+
+  // 2. Marcar la seleccionada como primaria
   return await CabinImages.update(
     { isPrimary: true },
     { where: { idCabinImage: imageId } }

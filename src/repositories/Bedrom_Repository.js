@@ -1,5 +1,5 @@
 import { Bedrooms } from "../models/bedrooms_Model.js";
-import { Comforts } from "../models/Comfort_Model.js";
+import { Comforts } from "../models/comfort_Model.js";
 import { RoomImages } from "../models/RoomImage_Model.js";
 
 export const getAllBedroomsRepository = async () => {
@@ -14,7 +14,9 @@ export const getAllBedroomsRepository = async () => {
       {
         model: RoomImages,
         as: "images",
-        attributes: ["idRoomImage"],
+        attributes: ["idRoomImage", "imagePath"],
+        where: { isPrimary: true },
+        required: false,
       },
     ],
   });
@@ -22,7 +24,6 @@ export const getAllBedroomsRepository = async () => {
   return bedrooms.map(bedroom => {
     const plainBedroom = bedroom.get({ plain: true });
     plainBedroom.imageCount = plainBedroom.images ? plainBedroom.images.length : 0;
-    delete plainBedroom.images; 
     return plainBedroom;
   });
 };
@@ -34,6 +35,12 @@ export const getBedroomByIdRepository = async (id) => {
         model: Comforts,
         as: "Comforts",
         attributes: ["idComfort", "name"],
+        through: { attributes: [] },
+      },
+      {
+        model: RoomImages,
+        as: "images",
+        attributes: ["idRoomImage", "imagePath", "isPrimary"],
       },
     ],
   });
@@ -44,7 +51,16 @@ export const createBedroomRepository = async (bedroomData) => {
 };
 
 export const updateBedroomRepository = async (id, bedroomData) => {
-  return await Bedrooms.update(bedroomData, { where: { idRoom: id } });
+  const [updated] = await Bedrooms.update(bedroomData, { 
+    where: { idRoom: id }
+  });
+  
+  if (updated) {
+    const updatedBedroom = await getBedroomByIdRepository(id);
+    return updatedBedroom;
+  }
+  
+  return null;
 };
 
 export const deleteBedroomRepository = async (id) => {
