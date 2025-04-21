@@ -8,15 +8,21 @@ import {
   changeStatusUser,
   getAllCustomers,
   getCustomerById,
+  getJustUsers,
+  getJustUserById
 } from "../repositories/Users_Repository.js";
 
 const SALT_ROUNDS = 10;
 
 export const getAllUsersService = async () => await getAllUsers();
 
+export const getJustUsersService = async () => await getJustUsers();
+
 export const getAllCustomersService = async () => await getAllCustomers();
 
 export const getUserByIdService = async (id) => await getUserById(id);
+
+export const getJustUserByIdService = async (id) => await getJustUserById(id);
 
 export const getCustomerByIdService = async (id) => await getCustomerById(id);
 
