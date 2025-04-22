@@ -140,3 +140,21 @@ export const resetPasswordService = async (token, newPassword) => {
     resetTokenExpires: null,
   });
 };
+export const updateProfileService = async (idUser, updateData) => {
+  const user = await Users.findByPk(idUser);
+  if (!user) throw new Error('Usuario no encontrado');
+
+  const safeFields = ['name',"email","identification","identificationType",'eps', 'cellphone', 'address', 'birthdate'];
+  
+  await user.update(updateData, {
+    fields: safeFields, 
+    validate: false 
+  });
+
+  return await Users.findByPk(idUser, {
+    attributes: { 
+      exclude: ['password', 'refreshToken', 'resetToken', 'resetTokenExpires'] 
+    },
+    include: ['role']
+  });
+};
