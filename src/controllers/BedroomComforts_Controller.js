@@ -7,7 +7,6 @@ import {
   updateGroupedComfortsByBedroomService
 } from "../services/BedroomComfort_Service.js";
 
-// Asignar comodidades a una habitación
 export const assignComfortsToBedroomController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -22,7 +21,6 @@ export const assignComfortsToBedroomController = async (req, res) => {
   }
 };
 
-//  Habitaciones sin comodidades asignadas
 export const getBedroomsWithoutComfortsController = async (req, res) => {
   try {
     const bedrooms = await getBedroomsWithoutComfortsService();
@@ -41,7 +39,6 @@ export const getAllComfortsForBedroomsController = async (req, res) => {
   }
 };
 
-// 🔍 Ver las comodidades agrupadas por una habitación específica
 export const getGroupedComfortsByBedroomController = async (req, res) => {
   try {
     const { id } = req.params;
@@ -52,7 +49,6 @@ export const getGroupedComfortsByBedroomController = async (req, res) => {
   }
 };
 
-// Actualizar las comodidades asignadas a una habitación
 export const updateGroupedComfortsByBedroomController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

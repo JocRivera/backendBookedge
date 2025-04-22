@@ -1,4 +1,3 @@
-// Bedroom_Controller.js (versión corregida)
 import { validationResult } from "express-validator";
 import {
   getAllBedroomsService,
@@ -88,9 +87,9 @@ export const deleteBedroomController = async (req, res) => {
 
   try {
     const idBedroom = req.params.id;
-    const comforts = await getGroupedComfortsByBedroomService(idBedroom);
+    const comfortsInfo = await getGroupedComfortsByBedroomService(idBedroom);
     
-    if (comforts.length > 0) {
+    if (comfortsInfo.comforts && comfortsInfo.comforts.length > 0) {
       return res.status(400).json({
         message: "No se puede eliminar la habitación porque tiene comodidades asignadas",
       });

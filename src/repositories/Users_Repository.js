@@ -12,6 +12,25 @@ export const getAllUsers = async () => {
         model: Roles,
         as: "role",
         attributes: ["name"],
+        include: [
+          {
+            model: Permissions,
+            as: "permissions",
+            attributes: ["name"],
+            through: { attributes: [] },
+          },
+        ],
+      },
+    ], attributes: { exclude: ["password", "refreshToken"] }
+  });
+};
+export const getJustUsers = async () => {
+  return await Users.findAll({
+    include: [
+      {
+        model: Roles,
+        as: "role",
+        attributes: ["name"],
         where: {
           name: {
             [Op.not]: "Cliente",
@@ -91,6 +110,37 @@ export const getUserById = async (id) => {
         model: Roles,
         as: "role",
         attributes: ["name"],
+        include: [
+          {
+            model: PermissionRoles,
+            as: "permissionRoles",
+            include: [
+              {
+                model: Permissions,
+                as: "permissions",
+                attributes: ["name"]
+              },
+              {
+                model: Privileges,
+                as: "privileges",
+                attributes: ["name"]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  });
+};
+
+export const getJustUserById = async (id) => {
+  return await Users.findByPk(id, {
+    attributes: { exclude: ["password", "refreshToken"] },
+    include: [
+      {
+        model: Roles,
+        as: "role",
+        attributes: ["name"],
         where: {
           name: {
             [Op.not]: "Cliente",
@@ -118,9 +168,6 @@ export const getUserById = async (id) => {
     ]
   });
 };
-
-
-
 
 export const createUser = async (dataUsers) => {
   return await Users.create(dataUsers);
