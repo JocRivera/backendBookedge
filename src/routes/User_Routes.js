@@ -50,5 +50,22 @@ router.get("/customers/getId/:id", getUserByIdValidation,
   // verifyToken,
   // authorize("Clientes", "read"),
   getCustomerById);
+router.post("/customers/post", createUserValidation,
+  // verifyToken,
+  // authorize("Clientes", "post"),
+  createUser);
+router.put("/customers/put/:id", updateUserValidation,
+  // verifyToken,
+  // authorize("Clientes", "put"),
+  updateUser);
+router.delete("/customers/delete/:id", deleteUserValidation,
+  // verifyToken,
+  // authorize("Clientes", "delete"),
+  deleteUser);
+router.patch("/customers/patch/:id",changeStatusUserValidation,
+  // verifyToken,
+  // authorize("Clientes", "changeStatus"),
+  changeStatusUser);
+  
 
 export default router;
