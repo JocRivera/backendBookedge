@@ -25,7 +25,7 @@ const router = express.Router();
 router.get("/", verifyToken, authorize("Usuarios", "read"), getAllUsers);
 router.get("/:id", getUserByIdValidation, verifyToken, authorize("Usuarios", "read"), getUserById);
 router.post("/", createUserValidation,verifyToken, authorize("Usuarios", "post"),  createUser);
-router.put("/:id", updateUserValidation, verifyToken, authorize("Usuarios", "put"), updateUser);
+router.put("/:id", updateUserValidation, updateUser);
 router.delete("/:id", deleteUserValidation, verifyToken, authorize("Usuarios", "delete"), deleteUser);
 router.patch("/:id",changeStatusUserValidation,verifyToken,authorize("Usuarios", "changeStatus"),changeStatusUser);
 
@@ -38,5 +38,22 @@ router.get("/customers/getId/:id", getUserByIdValidation,
   // verifyToken,
   // authorize("Clientes", "read"),
   getCustomerById);
+router.post("/customers/post", createUserValidation,
+  // verifyToken,
+  // authorize("Clientes", "post"),
+  createUser);
+router.put("/customers/put/:id", updateUserValidation,
+  // verifyToken,
+  // authorize("Clientes", "put"),
+  updateUser);
+router.delete("/customers/delete/:id", deleteUserValidation,
+  // verifyToken,
+  // authorize("Clientes", "delete"),
+  deleteUser);
+router.patch("/customers/patch/:id",changeStatusUserValidation,
+  // verifyToken,
+  // authorize("Clientes", "changeStatus"),
+  changeStatusUser);
+  
 
 export default router;
