@@ -9,7 +9,7 @@ router.get("/:id", rolesController.findById.bind(rolesController));
 router.post("/", createRolValidation, rolesController.create.bind(rolesController));
 router.post("/permission", rolesController.addPermission.bind(rolesController));
 router.put("/:id", updateRolValidation, rolesController.update.bind(rolesController));
-router.delete("/:id", rolesController.delete.bind(rolesController));
+router.delete("/:id", deleteRolValidation, rolesController.delete.bind(rolesController));
 router.patch("/:id", rolesController.changeStatus.bind(rolesController));
 
 export default router;

@@ -6,7 +6,19 @@ const validateRolExistence = async (id) => {
     if (!rol) {
         return Promise.reject("El rol no existe");
     }
+    return rol;
 }
+const ADMIN_ROLE_NAME = 'admin';
+
+const PROTECTED_ROLES = [ADMIN_ROLE_NAME, 'superadmin', 'administrador'];
+
+const validateNotProtectedRole = async (id) => {
+    const role = await validateRolExistence(id); // Usar la función que ya existe
+    if (PROTECTED_ROLES.includes(role.name.toLowerCase())) {
+        throw new Error(`El rol ${role.name} está protegido y no puede ser modificado`);
+    }
+    return true;
+};
 
 const validateUniqueRolName = async (name) => {
     const rol = await Roles.findOne({ where: { name } });
@@ -34,7 +46,7 @@ export const updateRolValidation = [
 ];
 
 export const deleteRolValidation = [
-    param("id").isInt().withMessage("El id del rol debe ser un número entero").custom(validateRolExistence),
+    param("id").isInt().withMessage("El id del rol debe ser un número entero").custom(validateNotProtectedRole),
 ];
 
 export const getRolByIdValidation = [

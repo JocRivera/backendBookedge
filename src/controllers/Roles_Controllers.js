@@ -62,6 +62,10 @@ export class RolesController {
     async updatePermission(req, res) {
         const { idPermission, idRol } = req.params;
         const permission = req.body;
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
         try {
             const role = await this.rolesService.updatePermission(permission, idPermission, idRol);
             return res.status(200).json(role);
@@ -82,8 +86,12 @@ export class RolesController {
     }
 
     async delete(req, res) {
-        const { id } = req.params;
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
         try {
+            const { id } = req.params;
             await this.rolesService.delete(id);
             return res.status(204).send();
         } catch (error) {
