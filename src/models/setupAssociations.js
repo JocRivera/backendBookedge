@@ -13,7 +13,6 @@ import { Companions } from "./Companions_Model.js";
 import { ReservationsCompanions } from "./Reservations_Companions_Models.js";
 import { Payments } from "./Payments_Model.js";
 import { Users } from "../models/user_Model.js";
-
 import { PaymentsReservations } from "./Payments_Reservations_model.js";
 export const setupAssociations = () => {
   Cabins.belongsToMany(Comforts, {
@@ -111,16 +110,18 @@ export const setupAssociations = () => {
     through: PaymentsReservations,
     foreignKey: "idPayments",
     otherKey: "idReservation",
-    as: "reservations",
+    as: "reservations"
   });
-
+  
   Reservations.belongsToMany(Payments, {
     through: PaymentsReservations,
     foreignKey: "idReservation",
     otherKey: "idPayments",
-    as: "payments",
+    as: "payments"
   });
-
+  Payments.hasMany(PaymentsReservations, { foreignKey: 'idPayments' });
+  PaymentsReservations.belongsTo(Payments, { foreignKey: 'idPayments' });
+  
   Plans.hasMany(Reservations, {
     foreignKey: 'idPlan',
     as: 'reservations',

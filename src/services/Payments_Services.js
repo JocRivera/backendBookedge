@@ -4,6 +4,7 @@ import {
     updatePayment,
     deletePayment,
     getAllPayments,
+    getReservationPayments
   } from "../repositories/Payments_Repository.js";
 
   export const getAllPaymentsService = async () => {
@@ -24,5 +25,17 @@ import {
   
   export const deletePaymentService = async (id) => {
     return await deletePayment(id);
+  };
+  export const addPaymentToReservationService = async (idReservation, paymentData) => {
+
+    const payment = await createPayment(paymentData);
+    
+    await addPaymentToReservation(idReservation, payment.idPayments, paymentData.amount);
+    
+    return payment;
+  };
+  
+  export const getReservationPaymentsService = async (idReservation) => {
+    return await getReservationPayments(idReservation);
   };
   

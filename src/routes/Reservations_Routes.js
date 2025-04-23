@@ -45,7 +45,7 @@ router.post(
 );
 
 //Ruta para agregar pagos
-router.post("/Reservationpayments",addPaymentsValidation, addPayments);
+router.post("/payments",addPaymentsValidation, addPayments);
 
 //Ruta para agregar plan
 router.post("/Reservationplans", addPlansValidation, addPlans);
