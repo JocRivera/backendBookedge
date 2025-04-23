@@ -8,6 +8,15 @@ export const validatePaymentsExistence = async (id) => {
   }
   return true;
 };
+export const validatePaymentNotExists = async (idReservation, idPayment) => {
+  const relation = await PaymentsReservations.findOne({
+    where: { idReservation, idPayments: idPayment }
+  });
+  if (relation) {
+    return Promise.reject("Este pago ya está asociado a la reserva");
+  }
+  return true;
+};
 
 export const createPaymentValidation = [
   body("paymentMethod")
@@ -30,7 +39,15 @@ export const createPaymentValidation = [
   body("confirmationDate")
     .optional()
     .isISO8601()
-    .withMessage("El formato de la fecha de confirmacion debe ser (Año-Mes-Dia)")
+    .withMessage("El formato de la fecha de confirmacion debe ser (Año-Mes-Dia)"),
+    body('voucher')
+  .optional()
+  .isString()
+  .withMessage('El comprobante debe ser una ruta válida'),
+body('voucherType')
+  .optional()
+  .isIn(['image/jpeg', 'image/png', 'application/pdf'])
+  .withMessage('Formato de archivo no soportado')
 ];
 
 export const updatePaymentValidation = [

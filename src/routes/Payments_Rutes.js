@@ -5,6 +5,8 @@ import {
   updatePaymentController,
   deletePaymentController,
   getAllPaymentsController, 
+  addPaymentToReservationController,
+  getReservationPaymentsController
 } from "../controllers/Payments_Controllers.js";
 import {
   createPaymentValidation,
@@ -21,5 +23,11 @@ router.get("/", getAllPaymentsController);
 router.get("/:id", getPaymentByIdValidation, getPaymentByIdController);
 router.put("/:id", updatePaymentValidation, updatePaymentController);
 router.delete("/:id", deletePaymentValidation, deletePaymentController);
+router.post(
+  '/reservations/:idReservation/payments',addPaymentToReservationController
+);
+
+router.get('/reservations/:idReservation/payments',getReservationPaymentsController
+);
 
 export default router;

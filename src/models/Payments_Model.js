@@ -38,6 +38,14 @@ export const Payments = database.define(
       type: DataTypes.DATEONLY,
       allowNull: true, 
     },
+    voucher: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    voucherType: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    }
   },
   {
     tableName: "Payments",
