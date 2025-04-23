@@ -2,6 +2,7 @@ import express from "express";
 
 import { getUniqueCapacitiesCabin, getUniqueCapacitiesBedroom, getServicesPerPlan } from "../repositories/Plans_Repository.js";
 import { PlansControllers } from "../controllers/Plans_Controllers.js";
+import upload from "../middlewares/multerForPlans.js";
 import { createPlanValidation, getPlanByIdValidation, updatePlanValidation, deletePlanValidation } from "../middlewares/Validate_Plan.js";
 
 const router = express.Router();
@@ -33,8 +34,8 @@ router.get("/uniqueCapacitiesCabin", async (req, res) => {
 });
 router.get("/", planController.getAllPlans.bind(planController));
 router.get("/:id", getPlanByIdValidation, planController.getPlanById.bind(planController));
-router.post("/", createPlanValidation, planController.createPlan.bind(planController));
-router.put("/:id", updatePlanValidation, planController.updatePlan.bind(planController));
+router.post("/", createPlanValidation, upload.single("image"), planController.createPlan.bind(planController));
+router.put("/:id", updatePlanValidation, upload.single('image'), planController.updatePlan.bind(planController));
 router.delete("/:id", deletePlanValidation, planController.deletePlan.bind(planController));
 
 export default router;
