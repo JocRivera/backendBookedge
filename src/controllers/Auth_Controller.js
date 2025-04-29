@@ -5,6 +5,7 @@ import {
   logoutService,
   recoveryPassword,
   resetPasswordService,
+  updateProfileService
 } from "../services/authService.js";
 import { getUserByIdService } from "../services/Users_Services.js";
 import { validationResult } from "express-validator";
@@ -121,7 +122,7 @@ export const getUserProfileController = async (req, res) => {
   try {
     const userId = req.user.idUser;
     const user = await getUserByIdService(userId);
-    
+
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
@@ -134,5 +135,28 @@ export const getUserProfileController = async (req, res) => {
   } catch (error) {
     console.error("Error al obtener el perfil del usuario:", error);
     return res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
+export const updateProfileController = async (req, res) => {
+  try {
+    // Validar que el usuario actualice solo su perfil
+    if (parseInt(req.params.id) !== req.user.idUser) {
+      return res.status(403).json({ 
+        message: "Solo puedes actualizar tu propio perfil" 
+      });
+    }
+
+    // Eliminar campos no permitidos aunque vengan en la solicitud
+    const {  idRol, password, ...safeData } = req.body;
+    
+    const updatedUser = await updateProfileService(req.params.id, safeData);
+    res.json(updatedUser);
+    
+  } catch (error) {
+    res.status(400).json({ 
+      message: error.message,
+      type: "profile_update_error"
+    });
   }
 };

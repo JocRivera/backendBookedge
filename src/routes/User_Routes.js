@@ -8,6 +8,8 @@ import {
   changeStatusUser,
   getAllCustomers,
   getCustomerById,
+  getJustUsers,
+  getJustUserById
 } from "../controllers/User_Controller.js";
 import {
   getUserByIdValidation,
@@ -22,12 +24,22 @@ import { authorize } from "../middlewares/RolesPermissionAuth.js";
 const router = express.Router();
 
 // Rutas protegidas por permisos + privilegios
-router.get("/", verifyToken, authorize("Usuarios", "read"), getAllUsers);
-router.get("/:id", getUserByIdValidation, verifyToken, authorize("Usuarios", "read"), getUserById);
-router.post("/", createUserValidation,verifyToken, authorize("Usuarios", "post"),  createUser);
-router.put("/:id", updateUserValidation, verifyToken, authorize("Usuarios", "put"), updateUser);
-router.delete("/:id", deleteUserValidation, verifyToken, authorize("Usuarios", "delete"), deleteUser);
-router.patch("/:id",changeStatusUserValidation,verifyToken,authorize("Usuarios", "changeStatus"),changeStatusUser);
+router.get("/", getAllUsers);
+router.get("/:id", getUserById);
+router.post("/", createUser);
+router.put("/:id", updateUserValidation, verifyToken, updateUser);
+router.delete("/:id",  deleteUser);
+router.patch("/:id",changeStatusUser);
+
+router.get("/Users/get",
+  // verifyToken,
+  // authorize("Usuarios", "read"),
+  getJustUsers)
+
+router.get("/Users/get/:id", getUserByIdValidation,
+  // verifyToken,
+  // authorize("Usuarios", "read"),
+  getJustUserById);
 
 //Customer
 router.get("/customers/get",
@@ -38,5 +50,22 @@ router.get("/customers/getId/:id", getUserByIdValidation,
   // verifyToken,
   // authorize("Clientes", "read"),
   getCustomerById);
+router.post("/customers/post", createUserValidation,
+  // verifyToken,
+  // authorize("Clientes", "post"),
+  createUser);
+router.put("/customers/put/:id", updateUserValidation,
+  // verifyToken,
+  // authorize("Clientes", "put"),
+  updateUser);
+router.delete("/customers/delete/:id", deleteUserValidation,
+  // verifyToken,
+  // authorize("Clientes", "delete"),
+  deleteUser);
+router.patch("/customers/patch/:id",changeStatusUserValidation,
+  // verifyToken,
+  // authorize("Clientes", "changeStatus"),
+  changeStatusUser);
+  
 
 export default router;

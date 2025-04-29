@@ -35,3 +35,5 @@ export const Cabins = database.define(
     timestamps: false,
   }
 );
+
+

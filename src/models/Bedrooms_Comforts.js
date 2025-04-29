@@ -42,3 +42,6 @@ export const BedroomsComforts = database.define(
     timestamps: false,
   }
 );
+
+
+//resolviendo conflictos 
