@@ -8,9 +8,9 @@ const validateRolExistence = async (id) => {
     }
     return rol;
 }
-const ADMIN_ROLE_NAME = 'admin';
+const ADMIN_ROLE_NAME = 'Administrador';
 
-const PROTECTED_ROLES = [ADMIN_ROLE_NAME, 'superadmin', 'administrador'];
+const PROTECTED_ROLES = [ADMIN_ROLE_NAME,'superAdmin','admin'];
 
 const validateNotProtectedRole = async (id) => {
     const role = await validateRolExistence(id); // Usar la función que ya existe

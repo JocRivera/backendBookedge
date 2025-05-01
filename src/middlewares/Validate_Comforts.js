@@ -1,5 +1,7 @@
 import { body, param, validationResult } from "express-validator";
-import { Comforts } from "../models/Comfort_Model.js";
+import { Comforts } from "../models/comfort_Model.js";
+import { Sequelize } from 'sequelize'; // Añade esto al inicio del archivo
+
 
 export const validateComfortsExistence = async (id) => {
   const comforts = await Comforts.findByPk(id);
@@ -9,13 +11,26 @@ export const validateComfortsExistence = async (id) => {
   return true;
 };
 
-export const validateComfortName = async (name) => {
-  const comforts = await Comforts.findOne({ where: { name } });
-  if (comforts) {
-    return Promise.reject("La comodidad ya existe");
+export const validateComfortName = async (name, { req }) => {
+  // Si es una actualización y el nombre no ha cambiado, no validar
+  if (req.params.id && req.body.originalName === name) {
+    return true;
+  }
+
+  const query = { 
+    where: { 
+      name,
+      idComfort: { [Sequelize.Op.ne]: req.params?.id || null } 
+    }
+  };
+  
+  const comfort = await Comforts.findOne(query);
+  if (comfort) {
+    return Promise.reject("Ya existe otra comodidad con este nombre");
   }
   return true;
 };
+
 const comfortBaseValidation = [
   body("name")
     .notEmpty()

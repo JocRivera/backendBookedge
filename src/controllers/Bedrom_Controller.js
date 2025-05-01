@@ -60,24 +60,31 @@ export const updateBedroomController = async (req, res) => {
   }
 
   try {
+    // 1. Obtener la habitación existente
     const existingBedroom = await getBedroomByIdService(req.params.id);
     if (!existingBedroom) {
       return res.status(404).json({ message: "Habitación no encontrada" });
     }
 
+    // 2. Preparar datos actualizados
     const bedroomData = {
       name: req.body.name || existingBedroom.name,
       description: req.body.description || existingBedroom.description,
       capacity: req.body.capacity || existingBedroom.capacity,
-      status: req.body.status || existingBedroom.status,
+      status: req.body.status || existingBedroom.status
     };
 
+    console.log("Datos a actualizar:", bedroomData); // Para depuración
+
+    // 3. Actualizar
     const updatedBedroom = await updateBedroomService(req.params.id, bedroomData);
     res.status(200).json(updatedBedroom);
   } catch (error) {
+    console.error("Error en updateBedroomController:", error);
     res.status(400).json({ message: error.message });
   }
 };
+
 
 export const deleteBedroomController = async (req, res) => {
   const errors = validationResult(req);

@@ -1,7 +1,6 @@
 import { body, param, validationResult } from "express-validator";
 import { Cabins } from "../models/Cabin_Model.js";
-import{CabinsComforts} from "../models/cabins_Comforts.js"
-import { validateComfortsExistence } from "./Validate_Comforts.js";
+
 
 export const validateCabinExistence = async (id) => {
   const cabin = await Cabins.findByPk(id);
@@ -12,10 +11,18 @@ export const validateCabinExistence = async (id) => {
 };
 
 const validateCabinName = async (name) => {
-  const cabin = await Cabins.findOne({ where: { name } });
-  if (cabin) {
-    return Promise.reject("La cabaña ya existe");
-  }
+  const query = { where: { name } };
+    
+    // Si es una actualización, excluir la habitación actual de la validación
+    if (req.params.id) {
+      query.where.idCabin = { [Sequelize.Op.ne]: req.params.id };
+    }
+    
+    const cabin = await Cabins.findOne(query);
+    if (cabin) {
+      return Promise.reject("Ya existe otra habitación con este nombre");
+    }
+    return true;
 };
 
 const cabinBaseValidation = [

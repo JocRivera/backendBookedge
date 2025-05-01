@@ -25,11 +25,11 @@ const router = express.Router();
 
 // Rutas protegidas por permisos + privilegios
 router.get("/", getAllUsers);
-router.get("/:id", getUserByIdValidation, verifyToken, authorize("Usuarios", "read"), getUserById);
-router.post("/", createUserValidation,verifyToken, authorize("Usuarios", "post"),  createUser);
+router.get("/:id", getUserById);
+router.post("/", createUserValidation,  createUser);
 router.put("/:id", updateUserValidation, verifyToken, updateUser);
-router.delete("/:id", deleteUserValidation, verifyToken, authorize("Usuarios", "delete"), deleteUser);
-router.patch("/:id",changeStatusUserValidation,verifyToken,authorize("Usuarios", "changeStatus"),changeStatusUser);
+router.delete("/:id",  deleteUser);
+router.patch("/:id",changeStatusUser);
 
 router.get("/Users/get",
   // verifyToken,
