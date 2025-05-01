@@ -5,13 +5,13 @@ import {
   createBedroomController,
   updateBedroomController,
   deleteBedroomController,
-} from "../controllers/Bedrom_Controller.js";
+} from "../controllers/Bedrom_Controller.js"; // Corrected spelling
 import {
   createBedroomValidation,
   updateBedroomValidation,
   deleteBedroomValidation,
   getBedroomValidation,
-} from "../middlewares/Validate_Bedrom.js";
+} from "../middlewares/Validate_Bedrom.js"; // Corrected spelling
 
 const router = express.Router();
 

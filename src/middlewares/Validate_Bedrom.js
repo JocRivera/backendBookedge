@@ -1,5 +1,6 @@
 import { body, param } from "express-validator";
 import { Bedrooms } from "../models/bedrooms_Model.js";
+import { Sequelize } from "sequelize";
 
 // Validar existencia de habitación
 export const validateBedroomExistence = async (id) => {
@@ -10,12 +11,19 @@ export const validateBedroomExistence = async (id) => {
   return true;
 };
 
-// Validar nombre único
-const validateBedroomName = async (name) => {
-  const room = await Bedrooms.findOne({ where: { name } });
-  if (room) {
-    return Promise.reject("La habitación ya existe");
+const validateBedroomName = async (name, { req }) => {
+  const query = { where: { name } };
+  
+  // Si es una actualización, excluir la habitación actual de la validación
+  if (req.params.id) {
+    query.where.idRoom = { [Sequelize.Op.ne]: req.params.id };
   }
+  
+  const room = await Bedrooms.findOne(query);
+  if (room) {
+    return Promise.reject("Ya existe otra habitación con este nombre");
+  }
+  return true;
 };
 
 // Validaciones base
@@ -34,9 +42,6 @@ const bedroomBaseValidation = [
     .withMessage("Estado inválido"),
 ];
 
-// Validación de imagen
-;
-
 // Crear habitación
 export const createBedroomValidation = [
   ...bedroomBaseValidation,
@@ -50,6 +55,7 @@ export const updateBedroomValidation = [
     .withMessage("El ID debe ser un número entero")
     .custom(validateBedroomExistence),
   ...bedroomBaseValidation,
+  body("name").custom(validateBedroomName), // Agregamos validación de nombre único también aquí
 ];
 
 // Eliminar habitación
