@@ -5,29 +5,37 @@ import {
   updatePaymentController,
   deletePaymentController,
   getAllPaymentsController, 
-  addPaymentToReservationController,
-  getReservationPaymentsController
+  getReservationPaymentsController,
+  changeStatusPaymentsController
 } from "../controllers/Payments_Controllers.js";
+
 import {
   createPaymentValidation,
   updatePaymentValidation,
   getPaymentByIdValidation,
   deletePaymentValidation,
+  changeStatusPaymentsValidation
 } from "../middlewares/Validate_Payments.js";
+
+import { uploadVoucher } from "../controllers/Payments_Controllers.js"; 
 
 const router = express.Router();
 
-// Rutas para los pagos
-router.post("/", createPaymentValidation, createPaymentController);
-router.get("/", getAllPaymentsController); 
-router.get("/:id", getPaymentByIdValidation, getPaymentByIdController);
-router.put("/:id", updatePaymentValidation, updatePaymentController);
-router.delete("/:id", deletePaymentValidation, deletePaymentController);
-router.post(
-  '/reservations/:idReservation/payments',addPaymentToReservationController
-);
 
-router.get('/reservations/:idReservation/payments',getReservationPaymentsController
-);
+router.post("/", uploadVoucher, createPaymentValidation, createPaymentController);
+
+router.get("/", getAllPaymentsController); 
+
+router.get("/:id", getPaymentByIdValidation, getPaymentByIdController);
+
+router.put("/:id", uploadVoucher, updatePaymentValidation, updatePaymentController);
+
+router.delete("/:id", deletePaymentValidation, deletePaymentController);
+
+router.patch("/:id/status", changeStatusPaymentsValidation, changeStatusPaymentsController)
+
+// Asociación de pagos a reservas
+
+router.get('/reservations/:idReservation/payments', getReservationPaymentsController);
 
 export default router;

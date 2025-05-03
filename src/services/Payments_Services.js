@@ -1,10 +1,12 @@
+import { Payments } from "../models/Payments_Model.js";
 import {
     createPayment,
     getPaymentById,
     updatePayment,
     deletePayment,
     getAllPayments,
-    getReservationPayments
+    getReservationPayments,
+    changeStatusPayments
   } from "../repositories/Payments_Repository.js";
 
   export const getAllPaymentsService = async () => {
@@ -26,16 +28,16 @@ import {
   export const deletePaymentService = async (id) => {
     return await deletePayment(id);
   };
-  export const addPaymentToReservationService = async (idReservation, paymentData) => {
-
-    const payment = await createPayment(paymentData);
-    
-    await addPaymentToReservation(idReservation, payment.idPayments, paymentData.amount);
-    
-    return payment;
-  };
   
   export const getReservationPaymentsService = async (idReservation) => {
-    return await getReservationPayments(idReservation);
+    console.log(`Buscando pagos para reserva: ${idReservation}`);
+    const payments = await getReservationPayments(idReservation);
+    console.log('Pagos encontrados:', JSON.stringify(payments, null, 2));
+    return payments;
   };
+
+  export const changeStatusPaymentsService = async (id,status) => {
+    console.log("id de los pagos recivido en el servicio: ", id);
+    return await changeStatusPayments(id, status);
+  }
   

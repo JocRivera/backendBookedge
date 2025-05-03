@@ -162,23 +162,24 @@ export const deleteCompaniosValidation = [
 ];
 
 //Validacion para agregar los pagos
+// En Validate_Reservations.js
 export const addPaymentsValidation = [
-  body('idReservation')
-    .isInt()
-    .withMessage('El Id de la reserva debe ser un numero entero')
-    .custom(validateReservationsExistence),
-  body('idPayments')
-    .isInt()
-    .withMessage('El Id del pago debe ser un numero entero')
-    .custom(async (value) => {
-      const payment = await Payments.findByPk(value);
-      if (!payment) {
-        throw new Error('El pago no existe')
-      }
-      return true;
-    }
-    ),
-]
+  body('amount')
+    .notEmpty().withMessage('El monto es obligatorio')
+    .isFloat({ min: 0.01 }).withMessage('El monto debe ser un número positivo'),
+    
+  body('paymentMethod')
+    .notEmpty().withMessage('El método de pago es obligatorio')
+    .isIn(['Efectivo', 'Tarjeta', 'Transferencia']).withMessage('Método de pago no válido'),
+    
+  body('paymentDate')
+    .optional()
+    .isISO8601().withMessage('Fecha de pago inválida'),
+    
+  body('status')
+    .optional()
+    .isIn(['Pendiente', 'Confirmado', 'Anulado']).withMessage('Estado no válido')
+];
 
 //Validacion para agregar el plan
 export const addPlansValidation = [

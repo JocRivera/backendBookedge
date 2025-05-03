@@ -30,7 +30,7 @@ export const Payments = database.define(
       },
     },
     status: {
-      type: DataTypes.ENUM("Confirmado", "Pendiente"),
+      type: DataTypes.ENUM("Confirmado", "Pendiente", "Anulado"),
       defaultValue: "Pendiente",
       allowNull: false,
     },

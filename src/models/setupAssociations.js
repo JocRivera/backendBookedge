@@ -34,17 +34,17 @@ export const setupAssociations = () => {
 
 
   Bedrooms.belongsToMany(Comforts, {
-    through: BedroomsComforts, 
-    foreignKey: "idRoom", 
+    through: BedroomsComforts,
+    foreignKey: "idRoom",
     otherKey: "idComfort",
-    as: "Comforts", 
+    as: "Comforts",
   });
-  
+
   Comforts.belongsToMany(Bedrooms, {
-    through: BedroomsComforts, 
-    foreignKey: "idComfort", 
-    otherKey: "idRoom", 
-    as: "Rooms", 
+    through: BedroomsComforts,
+    foreignKey: "idComfort",
+    otherKey: "idRoom",
+    as: "Rooms",
   });
   BedroomsComforts.belongsTo(Bedrooms, { foreignKey: 'idRoom' });
   BedroomsComforts.belongsTo(Comforts, { foreignKey: 'idComfort' });
@@ -58,7 +58,7 @@ export const setupAssociations = () => {
     foreignKey: 'idRol',
     as: 'permissionRoles'
   });
-  
+
   PermissionRoles.belongsTo(Permissions, {
     foreignKey: 'idPermission',
     as: 'permissions'
@@ -67,7 +67,7 @@ export const setupAssociations = () => {
     foreignKey: 'idPermission',
     as: 'permissionRoles'
   });
-  
+
   PermissionRoles.belongsTo(Privileges, {
     foreignKey: 'idPrivilege',
     as: 'privileges'
@@ -76,14 +76,14 @@ export const setupAssociations = () => {
     foreignKey: 'idPrivilege',
     as: 'permissionRoles'
   });
-  
-  Roles.belongsToMany(Permissions, { 
+
+  Roles.belongsToMany(Permissions, {
     through: PermissionRoles,
     foreignKey: 'idRol',
     otherKey: 'idPermission',
     as: 'permissions'
   });
-  
+
   Permissions.belongsToMany(Roles, {
     through: PermissionRoles,
     foreignKey: 'idPermission',
@@ -106,22 +106,42 @@ export const setupAssociations = () => {
   });
 
   //Asociacion de pagos y reservas
+  // Asociaciones entre Payments, Reservations y PaymentsReservations
   Payments.belongsToMany(Reservations, {
     through: PaymentsReservations,
-    foreignKey: "idPayments",
-    otherKey: "idReservation",
-    as: "reservations"
+    foreignKey: 'idPayments',
+    otherKey: 'idReservation',
+    as: 'reservations'
   });
-  
+
   Reservations.belongsToMany(Payments, {
     through: PaymentsReservations,
-    foreignKey: "idReservation",
-    otherKey: "idPayments",
-    as: "payments"
+    foreignKey: 'idReservation',
+    otherKey: 'idPayments',
+    as: 'payments'
   });
-  Payments.hasMany(PaymentsReservations, { foreignKey: 'idPayments' });
-  PaymentsReservations.belongsTo(Payments, { foreignKey: 'idPayments' });
-  
+
+  // Asociaciones adicionales para acceder directamente a la tabla intermedia
+  Payments.hasMany(PaymentsReservations, {
+    foreignKey: 'idPayments',
+    as: 'paymentRelations'
+  });
+
+  Reservations.hasMany(PaymentsReservations, {
+    foreignKey: 'idReservation',
+    as: 'paymentRelations'
+  });
+
+  PaymentsReservations.belongsTo(Payments, {
+    foreignKey: 'idPayments',
+    as: 'payment'
+  });
+
+  PaymentsReservations.belongsTo(Reservations, {
+    foreignKey: 'idReservation',
+    as: 'reservation'
+  });
+
   Plans.hasMany(Reservations, {
     foreignKey: 'idPlan',
     as: 'reservations',

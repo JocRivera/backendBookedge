@@ -5,11 +5,12 @@ import {
   createReservationsController,
   updateReservationsController,
   addCompanions,
-  addPayments,
+  addPaymentToReservationController,
   addPlans,
   updateCompanion,
   deleteCompanions,
   changeStatusReservationsController,
+  
 } from "../controllers/Reservations_Controllers.js";
 
 import {
@@ -26,7 +27,6 @@ import {
 import { authorize } from "../middlewares/RolesPermissionAuth.js";
 import { verifyToken } from "../middlewares/authMiddleware.js";
 const router = express.Router();
-
 // Rutas para las reservas
 router.get("/", getAllReservationsController);
 router.get("/:idReservation", getReservationsValidation, getReservationsByIdController);
@@ -45,7 +45,7 @@ router.post(
 );
 
 //Ruta para agregar pagos
-router.post("/payments",addPaymentsValidation, addPayments);
+router.post("/:idReservation/payments",addPaymentsValidation, addPaymentToReservationController);
 
 //Ruta para agregar plan
 router.post("/Reservationplans", addPlansValidation, addPlans);
