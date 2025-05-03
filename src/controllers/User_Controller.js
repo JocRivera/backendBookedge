@@ -7,22 +7,12 @@ import {
   changeStatusUserService,
   getAllCustomersService,
   getCustomerByIdService,
-  getJustUsersService,
-  getJustUserByIdService
 } from "../services/Users_Services.js";
 import { validationResult } from "express-validator";
 
 export const getAllUsers = async (req, res) => {
   try {
     return res.json(await getAllUsersService());
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};
-
-export const getJustUsers = async (req, res) => {
-  try {
-    return res.json(await getJustUsersService());
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -35,17 +25,6 @@ export const getUserById = async (req, res) => {
   }
   try {
     return res.json(await getUserByIdService(req.params.id));
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};
-export const getJustUserById = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  try {
-    return res.json(await getJustUserByIdService(req.params.id));
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
