@@ -49,47 +49,14 @@ export const setupAssociations = () => {
   BedroomsComforts.belongsTo(Bedrooms, { foreignKey: 'idRoom' });
   BedroomsComforts.belongsTo(Comforts, { foreignKey: 'idComfort' });
 
-  // Asociaciones para Roles-permisos-privilegios (relación muchos a muchos)
-  PermissionRoles.belongsTo(Roles, {
-    foreignKey: 'idRol',
-    as: 'roles'
-  });
-  Roles.hasMany(PermissionRoles, {
-    foreignKey: 'idRol',
-    as: 'permissionRoles'
-  });
+  PermissionRoles.belongsTo(Roles, { foreignKey: 'idRol', as: 'role' });
+  PermissionRoles.belongsTo(Permissions, { foreignKey: 'idPermission', as: 'permissions' });
+  PermissionRoles.belongsTo(Privileges, { foreignKey: 'idPrivilege', as: 'privileges' });
 
-  PermissionRoles.belongsTo(Permissions, {
-    foreignKey: 'idPermission',
-    as: 'permissions'
-  });
-  Permissions.hasMany(PermissionRoles, {
-    foreignKey: 'idPermission',
-    as: 'permissionRoles'
-  });
+  Roles.hasMany(PermissionRoles, { foreignKey: 'idRol', as: 'permissionRoles' });
+  Permissions.hasMany(PermissionRoles, { foreignKey: 'idPermission', as: 'permissionRoles' });
+  Privileges.hasMany(PermissionRoles, { foreignKey: 'idPrivilege', as: 'permissionRoles' });
 
-  PermissionRoles.belongsTo(Privileges, {
-    foreignKey: 'idPrivilege',
-    as: 'privileges'
-  });
-  Privileges.hasMany(PermissionRoles, {
-    foreignKey: 'idPrivilege',
-    as: 'permissionRoles'
-  });
-
-  Roles.belongsToMany(Permissions, {
-    through: PermissionRoles,
-    foreignKey: 'idRol',
-    otherKey: 'idPermission',
-    as: 'permissions'
-  });
-
-  Permissions.belongsToMany(Roles, {
-    through: PermissionRoles,
-    foreignKey: 'idPermission',
-    otherKey: 'idRol',
-    as: 'roles'
-  });
 
   //Asociaciones para resevas y acompañantes 
   Companions.belongsToMany(Reservations, {
