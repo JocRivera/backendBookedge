@@ -9,7 +9,8 @@ import {
   updatePaymentService,
   deletePaymentService,
   getAllPaymentsService,
-  getReservationPaymentsService
+  getReservationPaymentsService,
+  changeStatusPaymentsService
 } from "../services/Payments_Services.js";
 
 
@@ -63,28 +64,43 @@ export const getAllPaymentsController = async (req, res) => {
 };
 
 export const createPaymentController = async (req, res) => {
+  console.log("=== INICIO DE SOLICITUD ===");
+  console.log("Headers:", req.headers);
+  console.log("Body recibido:", req.body);
+  console.log("Archivo recibido:", req.file);
+  
   const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+  if (!errors.isEmpty()) {
+    console.log("Errores de validación:", errors.array());
+    return res.status(400).json({ errors: errors.array() });
+  }
 
   try {
-
     const paymentData = {
       paymentMethod: req.body.paymentMethod,
       paymentDate: req.body.paymentDate,
       amount: req.body.amount,
-      status: req.body.status || 'Pendiente', // Valor por defecto
+      status: req.body.status || 'Pendiente',
       confirmationDate: req.body.confirmationDate || null,
     };
 
     if (req.file) {
+      console.log("Procesando archivo adjunto...");
       paymentData.voucher = req.file.path;
       paymentData.voucherType = req.file.mimetype;
     }
 
+    console.log("Datos finales del pago:", paymentData);
     const payment = await createPaymentService(paymentData);
+    
+    console.log("=== PAGO CREADO CON ÉXITO ===");
     res.status(201).json(payment);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Error en el controlador:", error);
+    res.status(400).json({ 
+      message: error.message,
+      stack: error.stack 
+    });
   }
 };
 
@@ -131,15 +147,6 @@ export const deletePaymentController = async (req, res) => {
   }
 };
 
-export const addPaymentToReservationController = async (req, res) => {
-  try {
-    const { idReservation } = req.params;
-    const payment = await addPaymentToReservationService(idReservation, req.body);
-    res.status(201).json(payment);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
 
 export const getReservationPaymentsController = async (req, res) => {
   try {
@@ -147,5 +154,27 @@ export const getReservationPaymentsController = async (req, res) => {
     res.status(200).json(payments);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+export const changeStatusPaymentsController = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "ID inválido" });
+    }
+
+    await changeStatusPaymentsService(id, status);
+
+    return res.status(200).json({ message: "Estado actualizado correctamente" });
+  } catch (error) {
+    console.error("Error al cambiar estado del pago:", error);
+    return res.status(500).json({
+      message: "Error interno del servidor",
+      error: error.message, // 👈 agrega esta línea
+      stack: error.stack     // 👈 y esta si quieres ver más
+    });
   }
 };

@@ -146,9 +146,19 @@ export const deleteCompanions = async (idReservationsCompanions) => {
 };
 
 
-export const addPayments = async (paymentsData) => {
-  console.log('Datos recibidos en el repositorio:', paymentsData);
-  return await PaymentsReservations.create(paymentsData);
+export const addPaymentToReservation = async (idReservation, idPayment, amount) => {
+  try {
+    const relation = await PaymentsReservations.create({
+      idReservation,
+      idPayments: idPayment,
+      amountApplied: amount
+    });
+    
+    return relation;
+  } catch (error) {
+    console.error('Error en addPaymentToReservation:', error);
+    throw error;
+  }
 };
 
 export const addPlans = async (planData) => {

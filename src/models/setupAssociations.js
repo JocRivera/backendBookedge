@@ -73,22 +73,42 @@ export const setupAssociations = () => {
   });
 
   //Asociacion de pagos y reservas
+  // Asociaciones entre Payments, Reservations y PaymentsReservations
   Payments.belongsToMany(Reservations, {
     through: PaymentsReservations,
-    foreignKey: "idPayments",
-    otherKey: "idReservation",
-    as: "reservations"
+    foreignKey: 'idPayments',
+    otherKey: 'idReservation',
+    as: 'reservations'
   });
-  
+
   Reservations.belongsToMany(Payments, {
     through: PaymentsReservations,
-    foreignKey: "idReservation",
-    otherKey: "idPayments",
-    as: "payments"
+    foreignKey: 'idReservation',
+    otherKey: 'idPayments',
+    as: 'payments'
   });
-  Payments.hasMany(PaymentsReservations, { foreignKey: 'idPayments' });
-  PaymentsReservations.belongsTo(Payments, { foreignKey: 'idPayments' });
-  
+
+  // Asociaciones adicionales para acceder directamente a la tabla intermedia
+  Payments.hasMany(PaymentsReservations, {
+    foreignKey: 'idPayments',
+    as: 'paymentRelations'
+  });
+
+  Reservations.hasMany(PaymentsReservations, {
+    foreignKey: 'idReservation',
+    as: 'paymentRelations'
+  });
+
+  PaymentsReservations.belongsTo(Payments, {
+    foreignKey: 'idPayments',
+    as: 'payment'
+  });
+
+  PaymentsReservations.belongsTo(Reservations, {
+    foreignKey: 'idReservation',
+    as: 'reservation'
+  });
+
   Plans.hasMany(Reservations, {
     foreignKey: 'idPlan',
     as: 'reservations',

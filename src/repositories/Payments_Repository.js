@@ -1,5 +1,7 @@
 import { Payments } from "../models/Payments_Model.js";
 import { PaymentsReservations } from "../models/Payments_Reservations_model.js";
+import { Reservations } from "../models/Reservations_Model.js";
+import { changeStatusReservations } from "./Reservations_Repository.js";
 
 export const getAllPayments = async () => {
   return await Payments.findAll({
@@ -33,42 +35,33 @@ export const updatePayment = async (id, paymentData) => {
 export const deletePayment = async (id) => {
   return await Payments.destroy({ where: { idPayments: id } });
 };
-export const addPaymentToReservation = async (idReservation, idPayment, amount) => {
-  const transaction = await database.transaction();
+
+export const getReservationPayments = async (idReservation) => {
   try {
-    const relation = await PaymentsReservations.create({
-      idReservation,
-      idPayments: idPayment,
-      amountApplied: amount
-    }, { transaction });
-    
-    await transaction.commit();
-    return relation;
+    const reservations = await Reservations.findByPk(idReservation, {
+      include: [{
+        model: Payments,
+        as: 'payments',
+        attributes: [
+          'idPayments',
+          'paymentMethod',
+          'paymentDate',
+          'amount',
+          'status',
+          'confirmationDate',
+          'voucher',
+          'voucherType'
+        ]
+      }]
+    });
+
+    return reservations ? reservations.payments : [];
   } catch (error) {
-    await transaction.rollback();
+    console.error('Error en getReservationPayments:', error);
     throw error;
   }
 };
 
-export const getReservationPayments = async (reservationId) => {
-  return await Payments.findAll({
-    include: [
-      {
-        model: PaymentsReservations,
-        where: { idReservation: reservationId },
-        attributes: [], // Oculta columnas de la tabla intermedia si no las necesitas
-      },
-    ],
-    attributes: [
-      'idPayments',
-      'paymentMethod',
-      'paymentDate',
-      'amount',
-      'status',
-      'confirmationDate',
-      'voucher',
-      'voucherType'
-    ],
-    order: [['paymentDate', 'DESC']]
-  });
-};
+export const changeStatusPayments = async (id,status)=>{
+  return await Payments.update({status}, {where: {idPayments: id}})
+}

@@ -4,12 +4,13 @@ import {
     createReservations,
     updateReservations,
     addCompanions,
-    addPayments,
+    addPaymentToReservation,
     addPlans,
     updateCompanions,
     deleteCompanions,
     changeStatusReservations
 } from "../repositories/Reservations_Repository.js";
+import { PaymentsReservations } from "../models/Payments_Reservations_model.js";
 
 export async function getAllReservationsService() {
     return await getAllReservations();
@@ -32,10 +33,30 @@ export const addCompanionsServices = async (idReservation, idCompanions) => {
     return addCompanions(idReservation, idCompanions);
 };
 
-export const addPaymentsServices = async (idReservation, idPayments) => {
-    console.log('Datos enviados al repositorio:', { idReservation, idPayments });
-    return addPayments({ idReservation, idPayments });
-}
+// En el archivo de servicios
+export const addPaymentToReservationService = async (idReservation, idPayments) => {
+  try {
+    // Verificar si ya existe la relación
+    const existingRelation = await PaymentsReservations.findOne({
+      where: { idReservation, idPayments }
+    });
+
+    if (existingRelation) {
+      throw new Error("Este pago ya está asociado a la reserva");
+    }
+
+    // Crear la relación
+    await PaymentsReservations.create({ 
+      idReservation, 
+      idPayments,
+      amountApplied: await getPaymentAmount(idPayments) // Función para obtener el monto
+    });
+    
+  } catch (error) {
+    console.error("Error en addPaymentToReservationService:", error);
+    throw error;
+  }
+};
 
 export const addPlansServices = async (idReservation, idPlan) => {
     console.log('Datos enviados al repositorio:', { idReservation, idPlan });

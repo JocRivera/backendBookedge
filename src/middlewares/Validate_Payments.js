@@ -34,8 +34,8 @@ export const createPaymentValidation = [
     .withMessage("El monto debe ser un numero positivo"),
   body("status")
     .optional()
-    .isIn(["Confirmado", "Pendiente"])
-    .withMessage("El estado debe ser 'Confirmado' o 'Pendiente'"),
+    .isIn(["Confirmado", "Pendiente","Anulado"])
+    .withMessage("El estado debe ser 'Confirmado','Pendiente' o 'Anulado '"),
   body("confirmationDate")
     .optional()
     .isISO8601()
@@ -74,4 +74,14 @@ export const addPaymentsValidation = [
     .isInt()
     .withMessage("El Id del pago debe ser un número entero")
     .custom(validatePaymentsExistence), 
+];
+
+export const changeStatusPaymentsValidation = [
+  param("id")
+    .isInt()
+    .withMessage("El ID del pago debe ser un número entero")
+    .custom(validatePaymentsExistence),
+  body("status")
+    .isIn(["Confirmado", "Pendiente", "Anulado"])
+    .withMessage("El estado debe ser 'Confirmado', 'Pendiente' o 'Anulado'")
 ];

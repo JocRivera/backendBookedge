@@ -1,11 +1,14 @@
 import { validationResult } from "express-validator";
+import { Payments } from "../models/Payments_Model.js";
+import { Reservations } from "../models/Reservations_Model.js";
+import { PaymentsReservations } from "../models/Payments_Reservations_model.js";
 import {
   getAllReservationsService,
   getReservationsByIdService,
   createReservationsService,
   updateReservationsService,
   addCompanionsServices,
-  addPaymentsServices,
+  addPaymentToReservationService,
   addPlansServices,
   updateCompanionsService,
   deleteCompanionsService,
@@ -150,21 +153,53 @@ export const addCompanions = async (req, res) => {
     });
   }
 };
-
-export const addPayments = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+export const addPaymentToReservationController = async (req, res) => {
   try {
-    const { idReservation, idPayments } = req.body;
-    console.log('Datos recibidos en el controlador:', { idReservation, idPayments })
-    await addPaymentsServices(idReservation, idPayments);
-    res.status(200).json({ message: 'Pago agregado exitosamente' });
-  } catch (error) {
-    console.error('Error al agregar el pago: ', error);
-    res.status(400).json({ message: error.message });
+    console.log('Datos recibidos en el backend:', req.body);
+    
+    const { idReservation } = req.params;
+    const { paymentMethod, amount, paymentDate, status } = req.body;
 
+    // Validación mejorada
+    if (!paymentMethod || !amount) {
+      return res.status(400).json({ 
+        success: false,
+        message: "Faltan campos requeridos",
+        required: ["paymentMethod", "amount"],
+        received: req.body
+      });
+    }
+
+    // Crear el pago
+    const payment = await Payments.create({
+      paymentMethod,
+      amount: parseFloat(amount),
+      paymentDate: paymentDate || new Date(),
+      status: status || 'Pendiente'
+    });
+    console.log("Pago creado:", payment);
+    console.log("ID del pago creado:", payment.idPayments);
+
+    // Asociar a la reserva
+    await PaymentsReservations.create({
+      idReservation,
+      idPayments: payment.idPayments,
+      amountApplied: payment.amount
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Pago agregado correctamente",
+      payment
+    });
+
+  } catch (error) {
+    console.error("Error en el controlador de pagos:", error);
+    res.status(400).json({
+      success: false,
+      message: error.message,
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    });
   }
 };
 
