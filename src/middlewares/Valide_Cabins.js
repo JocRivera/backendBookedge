@@ -1,4 +1,4 @@
-import { body, param, validationResult } from "express-validator";
+import { body, param } from "express-validator";
 import { Cabins } from "../models/Cabin_Model.js";
 
 
@@ -10,7 +10,7 @@ export const validateCabinExistence = async (id) => {
   return true;
 };
 
-const validateCabinName = async (name) => {
+const validateCabinName = async (name,{req}) => {
   const query = { where: { name } };
     
     // Si es una actualización, excluir la habitación actual de la validación
