@@ -14,10 +14,20 @@ export const getAllUsers = async () => {
         attributes: ["name"],
         include: [
           {
-            model: Permissions,
-            as: "permissions",
-            attributes: ["name"],
-            through: { attributes: [] },
+            model: PermissionRoles,
+            as: "permissionRoles",
+            include: [
+              {
+                model: Permissions,
+                as: "permissions",
+                attributes: ["idPermission", "name"],
+              },
+              {
+                model: Privileges,
+                as: "privileges",
+                attributes: ["idPrivilege", "name"],
+              },
+            ],
           },
         ],
       },
@@ -38,10 +48,20 @@ export const getJustUsers = async () => {
         },
         include: [
           {
-            model: Permissions,
-            as: "permissions",
-            attributes: ["name"],
-            through: { attributes: [] },
+            model: PermissionRoles,
+            as: "permissionRoles",
+            include: [
+              {
+                model: Permissions,
+                as: "permissions",
+                attributes: ["idPermission", "name"],
+              },
+              {
+                model: Privileges,
+                as: "privileges",
+                attributes: ["idPrivilege", "name"],
+              },
+            ],
           },
         ],
       },
@@ -59,10 +79,20 @@ export const getAllCustomers = async () => {
         where: {name: "Cliente"},
         include: [
           {
-            model: Permissions,
-            as: "permissions",
-            attributes: ["name"],
-            through: { attributes: [] },
+            model: PermissionRoles,
+            as: "permissionRoles",
+            include: [
+              {
+                model: Permissions,
+                as: "permissions",
+                attributes: ["idPermission", "name"],
+              },
+              {
+                model: Privileges,
+                as: "privileges",
+                attributes: ["idPrivilege", "name"],
+              },
+            ],
           },
         ],
       },
