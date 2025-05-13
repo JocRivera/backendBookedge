@@ -25,11 +25,6 @@ export const getAllReservationsController = async (req, res) => {
 
     console.log('Reservas enviadas al cliente:', reservations);
     console.log("Datos obtenidos de Sequelize:", JSON.stringify(reservations, null, 2));
-
-    if (!reservations || reservations.length === 0) {
-      return res.status(404).json({ message: "No hay reservas registradas" });
-    }
-
     res.status(200).json(reservations);
   } catch (error) {
     console.error("Error al obtener reservas:", error.message);
