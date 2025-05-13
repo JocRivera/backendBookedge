@@ -1,8 +1,9 @@
 import { Reservations } from "../models/Reservations_Model.js";
 import { Companions } from "../models/Companions_Model.js";
-import { Payments } from "../models/Payments_Model.js";
 import { Plans } from "../models/Plans_Model.js";
 import { Users } from "../models/user_Model.js";
+import { Cabins }from "../models/cabin_Model.js"
+import {ReservationsCabins} from "../models/Reservations_cabins_Model.js"
 import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
 import { body, param, validationResult } from "express-validator";
 
@@ -198,4 +199,23 @@ export const addPlansValidation = [
       }
       return true;
     }),
+];
+
+//Validacion para agregar la cabaña
+export const addCabinsValidation = [
+  body('idReservation')
+    .notEmpty().withMessage('El ID de la reserva es obligatorio')
+    .isInt().withMessage('El ID de la reserva debe ser un número entero')
+    .custom(validateReservationsExistence),
+
+  body('idCabin')
+    .notEmpty().withMessage('El ID de la cabaña es obligatorio')
+    .isInt().withMessage('El ID de la cabaña debe ser un número entero')
+    .custom(async (value) => {
+      const cabin = await Cabins.findByPk(value);
+      if (!cabin) {
+        throw new Error('La cabaña no existe');
+      }
+      return true;
+    })
 ];

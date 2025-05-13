@@ -1,6 +1,5 @@
 import { validationResult } from "express-validator";
 import { Payments } from "../models/Payments_Model.js";
-import { Reservations } from "../models/Reservations_Model.js";
 import { PaymentsReservations } from "../models/Payments_Reservations_model.js";
 import {
   getAllReservationsService,
@@ -8,12 +7,11 @@ import {
   createReservationsService,
   updateReservationsService,
   addCompanionsServices,
-  addPaymentToReservationService,
   addPlansServices,
   updateCompanionsService,
   deleteCompanionsService,
-  changeStatusReservationsService
-
+  changeStatusReservationsService,
+  addCabinService
 } from "../services/Reservations_Services.js"
 import { json } from "sequelize";
 
@@ -110,7 +108,7 @@ export const getAllReservationsCompanions = async (req, res) => {
 };
 
 
-// controllers/Reservations_Controllers.js
+
 export const addCompanions = async (req, res) => {
   try {
     const { idReservation } = req.params;
@@ -206,7 +204,7 @@ export const addPaymentToReservationController = async (req, res) => {
 export const addPlans = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({ errors: errors.array()});
   }
   try {
     const { idReservation, idPlan } = req.body;
@@ -219,6 +217,22 @@ export const addPlans = async (req, res) => {
 
   }
 
+}
+
+export const addCabin = async (req,res)=>{
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({errors: errors.array()})
+  }
+  try{
+    const {idReservation,idCabin} = req.body;
+    console.log('Datos de la cabaña:', {idReservation, idCabin})
+    await addCabinServices(idReservation,idCabin);
+    res.status(200).json({message: "Cabañas agregadas exitosamente"}  )
+    }catch(error){
+      console.error('Error al agregar la cabaña:', error);
+      res.status(400).json({message: error.message})
+    }
 }
 
 export const updateCompanion = async (req, res) => {

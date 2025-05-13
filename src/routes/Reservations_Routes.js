@@ -10,6 +10,7 @@ import {
   updateCompanion,
   deleteCompanions,
   changeStatusReservationsController,
+  addCabin
   
 } from "../controllers/Reservations_Controllers.js";
 
@@ -22,7 +23,8 @@ import {
   addPaymentsValidation,
   addPlansValidation,
   updateCompanionsValidation,
-  deleteCompaniosValidation
+  deleteCompaniosValidation,
+  addCabinsValidation
 } from '../middlewares/Validate_Reservations.js';
 import { authorize } from "../middlewares/RolesPermissionAuth.js";
 import { verifyToken } from "../middlewares/authMiddleware.js";
@@ -48,7 +50,9 @@ router.post(
 router.post("/:idReservation/payments",addPaymentsValidation, addPaymentToReservationController);
 
 //Ruta para agregar plan
-router.post("/Reservationplans", addPlansValidation, addPlans);
+router.post("/Reservationplans", 
+  addPlansValidation, addPlans
+);
 
 //Ruta para actualizar un acompañante
 router.put(
@@ -59,4 +63,7 @@ router.put(
 
 //Ruta para eliminar un acompañante
 router.delete("/companions/:idReservationsCompanions/ReservationsCompanions", deleteCompaniosValidation, deleteCompanions);
+
+//Ruta para agregar Cabañas
+router.post("/cabañas", addCabinsValidation,addCabin,);
 export default router;
