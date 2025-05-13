@@ -8,7 +8,8 @@ import {
     addPlans,
     updateCompanions,
     deleteCompanions,
-    changeStatusReservations
+    changeStatusReservations,
+    addCabins
 } from "../repositories/Reservations_Repository.js";
 import { PaymentsReservations } from "../models/Payments_Reservations_model.js";
 
@@ -73,4 +74,7 @@ export const deleteCompanionsService = async (idReservationsCompanions) => {
 export const changeStatusReservationsService = async (id, status) => {
     console.log("ID recibido en el servicio:", id); 
     return await changeStatusReservations(id, status);
+}
+export const addCabinService = async (idReservation, idCabin) =>{
+  return  addCabins({idReservation, idCabin});
 }
