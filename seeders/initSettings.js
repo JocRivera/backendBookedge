@@ -45,33 +45,65 @@ export async function initSettings() {
     for (const permission of permissionRecords) {
       for (const privilege of privilegeRecords) {
         permissionRoles.push({
-          idRol: adminRole.id,
-          idPermission: permission.id,
-          idPrivilege: privilege.id
+          idRol: adminRole.idRol || adminRole.id, // Ajuste según tu modelo
+          idPermission: permission.idPermission || permission.id, // Usar el nombre de columna correcto
+          idPrivilege: privilege.idPrivilege || privilege.id // Usar el nombre de columna correcto
         });
       }
     }
+
+    console.log("Admin permission roles a crear:", permissionRoles);
     await PermissionRoles.bulkCreate(permissionRoles);
+
+    // Definir las relaciones del cliente (parece que falta esta constante en tu código original)
+    const clientRelations = [
+      { module: 'reservas', privileges: ['read', 'post'] },
+      { module: 'pagos', privileges: ['read'] },
+      { module: 'alojamientos', privileges: ['read'] }
+      // Añade más relaciones según sea necesario
+    ];
 
     // Lo mismo para el rol 'Cliente', de acuerdo a las relaciones definidas
     const clientPermissionRoles = [];
     for (const relation of clientRelations) {
       const permission = permissionRecords.find(p => p.name === relation.module);
-      for (const privName of relation.privileges) {
-        const privilege = privilegeRecords.find(p => p.name === privName);
-        if (permission && privilege) {
-          clientPermissionRoles.push({
-            idRol: clientRole.id,
-            idPermission: permission.id,
-            idPrivilege: privilege.id
-          });
+      if (permission) {
+        console.log("Permission encontrado:", permission.name, permission.idPermission || permission.id);
+
+        for (const privName of relation.privileges) {
+          const privilege = privilegeRecords.find(p => p.name === privName);
+          if (privilege) {
+            console.log("Privilege encontrado:", privilege.name, privilege.idPrivilege || privilege.id);
+
+            clientPermissionRoles.push({
+              idRol: clientRole.idRol || clientRole.id, // Ajuste según tu modelo
+              idPermission: permission.idPermission || permission.id, // Usar el nombre de columna correcto
+              idPrivilege: privilege.idPrivilege || privilege.id // Usar el nombre de columna correcto
+            });
+          } else {
+            console.log(`Privilege ${privName} no encontrado`);
+          }
         }
+      } else {
+        console.log(`Permission ${relation.module} no encontrado`);
       }
     }
-    await PermissionRoles.bulkCreate(clientPermissionRoles);
+
+    console.log("Client permission roles a crear:", clientPermissionRoles);
+    if (clientPermissionRoles.length > 0) {
+      await PermissionRoles.bulkCreate(clientPermissionRoles);
+    }
 
     console.log("✅ Seeder ejecutado correctamente desde la app.");
   } catch (err) {
     console.error("❌ Error al ejecutar el seeder:", err);
+    // Mostrar detalles más específicos del error
+    if (err.parent) {
+      console.error("Detalles SQL:", {
+        message: err.parent.sqlMessage,
+        code: err.parent.code,
+        sql: err.parent.sql
+      });
+    }
   }
 }
