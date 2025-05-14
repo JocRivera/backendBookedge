@@ -2,24 +2,29 @@ import { Reservations } from "../models/Reservations_Model.js";
 import { Companions } from "../models/Companions_Model.js";
 import { Plans } from "../models/Plans_Model.js";
 import { Users } from "../models/user_Model.js";
-import { Cabins }from "../models/cabin_Model.js"
-import {ReservationsCabins} from "../models/Reservations_cabins_Model.js"
+import { Cabins } from "../models/cabin_Model.js";
+import { Bedrooms } from "../models/bedrooms_Model.js";
+import { Services } from "../models/Services_Model.js";
+import { ReservationsBedrooms } from "../models/Reservations_Bedrooms_Model.js";
+import { ReservationsCabins } from "../models/Reservations_cabins_Model.js";
 import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
 import { body, param, validationResult } from "express-validator";
-
+import { createReservationsService } from "../services/Reservations_Services.js";
 
 export const validateReservationsExistence = async (idReservation) => {
   const reservations = await Reservations.findByPk(idReservation);
   if (!reservations) {
-    return Promise.reject('La reserva no existe');
+    return Promise.reject("La reserva no existe");
   }
   return true;
 };
 
 const reservationBaseValidation = [
   body("idUser")
-    .notEmpty().withMessage("El ID del usuario es obligatorio")
-    .isInt().withMessage("El ID del usuario debe ser un número entero")
+    .notEmpty()
+    .withMessage("El ID del usuario es obligatorio")
+    .isInt()
+    .withMessage("El ID del usuario debe ser un número entero")
     .custom(async (value) => {
       const user = await Users.findByPk(value);
       if (!user) {
@@ -29,8 +34,10 @@ const reservationBaseValidation = [
     }),
 
   body("idPlan")
-    .notEmpty().withMessage("El ID del plan es obligatorio")
-    .isInt().withMessage("El ID del plan debe ser un número entero")
+    .notEmpty()
+    .withMessage("El ID del plan es obligatorio")
+    .isInt()
+    .withMessage("El ID del plan debe ser un número entero")
     .custom(async (value) => {
       const plan = await Plans.findByPk(value);
       if (!plan) {
@@ -40,26 +47,35 @@ const reservationBaseValidation = [
     }),
 
   body("startDate")
-    .notEmpty().withMessage("La fecha de inicio es obligatoria")
-    .isISO8601().withMessage("La fecha de inicio debe tener un formato válido (Año-Mes-Dia)")
+    .notEmpty()
+    .withMessage("La fecha de inicio es obligatoria")
+    .isISO8601()
+    .withMessage(
+      "La fecha de inicio debe tener un formato válido (Año-Mes-Dia)"
+    )
     .custom((value) => {
       const currentDate = new Date();
       const selectedDate = new Date(value);
       if (selectedDate < currentDate) {
-        throw new Error("La fecha de inicio no puede ser anterior a la fecha actual");
+        throw new Error(
+          "La fecha de inicio no puede ser anterior a la fecha actual"
+        );
       }
       return true;
     }),
 
-
   body("endDate")
-    .notEmpty().withMessage("La fecha de fin es obligatoria")
-    .isISO8601().withMessage("La fecha de fin debe tener un formato válido (Año-Mes-Dia)")
+    .notEmpty()
+    .withMessage("La fecha de fin es obligatoria")
+    .isISO8601()
+    .withMessage("La fecha de fin debe tener un formato válido (Año-Mes-Dia)")
     .custom((value, { req }) => {
       const startDate = new Date(req.body.startDate);
       const endDate = new Date(value);
       if (endDate < startDate) {
-        throw new Error("La fecha de fin no puede ser anterior a la fecha de inicio");
+        throw new Error(
+          "La fecha de fin no puede ser anterior a la fecha de inicio"
+        );
       }
       return true;
     }),
@@ -68,11 +84,8 @@ const reservationBaseValidation = [
     .optional()
     .isIn(["Reservado", "Confirmado", "Pendiente", "Anulado"])
     .withMessage("Estado no válido"),
-
 ];
-export const createReservationValidation = [
-  ...reservationBaseValidation,
-];
+export const createReservationValidation = [...reservationBaseValidation];
 
 export const updateReservationsValidation = [
   ...reservationBaseValidation,
@@ -108,11 +121,14 @@ export const changeStateReservationsValidation = [
     .custom(validateReservationsExistence),
 ];
 
-
 //VALIDACIONES PUT , DELETE, POST ADDCOMPANIONS
 
-export const validateReservationsCompanions = async (idReservationsCompanions) => {
-  const relation = await ReservationsCompanions.findByPk(idReservationsCompanions);
+export const validateReservationsCompanions = async (
+  idReservationsCompanions
+) => {
+  const relation = await ReservationsCompanions.findByPk(
+    idReservationsCompanions
+  );
   console.log("Buscando relación con ID:", idReservationsCompanions); // Depuración
   if (!relation) {
     return Promise.reject("No hay relaciones de Reservas y Acompañantes");
@@ -120,16 +136,18 @@ export const validateReservationsCompanions = async (idReservationsCompanions) =
   return true;
 };
 
-export const validateCompanionsNotExists = async (idReservation, idCompanions) => {
+export const validateCompanionsNotExists = async (
+  idReservation,
+  idCompanions
+) => {
   const reservationsCompanions = await ReservationsCompanions.findOne({
-    where: { idReservation, idCompanions }
+    where: { idReservation, idCompanions },
   });
   if (reservationsCompanions) {
     return Promise.reject("La Reserva ya contiene este acompañante");
   }
   return true;
 };
-
 
 export const addCompanionValidation = [
   param("idReservation")
@@ -151,51 +169,65 @@ export const addCompanionValidation = [
 export const updateCompanionsValidation = [
   param("idReservationsCompanions")
     .isInt()
-    .withMessage("El id de la relación Reserva-Acompañante debe ser un número entero")
+    .withMessage(
+      "El id de la relación Reserva-Acompañante debe ser un número entero"
+    )
     .custom(validateReservationsCompanions),
 ];
 
 export const deleteCompaniosValidation = [
   param("idReservationsCompanions")
     .isInt()
-    .withMessage("El id de la relación Reserva-Acompañante debe ser un número entero")
+    .withMessage(
+      "El id de la relación Reserva-Acompañante debe ser un número entero"
+    )
     .custom(validateReservationsCompanions),
 ];
 
 //Validacion para agregar los pagos
 // En Validate_Reservations.js
 export const addPaymentsValidation = [
-  body('amount')
-    .notEmpty().withMessage('El monto es obligatorio')
-    .isFloat({ min: 0.01 }).withMessage('El monto debe ser un número positivo'),
-    
-  body('paymentMethod')
-    .notEmpty().withMessage('El método de pago es obligatorio')
-    .isIn(['Efectivo', 'Tarjeta', 'Transferencia']).withMessage('Método de pago no válido'),
-    
-  body('paymentDate')
+  body("amount")
+    .notEmpty()
+    .withMessage("El monto es obligatorio")
+    .isFloat({ min: 0.01 })
+    .withMessage("El monto debe ser un número positivo"),
+
+  body("paymentMethod")
+    .notEmpty()
+    .withMessage("El método de pago es obligatorio")
+    .isIn(["Efectivo", "Tarjeta", "Transferencia"])
+    .withMessage("Método de pago no válido"),
+
+  body("paymentDate")
     .optional()
-    .isISO8601().withMessage('Fecha de pago inválida'),
-    
-  body('status')
+    .isISO8601()
+    .withMessage("Fecha de pago inválida"),
+
+  body("status")
     .optional()
-    .isIn(['Pendiente', 'Confirmado', 'Anulado']).withMessage('Estado no válido')
+    .isIn(["Pendiente", "Confirmado", "Anulado"])
+    .withMessage("Estado no válido"),
 ];
 
 //Validacion para agregar el plan
 export const addPlansValidation = [
-  body('idReservation')
-    .notEmpty().withMessage('El ID de la reservación es obligatorio') 
-    .isInt().withMessage('El ID de la reservación debe ser un número entero') 
+  body("idReservation")
+    .notEmpty()
+    .withMessage("El ID de la reservación es obligatorio")
+    .isInt()
+    .withMessage("El ID de la reservación debe ser un número entero")
     .custom(validateReservationsExistence),
 
-  body('idPlan')
-    .notEmpty().withMessage('El ID del plan es obligatorio') 
-    .isInt().withMessage('El ID del plan debe ser un número entero') 
+  body("idPlan")
+    .notEmpty()
+    .withMessage("El ID del plan es obligatorio")
+    .isInt()
+    .withMessage("El ID del plan debe ser un número entero")
     .custom(async (value) => {
       const plan = await Plans.findByPk(value);
       if (!plan) {
-        throw new Error('El plan no existe');
+        throw new Error("El plan no existe");
       }
       return true;
     }),
@@ -203,19 +235,65 @@ export const addPlansValidation = [
 
 //Validacion para agregar la cabaña
 export const addCabinsValidation = [
-  body('idReservation')
-    .notEmpty().withMessage('El ID de la reserva es obligatorio')
-    .isInt().withMessage('El ID de la reserva debe ser un número entero')
+  body("idReservation")
+    .notEmpty()
+    .withMessage("El ID de la reserva es obligatorio")
+    .isInt()
+    .withMessage("El ID de la reserva debe ser un número entero")
     .custom(validateReservationsExistence),
 
-  body('idCabin')
-    .notEmpty().withMessage('El ID de la cabaña es obligatorio')
-    .isInt().withMessage('El ID de la cabaña debe ser un número entero')
+  body("idCabin")
+    .notEmpty()
+    .withMessage("El ID de la cabaña es obligatorio")
+    .isInt()
+    .withMessage("El ID de la cabaña debe ser un número entero")
     .custom(async (value) => {
       const cabin = await Cabins.findByPk(value);
       if (!cabin) {
-        throw new Error('La cabaña no existe');
+        throw new Error("La cabaña no existe");
       }
       return true;
-    })
+    }),
+];
+
+//Validacion para agregar las habitaciones
+export const addRoomsValidation = [
+  body("idReservation")
+    .notEmpty()
+    .withMessage("El ID de la reserva es obligatorio")
+    .isInt()
+    .withMessage("El ID de la reserva debe ser un número entero")
+    .custom(validateReservationsExistence),
+  body("idRoom")
+    .notEmpty()
+    .withMessage("El ID de la habitación es obligatorio")
+    .isInt()
+    .withMessage("El ID de la habitación debe ser un número entero")
+    .custom(async (value) => {
+      const bedrooms = await Bedrooms.findByPk(value);
+      if (!debrooms) {
+        throw new Error("La habitación no existe");
+      }
+    }),
+];
+
+//Vlidacion para agregar servicios
+export const addServicesValidation = [
+  body("idReservation")
+    .notEmpty()
+    .withMessage("El ID de la reserva es obligatorio")
+    .isInt()
+    .withMessage("El ID de la reserva debe ser un número entero")
+    .custom(validateReservationsExistence),
+  body("Id_Service")
+    .notEmpty()
+    .withMessage("El ID del servicio es obligatorio")
+    .isInt()
+    .withMessage("El ID del servicio debe ser un número entero")
+    .custom(async (value) => {
+      const service = await Services.findByPk(value);
+      if (!service) {
+        throw new Error("El servicio no existe");
+      }
+    }),
 ];
