@@ -65,5 +65,5 @@ router.put(
 router.delete("/companions/:idReservationsCompanions/ReservationsCompanions", deleteCompaniosValidation, deleteCompanions);
 
 //Ruta para agregar Cabañas
-router.post("/cabañas", addCabinsValidation,addCabin,);
+router.post("/cabins", addCabinsValidation,addCabin,);
 export default router;
