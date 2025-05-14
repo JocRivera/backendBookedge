@@ -52,7 +52,6 @@ export async function initSettings() {
       }
     }
 
-    console.log("Admin permission roles a crear:", permissionRoles);
     await PermissionRoles.bulkCreate(permissionRoles);
 
     // Definir las relaciones del cliente (parece que falta esta constante en tu código original)
@@ -68,12 +67,10 @@ export async function initSettings() {
     for (const relation of clientRelations) {
       const permission = permissionRecords.find(p => p.name === relation.module);
       if (permission) {
-        console.log("Permission encontrado:", permission.name, permission.idPermission || permission.id);
 
         for (const privName of relation.privileges) {
           const privilege = privilegeRecords.find(p => p.name === privName);
           if (privilege) {
-            console.log("Privilege encontrado:", privilege.name, privilege.idPrivilege || privilege.id);
 
             clientPermissionRoles.push({
               idRol: clientRole.idRol || clientRole.id, // Ajuste según tu modelo
@@ -89,7 +86,6 @@ export async function initSettings() {
       }
     }
 
-    console.log("Client permission roles a crear:", clientPermissionRoles);
     if (clientPermissionRoles.length > 0) {
       await PermissionRoles.bulkCreate(clientPermissionRoles);
     }
