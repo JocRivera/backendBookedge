@@ -24,6 +24,7 @@ import bedroomComfortsRoute from "./src/routes/BedroomComfortsRoutes.js"
 import cabinImages from "./src/routes/CabinImage_Routes.js"
 import roomImages from "./src/routes/RoomImage_Routes.js"
 import { initSettings } from "./seeders/initSettings.js";
+import dashboardRoutes from "./src/routes/Dashboard_Routes.js";
 import path from "path";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
@@ -88,6 +89,7 @@ export default class Server {
     this.app.use("/bedroom-comforts", bedroomComfortsRoute)
     this.app.use("/cabin-images", cabinImages)
     this.app.use("/room-images", roomImages)
+    this.app.use("/dashboard", dashboardRoutes);
 
   }
 
