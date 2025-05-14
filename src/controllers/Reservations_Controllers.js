@@ -32,9 +32,6 @@ export const getAllReservationsController = async (req, res) => {
 
 export const getReservationsByIdController = async (req, res) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
   try {
     console.log("ID recibido en el controlador:", req.params.idReservation); 
     const reservation = await getReservationsByIdService(req.params.idReservation);
@@ -222,7 +219,7 @@ export const addCabin = async (req,res)=>{
   try{
     const {idReservation,idCabin} = req.body;
     console.log('Datos de la cabaña:', {idReservation, idCabin})
-    await addCabinServices(idReservation,idCabin);
+    await addCabinService(idReservation,idCabin);
     res.status(200).json({message: "Cabañas agregadas exitosamente"}  )
     }catch(error){
       console.error('Error al agregar la cabaña:', error);
