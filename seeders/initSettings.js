@@ -90,7 +90,6 @@ export async function initSettings() {
       await PermissionRoles.bulkCreate(clientPermissionRoles);
     }
 
-    console.log("✅ Seeder ejecutado correctamente desde la app.");
   } catch (err) {
     console.error("❌ Error al ejecutar el seeder:", err);
     // Mostrar detalles más específicos del error
