@@ -23,7 +23,7 @@ import cabinComfortsRoutes from "./src/routes/CabinComforts_Routes.js"
 import bedroomComfortsRoute from "./src/routes/BedroomComfortsRoutes.js"
 import cabinImages from "./src/routes/CabinImage_Routes.js"
 import roomImages from "./src/routes/RoomImage_Routes.js"
-
+import { initSettings } from "./seeders/initSettings.js";
 import path from "path";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
@@ -59,6 +59,10 @@ export default class Server {
     try {
       await database.authenticate();
       console.log("Base de datos conectada");
+      await database.sync({ force: false });
+      console.log("Base de datos sincronizada");
+      await initSettings();
+      console.log("Configuraciones iniciales aplicadas");
     } catch (error) {
       console.error("Se jodió la base de datos", error);
     }
@@ -80,10 +84,10 @@ export default class Server {
     this.app.use("/planProgramed", planProgramed);
     this.app.use("/payments", PaymentsRoutes);
     this.app.use("/auth", authRoutes);
-    this.app.use("/cabin-comforts",cabinComfortsRoutes)
-    this.app.use("/bedroom-comforts",bedroomComfortsRoute)
-    this.app.use("/cabin-images",cabinImages)
-    this.app.use("/room-images",roomImages)
+    this.app.use("/cabin-comforts", cabinComfortsRoutes)
+    this.app.use("/bedroom-comforts", bedroomComfortsRoute)
+    this.app.use("/cabin-images", cabinImages)
+    this.app.use("/room-images", roomImages)
 
   }
 
