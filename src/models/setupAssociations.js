@@ -13,8 +13,11 @@ import { Companions } from "./Companions_Model.js";
 import { ReservationsCompanions } from "./Reservations_Companions_Models.js";
 import { Payments } from "./Payments_Model.js";
 import { Users } from "../models/user_Model.js";
+import { Services } from "./Services_Model.js";
+import {ReservationsServices } from "./Reservations_Service_Model.js"
 import { PaymentsReservations } from "./Payments_Reservations_model.js";
 import { ReservationsCabins } from "./Reservations_cabins_Model.js";
+import { ReservationsBedrooms } from "./Reservations_Bedrooms_Model.js";
 export const setupAssociations = () => {
   Cabins.belongsToMany(Comforts, {
     through: CabinsComforts, // Tabla intermedia
@@ -99,7 +102,33 @@ export const setupAssociations = () => {
     foreignKey: "idCabin",
     otherKey: "idReservation",
     as: "reservations",
-  });  
+  }); 
+  
+  //Asociacion para reservas y habitaciones
+  Reservations.belongsToMany(Bedrooms, {
+    through: ReservationsBedrooms,
+    foreignKey: "idReservation",
+    otherKey: "idRoom",
+    as: "rooms",
+  });
+  Bedrooms.belongsToMany(Reservations, {
+    through: ReservationsBedrooms,
+    foreignKey: "idRoom",
+    otherKey: "idReservation",
+    as: "reservations",
+  })
+
+  //Asociasion de reservas y servicios
+  Reservations.belongsToMany(Services, {
+    through: ReservationsServices,
+    foreignKey: "idReservation",
+    otherKey: "Id_Service",
+  });
+  Services.belongsToMany(Reservations, {
+    through: ReservationsServices,
+    foreignKey: "Id_Service",
+    otherKey:"idReservation"
+  })
 
   // Asociaciones adicionales para acceder directamente a la tabla intermedia
   Payments.hasMany(PaymentsReservations, {

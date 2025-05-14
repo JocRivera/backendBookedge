@@ -10,7 +10,9 @@ import {
   updateCompanion,
   deleteCompanions,
   changeStatusReservationsController,
-  addCabin
+  addCabin,
+  addBedrooms,
+  addService
   
 } from "../controllers/Reservations_Controllers.js";
 
@@ -24,7 +26,9 @@ import {
   addPlansValidation,
   updateCompanionsValidation,
   deleteCompaniosValidation,
-  addCabinsValidation
+  addCabinsValidation,
+  addRoomsValidation,
+  addServicesValidation
 } from '../middlewares/Validate_Reservations.js';
 import { authorize } from "../middlewares/RolesPermissionAuth.js";
 import { verifyToken } from "../middlewares/authMiddleware.js";
@@ -66,4 +70,16 @@ router.delete("/companions/:idReservationsCompanions/ReservationsCompanions", de
 
 //Ruta para agregar Cabañas
 router.post("/cabins", addCabinsValidation,addCabin,);
+
+
+//Ruta para agregar Habitaciones
+router.post("/bedrooms", addRoomsValidation, addBedrooms,);
+
+//Ruta Para agregar servicios
+router.post("/services", addServicesValidation, addService);
+
+
+
+
+
 export default router;
