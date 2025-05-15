@@ -20,15 +20,6 @@ export const CabinsComforts = database.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    description : {
-      type: DataTypes.STRING(255),
-      allowNull: false
-    },
-    dateEntry: {
-      type: DataTypes.DATEONLY,
-      defaultValue: DataTypes.NOW,
-      allowNull: false,
-    },
   },
   {
     tableName: "CabinsComforts", 

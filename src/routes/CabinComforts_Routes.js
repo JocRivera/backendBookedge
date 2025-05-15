@@ -1,23 +1,14 @@
 import { Router } from "express";
 import {
   assignComfortsToCabinController,
-  getCabinsWithoutComfortsController,
-  getAllComfortsForCabinsController,
-  getGroupedComfortsByCabinController,
-  updateGroupedComfortsByCabinController
+  updateCabinComfortsController
 } from "../controllers/CabinComforts_Controllers.js";
 
 import { validateAssignOrUpdateComforts } from "../middlewares/validateAssignOrUpdateComforts .js";
 const router = Router();
 
-router.post("/assign", validateAssignOrUpdateComforts, assignComfortsToCabinController);
+router.post("/:idCabin/comforts", validateAssignOrUpdateComforts, assignComfortsToCabinController);
 
-router.put("/update", validateAssignOrUpdateComforts, updateGroupedComfortsByCabinController);
-
-router.get("/cabins-without-comforts", getCabinsWithoutComfortsController);
-
-router.get("/all", getAllComfortsForCabinsController);
-
-router.get("/grouped/:id", getGroupedComfortsByCabinController);
+router.put("/:idCabin/comforts", validateAssignOrUpdateComforts, updateCabinComfortsController);
 
 export default router;

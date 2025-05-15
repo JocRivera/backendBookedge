@@ -1,69 +1,49 @@
 import { validationResult } from "express-validator";
 import {
   assignComfortsToCabinService,
-  getCabinsWithoutComfortsService,
-  getAllComfortsForCabinsService,
-  getGroupedComfortsByCabinService,
-  updateGroupedComfortsByCabinService
+  updateGroupedComfortsByCabinService,
 } from "../services/CabinComfort_Service.js";
 
-// 🔄 Asignar comodidades a una cabaña
+
 export const assignComfortsToCabinController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { idCabin, comforts, description } = req.body;
-    await assignComfortsToCabinService({ idCabin, comforts, description });
-    res.status(200).json({ message: "Comodidades asignadas correctamente" });
+    const { idCabin } = req.params; 
+    const { comforts } = req.body; 
+
+    if (!comforts || !Array.isArray(comforts)) {
+        return res.status(400).json({ message: "El campo 'comforts' es requerido y debe ser un array de IDs." });
+    }
+    // Asegúrate que idCabin sea un número si es necesario
+    await assignComfortsToCabinService({ idCabin: parseInt(idCabin), comforts });
+    res.status(200).json({ message: "Comodidades asignadas/añadidas correctamente a la cabaña." });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Error en assignComfortsToCabinController:", error);
+    res.status(500).json({ message: "Error al asignar comodidades.", error: error.message });
   }
 };
 
-// 🔍 Cabañas sin comodidades asignadas
-export const getCabinsWithoutComfortsController = async (req, res) => {
-  try {
-    const cabins = await getCabinsWithoutComfortsService();
-    res.status(200).json(cabins);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-// 📦 Ver todas las comodidades de todas las cabañas
-export const getAllComfortsForCabinsController = async (req, res) => {
-  try {
-    const data = await getAllComfortsForCabinsService();
-    res.status(200).json(data);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-// 🔍 Ver las comodidades agrupadas por una cabaña específica
-export const getGroupedComfortsByCabinController = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await getGroupedComfortsByCabinService(id);
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-// 📝 Actualizar las comodidades asignadas a una cabaña
-export const updateGroupedComfortsByCabinController = async (req, res) => {
+// 📝 Actualizar el conjunto COMPLETO de comodidades asignadas a una cabaña
+// Ruta: PUT /api/cabins/:idCabin/comforts (ejemplo de ruta)
+export const updateCabinComfortsController = async (req, res) => { // Renombrado para claridad
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { idCabin, comforts, description } = req.body;
-    await updateGroupedComfortsByCabinService({ idCabin, comforts, description });
-    res.status(200).json({ message: "Comodidades actualizadas correctamente" });
+    const { idCabin } = req.params;
+    const { comforts } = req.body;
+
+    if (comforts === undefined || !Array.isArray(comforts)) { 
+        return res.status(400).json({ message: "El campo 'comforts' debe ser un array de IDs si se proporciona." });
+    }
+    await updateGroupedComfortsByCabinService({ idCabin: parseInt(idCabin), comforts });
+    res.status(200).json({ message: "Conjunto de comodidades de la cabaña actualizado correctamente." });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Error en updateCabinComfortsController:", error);
+    res.status(500).json({ message: "Error al actualizar comodidades.", error: error.message });
   }
 };
