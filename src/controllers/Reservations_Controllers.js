@@ -1,6 +1,5 @@
 import { validationResult } from "express-validator";
 import { Payments } from "../models/Payments_Model.js";
-import { Reservations } from "../models/Reservations_Model.js";
 import { PaymentsReservations } from "../models/Payments_Reservations_model.js";
 import {
   getAllReservationsService,
@@ -8,28 +7,25 @@ import {
   createReservationsService,
   updateReservationsService,
   addCompanionsServices,
-  addPaymentToReservationService,
   addPlansServices,
   updateCompanionsService,
   deleteCompanionsService,
-  changeStatusReservationsService
-
-} from "../services/Reservations_Services.js"
+  changeStatusReservationsService,
+  addCabinService,
+  addBedroomsService,
+  addServiceService,
+} from "../services/Reservations_Services.js";
 import { json } from "sequelize";
-
-
 
 export const getAllReservationsController = async (req, res) => {
   try {
     const reservations = await getAllReservationsService();
 
-    console.log('Reservas enviadas al cliente:', reservations);
-    console.log("Datos obtenidos de Sequelize:", JSON.stringify(reservations, null, 2));
-
-    if (!reservations || reservations.length === 0) {
-      return res.status(404).json({ message: "No hay reservas registradas" });
-    }
-
+    console.log("Reservas enviadas al cliente:", reservations);
+    console.log(
+      "Datos obtenidos de Sequelize:",
+      JSON.stringify(reservations, null, 2)
+    );
     res.status(200).json(reservations);
   } catch (error) {
     console.error("Error al obtener reservas:", error.message);
@@ -39,12 +35,11 @@ export const getAllReservationsController = async (req, res) => {
 
 export const getReservationsByIdController = async (req, res) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
   try {
-    console.log("ID recibido en el controlador:", req.params.idReservation); 
-    const reservation = await getReservationsByIdService(req.params.idReservation);
+    console.log("ID recibido en el controlador:", req.params.idReservation);
+    const reservation = await getReservationsByIdService(
+      req.params.idReservation
+    );
     if (!reservation) {
       return res.status(404).json({ message: "Reserva no encontrada" });
     }
@@ -71,7 +66,6 @@ export const createReservationsController = async (req, res) => {
   }
 };
 
-
 export const updateReservationsController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -80,7 +74,10 @@ export const updateReservationsController = async (req, res) => {
   try {
     const { idReservation } = req.params;
     const reservationData = req.body;
-    const reservations = await updateReservationsService(idReservation, reservationData);
+    const reservations = await updateReservationsService(
+      idReservation,
+      reservationData
+    );
     res.status(200).json(reservations);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -109,13 +106,11 @@ export const getAllReservationsCompanions = async (req, res) => {
   }
 };
 
-
-// controllers/Reservations_Controllers.js
 export const addCompanions = async (req, res) => {
   try {
     const { idReservation } = req.params;
-    const { idCompanions } = req.body; 
-    
+    const { idCompanions } = req.body;
+
     console.log("Datos recibidos:", { idReservation, idCompanions });
 
     if (!idCompanions) {
@@ -125,48 +120,48 @@ export const addCompanions = async (req, res) => {
     // Validar que sean números
     const reservationId = Number(idReservation);
     const companionId = Number(idCompanions);
-    
+
     if (isNaN(reservationId)) {
       return res.status(400).json({ message: "ID de reserva inválido" });
     }
-    
+
     if (isNaN(companionId)) {
       return res.status(400).json({ message: "ID de acompañante inválido" });
     }
 
     await addCompanionsServices(reservationId, companionId);
-    res.status(200).json({ 
+    res.status(200).json({
       message: "Acompañante agregado exitosamente",
       idReservation: reservationId,
-      idCompanions: companionId
+      idCompanions: companionId,
     });
   } catch (error) {
     console.error("Error detallado:", {
       message: error.message,
       stack: error.stack,
-      requestBody: req.body
+      requestBody: req.body,
     });
-    
-    res.status(400).json({ 
+
+    res.status(400).json({
       message: error.message,
-      details: error.response?.data || error.stack 
+      details: error.response?.data || error.stack,
     });
   }
 };
 export const addPaymentToReservationController = async (req, res) => {
   try {
-    console.log('Datos recibidos en el backend:', req.body);
-    
+    console.log("Datos recibidos en el backend:", req.body);
+
     const { idReservation } = req.params;
     const { paymentMethod, amount, paymentDate, status } = req.body;
 
     // Validación mejorada
     if (!paymentMethod || !amount) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
         message: "Faltan campos requeridos",
         required: ["paymentMethod", "amount"],
-        received: req.body
+        received: req.body,
       });
     }
 
@@ -175,7 +170,7 @@ export const addPaymentToReservationController = async (req, res) => {
       paymentMethod,
       amount: parseFloat(amount),
       paymentDate: paymentDate || new Date(),
-      status: status || 'Pendiente'
+      status: status || "Pendiente",
     });
     console.log("Pago creado:", payment);
     console.log("ID del pago creado:", payment.idPayments);
@@ -184,21 +179,20 @@ export const addPaymentToReservationController = async (req, res) => {
     await PaymentsReservations.create({
       idReservation,
       idPayments: payment.idPayments,
-      amountApplied: payment.amount
+      amountApplied: payment.amount,
     });
 
     res.status(201).json({
       success: true,
       message: "Pago agregado correctamente",
-      payment
+      payment,
     });
-
   } catch (error) {
     console.error("Error en el controlador de pagos:", error);
     res.status(400).json({
       success: false,
       message: error.message,
-      ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+      ...(process.env.NODE_ENV === "development" && { stack: error.stack }),
     });
   }
 };
@@ -210,16 +204,65 @@ export const addPlans = async (req, res) => {
   }
   try {
     const { idReservation, idPlan } = req.body;
-    console.log('Datos recibidos en el controlador:', { idReservation, idPlan })
+    console.log("Datos recibidos en el controlador:", {
+      idReservation,
+      idPlan,
+    });
     await addPlansServices(idReservation, idPlan);
-    res.status(200).json({ message: 'Plan Agregado exitosamente' })
+    res.status(200).json({ message: "Plan Agregado exitosamente" });
   } catch (error) {
-    console.error('Error al agregar el plan: ', error);
-    res.status(400), json({ message: error.message })
-
+    console.error("Error al agregar el plan: ", error);
+    res.status(400), json({ message: error.message });
   }
+};
 
-}
+export const addCabin = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    const { idReservation, idCabin } = req.body;
+    console.log("Datos de la cabaña:", { idReservation, idCabin });
+    await addCabinService(idReservation, idCabin);
+    res.status(200).json({ message: "Cabañas agregadas exitosamente" });
+  } catch (error) {
+    console.error("Error al agregar la cabaña:", error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const addBedrooms = async (res, req) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    const { idReservation, idRoom } = req.body;
+    console.log("Datos de la habitación:", { idReservation, idBedroom });
+    await addBedroomsService(idReservation, idRoom);
+    res.status(200).json({ message: "Habitaciones agregadas exitosamente" });
+  } catch (error) {
+    console.error("Error al agregar la habitación:", error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const addService = async (res, req) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    const { idReservation, idService } = req.body;
+    console.log("Datos del servicio:", { idReservation, idService });
+    await addServiceService(idReservation, idService);
+    res.status(200).json({ message: "Servicios agregados exitosamente" });
+  } catch (error) {
+    console.error("Error al agregar el servicio:", error);
+    res.status(400).json({ message: error.message });
+  }
+};
 
 export const updateCompanion = async (req, res) => {
   const errors = validationResult(req);
@@ -229,7 +272,7 @@ export const updateCompanion = async (req, res) => {
   try {
     const { idReservationsCompanions } = req.params;
     await updateCompanionsService(idReservationsCompanions);
-    res.status(200).json({ message: 'Acompañante actualizado exitosamente' });
+    res.status(200).json({ message: "Acompañante actualizado exitosamente" });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

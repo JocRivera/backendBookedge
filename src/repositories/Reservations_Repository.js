@@ -3,8 +3,13 @@ import { Companions } from "../models/Companions_Model.js";
 import { Payments } from "../models/Payments_Model.js";
 import { Plans } from "../models/Plans_Model.js";
 import { Users } from "../models/user_Model.js";
+import { Cabins } from "../models/cabin_Model.js"; 
+import { Bedrooms } from "../models/bedrooms_Model.js";
+import { Services } from "../models/Services_Model.js"
 import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
+import { ReservationsCabins } from "../models/Reservations_cabins_Model.js";
 import { PaymentsReservations } from "../models/Payments_Reservations_model.js"
+import { ReservationsBedrooms } from "../models/Reservations_Bedrooms_Model.js"
 
 
 
@@ -34,7 +39,24 @@ export const getAllReservations = async () => {
           as: 'user',
           attributes:['idUser','identification']
 
+        },
+        {
+          model: Cabins,
+          as: "cabins",
+          attributes: ["idCabin", "name", "description", "capacity","status"]
+
+        },
+        {
+          model:Bedrooms,
+          as: "bedrooms",
+          attributes: ["idBedroom","name","description","capacity","status"],
+        },
+        {
+          model:Services,
+          as: "services",
+          attributes: ["idService","name","description","price"],
         }
+      
       ],
     });
   } catch (error) {
@@ -71,6 +93,22 @@ export const getReservationsById = async (id) => {
           as: 'user',
           attributes:['idUser','identification']
 
+        },
+        {
+          model: Cabins,
+          as: "cabins",
+          attributes: ["idCabin", "name", "description", "capacity","status"]
+
+        },
+        {
+          model:Bedrooms,
+          as: "bedrooms",
+          attributes: ["idBedroom","name","description","capacity","status"],
+        },
+        {
+          model:Services,
+          as: "services",
+          attributes: ["idService","name","description","price"],
         }
       ],
     });
@@ -165,3 +203,18 @@ export const addPlans = async (planData) => {
   console.log('Datos recibidos en el repositorio:', planData);
   return await PaymentsReservations.create(planData);
 };
+
+export const addCabins = async (cabinData) => {
+  console.log('Datos de la cabaña recibidos en el repositorio:', cabinData);
+  return await ReservationsCabins.create(cabinData)
+}
+
+export const addBedrooms = async (bedroomData) => {
+  console.log('Datos de la habitación recibidos en el repositorio:',bedroomData);
+  return await ReservationsBedrooms.create(bedroomData)
+}
+
+export const addService = async (serviceData) => {
+  console.log('Datos del servicio recibidos en el repositorio:', serviceData);
+  return await ReservationsServices.create(serviceData)
+}

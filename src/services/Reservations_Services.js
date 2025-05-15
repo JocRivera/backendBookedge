@@ -4,11 +4,13 @@ import {
     createReservations,
     updateReservations,
     addCompanions,
-    addPaymentToReservation,
     addPlans,
     updateCompanions,
     deleteCompanions,
-    changeStatusReservations
+    changeStatusReservations,
+    addCabins,
+    addBedrooms,
+    addService
 } from "../repositories/Reservations_Repository.js";
 import { PaymentsReservations } from "../models/Payments_Reservations_model.js";
 
@@ -73,4 +75,13 @@ export const deleteCompanionsService = async (idReservationsCompanions) => {
 export const changeStatusReservationsService = async (id, status) => {
     console.log("ID recibido en el servicio:", id); 
     return await changeStatusReservations(id, status);
+}
+export const addCabinService = async (idReservation, idCabin) =>{
+  return  addCabins({idReservation, idCabin});
+}
+export const addBedroomsService = async (idReservation,idRoom) =>{
+  return addBedrooms({idReservation,idRoom});
+}
+export const addServiceService = async (idReservation, Id_Service) =>{
+  return addServices({idReservation, Id_Service});
 }
