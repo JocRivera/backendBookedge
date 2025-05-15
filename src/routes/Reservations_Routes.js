@@ -1,4 +1,6 @@
 import express from "express";
+import { authorize } from "../middlewares/RolesPermissionAuth.js";
+import { verifyToken } from "../middlewares/authMiddleware.js";
 import {
   getAllReservationsController,
   getReservationsByIdController,
@@ -12,10 +14,8 @@ import {
   changeStatusReservationsController,
   addCabin,
   addBedrooms,
-  addService
-  
+  addService,
 } from "../controllers/Reservations_Controllers.js";
-
 import {
   createReservationValidation,
   updateReservationsValidation,
@@ -28,20 +28,71 @@ import {
   deleteCompaniosValidation,
   addCabinsValidation,
   addRoomsValidation,
-  addServicesValidation
-} from '../middlewares/Validate_Reservations.js';
-import { authorize } from "../middlewares/RolesPermissionAuth.js";
-import { verifyToken } from "../middlewares/authMiddleware.js";
+  addServicesValidation,
+} from "../middlewares/Validate_Reservations.js";
+import {
+  getCapacitiesCabins,
+  getCapacitiesBedroom,
+  getReservationsServicesPer,
+} from "../repositories/Reservations_Repository.js";
+
 const router = express.Router();
+
+// Listar cabañas, habitaciones y servicios adicionales en una reserva
+router.get("/servicesReservations", async (req, res) => {
+  try{
+    const services = await getReservationsServicesPer();
+    res.status(200).json(services);
+  } catch(error){
+    res.status(500).json({message: "Error al obtener servicios de la reserva"});
+  }
+});
+
+router.get("/cabinReservations", async (req,res)=>{
+  try{
+    const cabin = await getCapacitiesCabins();
+    res.status(200).json(cabin);
+  }catch(error){
+    res.status(500).json({message: error.message});
+  }
+});
+
+router.get("/bedroomsReservations", async (req, res) => {
+  try{
+    const bedroom = await getCapacitiesBedroom();
+    res.status(200).json(bedroom);
+  }catch(error){
+    res.status(500).json({message: "Error al obtener habitaciones de la reserva"})
+  }
+})
+
+
+
 // Rutas para las reservas
 router.get("/", getAllReservationsController);
-router.get("/:idReservation", getReservationsValidation, getReservationsByIdController);
+router.get(
+  "/:idReservation",
+  getReservationsValidation,
+  getReservationsByIdController
+);
 router.post("/", createReservationValidation, createReservationsController);
-router.put("/:idReservation", updateReservationsValidation, updateReservationsController);
-router.patch("/:id/status", changeStateReservationsValidation, changeStatusReservationsController);
+router.put(
+  "/:idReservation",
+  updateReservationsValidation,
+  updateReservationsController
+);
+router.patch(
+  "/:id/status",
+  changeStateReservationsValidation,
+  changeStatusReservationsController
+);
 
 //Ruta para obtener una reserva con sus acompañantes y agregar pagos
-router.get("/:idReservation/companions", getReservationsValidation, getReservationsByIdController);
+router.get(
+  "/:idReservation/companions",
+  getReservationsValidation,
+  getReservationsByIdController
+);
 
 //Ruta para agregar un acompañante
 router.post(
@@ -51,12 +102,14 @@ router.post(
 );
 
 //Ruta para agregar pagos
-router.post("/:idReservation/payments",addPaymentsValidation, addPaymentToReservationController);
+router.post(
+  "/:idReservation/payments",
+  addPaymentsValidation,
+  addPaymentToReservationController
+);
 
 //Ruta para agregar plan
-router.post("/Reservationplans", 
-  addPlansValidation, addPlans
-);
+router.post("/Reservationplans", addPlansValidation, addPlans);
 
 //Ruta para actualizar un acompañante
 router.put(
@@ -66,20 +119,19 @@ router.put(
 );
 
 //Ruta para eliminar un acompañante
-router.delete("/companions/:idReservationsCompanions/ReservationsCompanions", deleteCompaniosValidation, deleteCompanions);
+router.delete(
+  "/companions/:idReservationsCompanions/ReservationsCompanions",
+  deleteCompaniosValidation,
+  deleteCompanions
+);
 
 //Ruta para agregar Cabañas
-router.post("/cabins", addCabinsValidation,addCabin,);
-
+router.post("/cabins", addCabinsValidation, addCabin);
 
 //Ruta para agregar Habitaciones
-router.post("/bedrooms", addRoomsValidation, addBedrooms,);
+router.post("/bedrooms", addRoomsValidation, addBedrooms);
 
 //Ruta Para agregar servicios
 router.post("/services", addServicesValidation, addService);
-
-
-
-
 
 export default router;

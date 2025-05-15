@@ -10,8 +10,40 @@ import { ReservationsCompanions } from "../models/Reservations_Companions_Models
 import { ReservationsCabins } from "../models/Reservations_cabins_Model.js";
 import { PaymentsReservations } from "../models/Payments_Reservations_model.js"
 import { ReservationsBedrooms } from "../models/Reservations_Bedrooms_Model.js"
+import { ReservationsService } from "../models/Reservations_Service_Model.js"
+import { Sequelize } from "sequelize";
 
+export const getReservationsServicesPer= async () => {
+  return await Services.findAll({
+    where:{
+      StatusServices: true,
+    }
+  })
+}
 
+export const getCapacitiesBedroom = async () =>{
+  return await Bedrooms.findAll({
+    attributes:[
+      [Sequelize.fn('DISTINCT', Sequelize.col('capacity')), 'capacity']
+    ],
+    where:{
+      status: "En Servicio"
+    },
+    order:[['capacity', 'ASC']]
+  })
+}
+
+export const getCapacitiesCabins = async () =>{
+  return await Cabins.findAll({
+    attributes:[
+      [Sequelize.fn('DISTINCT', Sequelize.col('capacity')), 'capacity']
+    ],
+    where:{
+      status: "En Servicio"
+    },
+    order:[['capacity', 'ASC']]
+  })
+}
 
 export const getAllReservations = async () => {
   try {
@@ -49,12 +81,12 @@ export const getAllReservations = async () => {
         {
           model:Bedrooms,
           as: "bedrooms",
-          attributes: ["idBedroom","name","description","capacity","status"],
+          attributes: ["idRoom","name","description","capacity","status"],
         },
         {
           model:Services,
           as: "services",
-          attributes: ["idService","name","description","price"],
+          attributes: ["Id_Service","name","description","price"],
         }
       
       ],
@@ -103,12 +135,12 @@ export const getReservationsById = async (id) => {
         {
           model:Bedrooms,
           as: "bedrooms",
-          attributes: ["idBedroom","name","description","capacity","status"],
+          attributes: ["idRoom","name","description","capacity","status"],
         },
         {
           model:Services,
           as: "services",
-          attributes: ["idService","name","description","price"],
+          attributes: ["Id_Service","name","description","price"],
         }
       ],
     });
@@ -216,5 +248,5 @@ export const addBedrooms = async (bedroomData) => {
 
 export const addService = async (serviceData) => {
   console.log('Datos del servicio recibidos en el repositorio:', serviceData);
-  return await ReservationsServices.create(serviceData)
+  return await ReservationsService.create(serviceData)
 }
