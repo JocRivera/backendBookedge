@@ -6,7 +6,7 @@ import {
   updateCabinService,
   deleteCabinService,
 } from "../services/Cabin_Services.js";
-import { updateGroupedComfortsByCabinService } from "../services/CabinComfort_Service.js"; // Importa el servicio para las comodidades
+import { updateGroupedComfortsByCabinService } from "../services/CabinComfort_Service.js"; 
 
 export const getAllCabinsController = async (req, res) => {
   try {
@@ -44,11 +44,9 @@ export const createCabinController = async (req, res) => {
 
     // Si se enviaron comodidades, asignarlas
     if (comforts && Array.isArray(comforts) && comforts.length > 0) {
-      // Necesitas importar y llamar al servicio correspondiente:
       await updateGroupedComfortsByCabinService({ idCabin: newCabin.idCabin, comforts });
     }
 
-    // Devolver la cabaña con sus detalles (incluyendo las comodidades recién asignadas)
     const cabinWithDetails = await getCabinByIdService(newCabin.idCabin);
     res.status(201).json(cabinWithDetails);
 
