@@ -1,101 +1,45 @@
 import { CabinsComforts } from "../models/Cabins_Comforts.js";
-import { Cabins } from "../models/Cabin_Model.js";
-import { Comforts } from "../models/Comfort_Model.js";
-import { CabinImages } from "../models/CabinImage_Model.js";
-import { Op } from "sequelize";
 
-// Asignar comodidades a cabaña (con descripción y fecha)
-export const assignComfortsToCabinRepository = async ({ idCabin, comforts, description }) => {
-  const now = new Date();
+// Asignar comodidades a cabaña (para una cabaña NUEVA o para añadir a una existente sin borrar las previas)
+export const assignComfortsToCabinRepository = async ({
+  idCabin,
+  comforts, // Array de idComfort
+}) => {
+  // Prepara los datos para la inserción masiva
   const dataToInsert = comforts.map((idComfort) => ({
     idCabin,
-    idComfort,
-    description,
-    dateEntry: now,
+    idComfort, // idComfort es el valor del elemento del array 'comforts'
   }));
-  return await CabinsComforts.bulkCreate(dataToInsert);
-};
 
-// Obtener cabañas sin comodidades asignadas (incluye imagen primaria)
-export const getCabinsWithoutComfortsRepository = async () => {
-  const assigned = await CabinsComforts.findAll({
-    attributes: ["idCabin"],
-    group: ["idCabin"],
-  });
-  const assignedIds = assigned.map((item) => item.idCabin);
-  return await Cabins.findAll({
-    where: {
-      idCabin: {
-        [Op.notIn]: assignedIds.length > 0 ? assignedIds : [0],
-      },
-    },
-    include: [{
-      model: CabinImages,
-      as: "images",
-      attributes: ["idCabinImage", "imagePath"],
-      where: { isPrimary: true },
-      required: false,
-    }],
+  // Crea las nuevas asociaciones en la tabla CabinsComforts
+  // Si tienes el índice único (idCabin, idComfort) en tu modelo/tabla:
+  //   - Si una combinación ya existe, fallará a menos que uses `ignoreDuplicates: true` o `updateOnDuplicate`.
+  //   - `ignoreDuplicates: true` es útil si simplemente quieres asegurarte de que las asociaciones existan
+  //     y no te importa si algunas ya estaban.
+  return await CabinsComforts.bulkCreate(dataToInsert, {
+    // ignoreDuplicates: true, // Considera esto si 'comforts' podría tener IDs ya asociados y no quieres un error.
   });
 };
 
-// Obtener todas las comodidades asignadas a cabañas (con datos de cabaña e imagen primaria)
-export const getAllComfortsForCabinsRepository = async () => {
-  return await CabinsComforts.findAll({
-    include: [
-      { 
-        model: Cabins, 
-        attributes: ["idCabin", "name"],
-        include: [{
-          model: CabinImages,
-          as: "images",
-          attributes: ["idCabinImage", "imagePath"],
-          where: { isPrimary: true },
-          required: false,
-        }],
-      },
-      { 
-        model: Comforts, 
-        attributes: ["idComfort", "name"],
-      },
-    ],
-  });
-};
-
-// Obtener comodidades agrupadas por cabaña (con manejo de casos vacíos)
-export const getGroupedComfortsByCabinRepository = async (idCabin) => {
-  const comforts = await CabinsComforts.findAll({
-    where: { idCabin },
-    include: [{ 
-      model: Comforts, 
-      attributes: ["name"],
-    }],
-  });
-  
-  if (comforts.length === 0) {
-    return {
-      description: null,
-      dateEntry: null,
-      comforts: [],
-    };
-  }
-  
-  return {
-    description: comforts[0].description,
-    dateEntry: comforts[0].dateEntry,
-    comforts: comforts.map((c) => c.Comfort.name),
-  };
-};
-
-// Actualizar comodidades de una cabaña (elimina anteriores y crea nuevas)
-export const updateGroupedComfortsByCabinRepository = async ({ idCabin, comforts, description }) => {
-  const now = new Date();
+// Actualizar el conjunto COMPLETO de comodidades para una cabaña
+// (Elimina todas las existentes y luego crea las nuevas especificadas)
+export const updateGroupedComfortsByCabinRepository = async ({
+  idCabin,
+  comforts, // Array de idComfort que representa el NUEVO conjunto completo de comodidades
+}) => {
+  // 1. Eliminar TODAS las asociaciones de comodidades existentes para esta cabaña
   await CabinsComforts.destroy({ where: { idCabin } });
-  const dataToInsert = comforts.map((idComfort) => ({
-    idCabin,
-    idComfort,
-    description,
-    dateEntry: now,
-  }));
-  return await CabinsComforts.bulkCreate(dataToInsert);
+
+  // 2. Si se proporciona un nuevo array de comodidades (y no está vacío), crearlas
+  if (comforts && comforts.length > 0) {
+    const dataToInsert = comforts.map((idComfort) => ({
+      idCabin,
+      idComfort,
+    }));
+    // Crea las nuevas 
+    return await CabinsComforts.bulkCreate(dataToInsert);
+  }
+
+  
+  return []; // Devuelve un array vacío para indicar que no se crearon nuevas (o que el resultado es un conjunto vacío).
 };
