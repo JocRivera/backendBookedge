@@ -3,7 +3,8 @@ import { Services } from "../models/Services_Model.js";
 import { Cabins } from "../models/cabin_Model.js";
 import { Bedrooms } from "../models/bedrooms_Model.js";
 import { PlanCabinModel } from "../models/Plans_Cabin_Model.js";
-import {Sequelize} from "sequelize";
+import { PlanBedroomModel } from "../models/Plans_Bedroom_Model.js";
+import { Sequelize } from "sequelize";
 
 export const getServicesPerPlan = async () => {
     return await Services.findAll({
@@ -46,38 +47,41 @@ export class PlansRepository {
             }]
         });
 
-        // Obtener todas las cabañas disponibles
+        // Obtener todas las cabañas y habitaciones disponibles
         const availableCabins = await Cabins.findAll({
-            where: {
-                status: "En Servicio"
-            },
+            where: { status: "En Servicio" },
+            order: [['capacity', 'ASC']]
+        });
+        const availableBedrooms = await Bedrooms.findAll({
+            where: { status: "En Servicio" },
             order: [['capacity', 'ASC']]
         });
 
         // Procesar cada plan
-        const plansWithCabins = await Promise.all(plans.map(async (plan) => {
-            // Obtener configuración de cabañas para este plan
+        const plansWithRooms = await Promise.all(plans.map(async (plan) => {
+            // Obtener configuración de cabañas y habitaciones para este plan
             const planCabins = await PlanCabinModel.findAll({
                 where: { idPlan: plan.idPlan },
                 order: [['capacity', 'ASC']]
             });
+            const planBedrooms = await PlanBedroomModel.findAll({
+                where: { idPlan: plan.idPlan },
+                order: [['capacity', 'ASC']]
+            });
 
-            // Set para rastrear cabañas asignadas por plan
+            // Set para rastrear asignaciones
             const assignedCabins = new Set();
-            
-            // Asignar cabañas según especificaciones
-            const cabinAssignments = [];
+            const assignedBedrooms = new Set();
 
+            // Asignar cabañas
+            const cabinAssignments = [];
             for (const planCabin of planCabins) {
-                const matchingCabins = availableCabins.filter(cabin => 
-                    cabin.capacity === planCabin.capacity && 
+                const matchingCabins = availableCabins.filter(cabin =>
+                    cabin.capacity === planCabin.capacity &&
                     !assignedCabins.has(cabin.idCabin)
                 ).slice(0, planCabin.quantity);
 
-                // Marcar cabañas como asignadas
-                matchingCabins.forEach(cabin => {
-                    assignedCabins.add(cabin.idCabin);
-                });
+                matchingCabins.forEach(cabin => assignedCabins.add(cabin.idCabin));
 
                 cabinAssignments.push({
                     capacity: planCabin.capacity,
@@ -87,14 +91,34 @@ export class PlansRepository {
                 });
             }
 
+            // Asignar habitaciones
+            const bedroomAssignments = [];
+            for (const planBedroom of planBedrooms) {
+                const matchingBedrooms = availableBedrooms.filter(bedroom =>
+                    bedroom.capacity === planBedroom.capacity &&
+                    !assignedBedrooms.has(bedroom.idBedroom)
+                ).slice(0, planBedroom.quantity);
+
+                matchingBedrooms.forEach(bedroom => assignedBedrooms.add(bedroom.idBedroom));
+
+                bedroomAssignments.push({
+                    capacity: planBedroom.capacity,
+                    requestedQuantity: planBedroom.quantity,
+                    assignedBedrooms: matchingBedrooms,
+                    actualQuantity: matchingBedrooms.length
+                });
+            }
+
             return {
                 ...plan.get({ plain: true }),
                 cabinDistribution: cabinAssignments,
-                totalAssignedCabins: [...assignedCabins].length
+                totalAssignedCabins: [...assignedCabins].length,
+                bedroomDistribution: bedroomAssignments,
+                totalAssignedBedrooms: [...assignedBedrooms].length
             };
         }));
 
-        return plansWithCabins;
+        return plansWithRooms;
     }
 
     async getPlanById(id) {
@@ -109,31 +133,34 @@ export class PlansRepository {
             where: { idPlan: id },
             order: [['capacity', 'ASC']]
         });
-
-        // Obtener todas las cabañas disponibles
-        const availableCabins = await Cabins.findAll({
-            where: {
-                status: "En Servicio"
-            },
+        const planBedrooms = await PlanBedroomModel.findAll({
+            where: { idPlan: id },
             order: [['capacity', 'ASC']]
         });
 
-        // Set para rastrear cabañas ya asignadas
-        const assignedCabins = new Set();
-        
-        // Asignar cabañas según las especificaciones de planCabins
-        const cabinAssignments = [];
+        // Obtener todas las cabañas y habitaciones disponibles
+        const availableCabins = await Cabins.findAll({
+            where: { status: "En Servicio" },
+            order: [['capacity', 'ASC']]
+        });
+        const availableBedrooms = await Bedrooms.findAll({
+            where: { status: "En Servicio" },
+            order: [['capacity', 'ASC']]
+        });
 
+        // Set para rastrear asignaciones
+        const assignedCabins = new Set();
+        const assignedBedrooms = new Set();
+
+        // Asignar cabañas
+        const cabinAssignments = [];
         for (const planCabin of planCabins) {
-            const matchingCabins = availableCabins.filter(cabin => 
-                cabin.capacity === planCabin.capacity && 
+            const matchingCabins = availableCabins.filter(cabin =>
+                cabin.capacity === planCabin.capacity &&
                 !assignedCabins.has(cabin.idCabin)
             ).slice(0, planCabin.quantity);
 
-            // Marcar las cabañas seleccionadas como asignadas
-            matchingCabins.forEach(cabin => {
-                assignedCabins.add(cabin.idCabin);
-            });
+            matchingCabins.forEach(cabin => assignedCabins.add(cabin.idCabin));
 
             cabinAssignments.push({
                 capacity: planCabin.capacity,
@@ -143,10 +170,30 @@ export class PlansRepository {
             });
         }
 
+        // Asignar habitaciones
+        const bedroomAssignments = [];
+        for (const planBedroom of planBedrooms) {
+            const matchingBedrooms = availableBedrooms.filter(bedroom =>
+                bedroom.capacity === planBedroom.capacity &&
+                !assignedBedrooms.has(bedroom.idBedroom)
+            ).slice(0, planBedroom.quantity);
+
+            matchingBedrooms.forEach(bedroom => assignedBedrooms.add(bedroom.idBedroom));
+
+            bedroomAssignments.push({
+                capacity: planBedroom.capacity,
+                requestedQuantity: planBedroom.quantity,
+                assignedBedrooms: matchingBedrooms,
+                actualQuantity: matchingBedrooms.length
+            });
+        }
+
         return {
             plan,
             cabinDistribution: cabinAssignments,
-            totalAssignedCabins: [...assignedCabins].length
+            totalAssignedCabins: [...assignedCabins].length,
+            bedroomDistribution: bedroomAssignments,
+            totalAssignedBedrooms: [...assignedBedrooms].length
         };
     }
 
