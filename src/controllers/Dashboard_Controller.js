@@ -57,14 +57,14 @@ export class DashboardController {
 
             // Consulta SQL directa para obtener las reservaciones por hora
             const query = `
-                SELECT 
-                    HOUR(date) as hour,
-                    COUNT(idReservation) as reservationCount
-                FROM Reservations
-                WHERE DATE(date) = ?
-                GROUP BY HOUR(date)
-                ORDER BY hour ASC
-            `;
+            SELECT 
+                HOUR(startDate) as hour,
+                COUNT(idReservation) as reservationCount
+            FROM Reservations
+            WHERE DATE(startDate) = ?
+            GROUP BY HOUR(startDate)
+            ORDER BY hour ASC
+        `;
 
             const reservations = await this.sequelize.query(query, {
                 replacements: [formattedDate],
@@ -84,7 +84,6 @@ export class DashboardController {
             });
         }
     }
-
     // Historia de Usuario 3: Meses menos concurridos
     async getLeastBusyMonths(req, res) {
         try {
@@ -94,14 +93,14 @@ export class DashboardController {
 
             // Consulta simple de conteo de reservas por mes
             const query = `
-                SELECT 
-                    MONTH(date) as month, 
-                    COUNT(idReservation) as visitorCount 
-                FROM Reservations 
-                WHERE YEAR(date) = ?
-                GROUP BY MONTH(date) 
-                ORDER BY visitorCount ASC
-            `;
+            SELECT 
+                MONTH(startDate) as month, 
+                COUNT(idReservation) as visitorCount 
+            FROM Reservations 
+            WHERE YEAR(startDate) = ?
+            GROUP BY MONTH(startDate) 
+            ORDER BY visitorCount ASC
+        `;
 
             const [visitorsByMonth] = await this.sequelize.query(query, {
                 replacements: [targetYear],
