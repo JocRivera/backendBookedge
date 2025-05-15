@@ -16,25 +16,16 @@ export const BedroomsComforts = database.define(
       allowNull: false,
       references: {
         model: Bedrooms,
-        key: 'idRoom'
-      }
+        key: "idRoom",
+      },
     },
     idComfort: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: Comforts,
-        key: 'idComfort'
-      }
-    },
-    description: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-    },
-    dateEntry: {
-      type: DataTypes.DATEONLY,
-      defaultValue: DataTypes.NOW,
-      allowNull: false,
+        key: "idComfort",
+      },
     },
   },
   {
@@ -43,5 +34,4 @@ export const BedroomsComforts = database.define(
   }
 );
 
-
-//resolviendo conflictos 
+//resolviendo conflictos

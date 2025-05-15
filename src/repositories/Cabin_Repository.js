@@ -2,7 +2,6 @@ import { Cabins } from "../models/Cabin_Model.js";
 import { Comforts } from "../models/comfort_Model.js";
 import { CabinImages } from "../models/CabinImage_Model.js";
 
-// Obtener todas las cabañas (con imágenes primarias y conteo)
 export const getAllCabinsRepository = async () => {
   const cabins = await Cabins.findAll({
     include: [
