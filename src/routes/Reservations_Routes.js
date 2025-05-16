@@ -48,7 +48,7 @@ router.get("/servicesReservations", async (req, res) => {
   }
 });
 
-router.get("/cabinReservations", async (req,res)=>{
+router.get("/cabins", async (req,res)=>{
   try{
     const cabin = await getCapacitiesCabins();
     res.status(200).json(cabin);
