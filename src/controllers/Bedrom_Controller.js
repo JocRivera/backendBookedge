@@ -42,8 +42,8 @@ export const createBedroomController = async (req, res) => {
     // ¡AQUÍ FALTA MANEJAR LAS COMODIDADES!
     const { name, description, capacity, status, comforts } = req.body; // Asumimos que 'comforts' puede venir aquí
 
-    const cabinData = { name, description, capacity, status: status || "En Servicio" };
-    const newRoom = await createBedroomService(cabinData);
+    const roomData = { name, description, capacity, status: status || "En Servicio" };
+    const newRoom = await createBedroomService(roomData);
 
     // Si se enviaron comodidades, asignarlas
     if (comforts && Array.isArray(comforts) && comforts.length > 0) {
@@ -80,12 +80,10 @@ export const updateBedroomController = async (req, res) => {
 
     // Actualizar comodidades SI se proporcionaron en el body
     if (comforts !== undefined && Array.isArray(comforts)) {
-      // Necesitas importar y llamar al servicio correspondiente:
-      // import { updateGroupedComfortsByCabinService } from "../services/CabinComfort_Service.js";
-      await updateGroupedComfortsByBedroomService({ idCabin: parseInt(id), comforts });
+      await updateGroupedComfortsByBedroomService({ idRoom: parseInt(id), comforts });
     }
 
-    const updatedBedRoomWithDetails = await getCabinByIdService(id);
+    const updatedBedRoomWithDetails = await getBedroomByIdService(id);
     res.status(200).json(updatedBedRoomWithDetails);
 
   } catch (error) {
