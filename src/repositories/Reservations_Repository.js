@@ -3,7 +3,7 @@ import { Companions } from "../models/Companions_Model.js";
 import { Payments } from "../models/Payments_Model.js";
 import { Plans } from "../models/Plans_Model.js";
 import { Users } from "../models/user_Model.js";
-import { Cabins } from "../models/cabin_Model.js"; 
+import { Cabins } from "../models/cabin_Model.js";
 import { Bedrooms } from "../models/bedrooms_Model.js";
 import { Services } from "../models/Services_Model.js"
 import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
@@ -13,37 +13,41 @@ import { ReservationsBedrooms } from "../models/Reservations_Bedrooms_Model.js"
 import { ReservationsService } from "../models/Reservations_Service_Model.js"
 import { Sequelize } from "sequelize";
 
-export const getReservationsServicesPer= async () => {
+export const getReservationsServicesPer = async () => {
   return await Services.findAll({
-    where:{
+    where: {
       StatusServices: true,
     }
   })
 }
 
-export const getCapacitiesBedroom = async () =>{
+export const getCapacitiesBedroom = async () => {
   return await Bedrooms.findAll({
-    attributes:[
+    attributes: [
       [Sequelize.fn('DISTINCT', Sequelize.col('capacity')), 'capacity']
     ],
-    where:{
+    where: {
       status: "En Servicio"
     },
-    order:[['capacity', 'ASC']]
+    order: [['capacity', 'ASC']]
   })
 }
 
-export const getCapacitiesCabins = async () =>{
+export const getCapacitiesCabins = async () => {
   return await Cabins.findAll({
-    attributes:[
-      [Sequelize.fn('DISTINCT', Sequelize.col('capacity')), 'capacity']
+    attributes: [
+      'idCabin',
+      'name',
+      'description',
+      'capacity',
+      'status',
     ],
-    where:{
+    where: {
       status: "En Servicio"
     },
-    order:[['capacity', 'ASC']]
-  })
-}
+    order: [['capacity', 'ASC']]
+  });
+};
 
 export const getAllReservations = async () => {
   try {
@@ -69,26 +73,26 @@ export const getAllReservations = async () => {
         {
           model: Users,
           as: 'user',
-          attributes:['idUser','identification']
+          attributes: ['idUser', 'identification']
 
         },
         {
           model: Cabins,
           as: "cabins",
-          attributes: ["idCabin", "name", "description", "capacity","status"]
+          attributes: ["idCabin", "name", "description", "capacity", "status"]
 
         },
         {
-          model:Bedrooms,
+          model: Bedrooms,
           as: "bedrooms",
-          attributes: ["idRoom","name","description","capacity","status"],
+          attributes: ["idRoom", "name", "description", "capacity", "status"],
         },
         {
-          model:Services,
+          model: Services,
           as: "services",
-          attributes: ["Id_Service","name","description","price"],
+          attributes: ["Id_Service", "name", "description", "price"],
         }
-      
+
       ],
     });
   } catch (error) {
@@ -99,8 +103,8 @@ export const getAllReservations = async () => {
 
 export const getReservationsById = async (id) => {
   try {
-    const reservationId = parseInt(id, 10); 
-    console.log("ID recibido en el repositorio:", id); 
+    const reservationId = parseInt(id, 10);
+    console.log("ID recibido en el repositorio:", id);
     const reservation = await Reservations.findByPk(id, {
       include: [
         {
@@ -123,37 +127,37 @@ export const getReservationsById = async (id) => {
         {
           model: Users,
           as: 'user',
-          attributes:['idUser','identification']
+          attributes: ['idUser', 'identification']
 
         },
         {
           model: Cabins,
           as: "cabins",
-          attributes: ["idCabin", "name", "description", "capacity","status"]
+          attributes: ["idCabin", "name", "description", "capacity", "status"]
 
         },
         {
-          model:Bedrooms,
+          model: Bedrooms,
           as: "bedrooms",
-          attributes: ["idRoom","name","description","capacity","status"],
+          attributes: ["idRoom", "name", "description", "capacity", "status"],
         },
         {
-          model:Services,
+          model: Services,
           as: "services",
-          attributes: ["Id_Service","name","description","price"],
+          attributes: ["Id_Service", "name", "description", "price"],
         }
       ],
     });
 
     if (!reservation) {
-      throw new Error("Reserva no encontrada"); 
+      throw new Error("Reserva no encontrada");
     }
 
-    console.log("Reserva encontrada:", reservation); 
+    console.log("Reserva encontrada:", reservation);
     return reservation;
   } catch (error) {
     console.error("Error al obtener reserva por ID:", error.message);
-    throw error; 
+    throw error;
   }
 };
 
@@ -165,7 +169,7 @@ export const updateReservations = async (id, reservationsData) => {
   await Reservations.update(reservationsData, {
     where: { idReservation: id },
   });
-  return await Reservations.findByPk(id); 
+  return await Reservations.findByPk(id);
 };
 
 
@@ -223,7 +227,7 @@ export const addPaymentToReservation = async (idReservation, idPayment, amount) 
       idPayments: idPayment,
       amountApplied: amount
     });
-    
+
     return relation;
   } catch (error) {
     console.error('Error en addPaymentToReservation:', error);
@@ -242,7 +246,7 @@ export const addCabins = async (cabinData) => {
 }
 
 export const addBedrooms = async (bedroomData) => {
-  console.log('Datos de la habitación recibidos en el repositorio:',bedroomData);
+  console.log('Datos de la habitación recibidos en el repositorio:', bedroomData);
   return await ReservationsBedrooms.create(bedroomData)
 }
 

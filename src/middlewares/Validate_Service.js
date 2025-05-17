@@ -15,6 +15,19 @@ const validateUniqueServiceName = async (name) => {
     }
 }
 
+const validatePrice = (value) => {
+    if (value <= 0) {
+        throw new Error("El precio debe ser mayor a 0");
+    }
+    // el precio maximo es 1000000
+    if (value > 1000000) {
+        throw new Error("El precio no puede ser mayor a 1000000");
+    }
+    return true;
+
+}
+
+
 const serviceBaseValidation = [
     body("name").isLength({ min: 3 }).withMessage("El nombre debe tener al menos 3 caracteres")
         .matches(/^[a-zA-Z\s]+$/).withMessage("El nombre solo puede contener letras y espacios"),
@@ -23,7 +36,11 @@ const serviceBaseValidation = [
 
 export const validateService = [
     ...serviceBaseValidation,
-    body("name").custom(validateUniqueServiceName),
+    body("name").custom(validateUniqueServiceName)
+        .withMessage("El servicio ya existe"),
+    body("Price")
+        .custom(validatePrice)
+        .withMessage("El precio debe ser mayor a 0 y menor a 1000000"),
 ];
 
 export const updateServiceValidation = [
