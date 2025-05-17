@@ -5,7 +5,7 @@ import {
   logoutService,
   recoveryPassword,
   resetPasswordService,
-  updateProfileService
+  updateProfileService,
 } from "../services/authService.js";
 import { getUserByIdService } from "../services/Users_Services.js";
 import { validationResult } from "express-validator";
@@ -139,24 +139,24 @@ export const getUserProfileController = async (req, res) => {
 };
 
 export const updateProfileController = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   try {
     // Validar que el usuario actualice solo su perfil
     if (parseInt(req.params.id) !== req.user.idUser) {
-      return res.status(403).json({ 
-        message: "Solo puedes actualizar tu propio perfil" 
+      return res.status(403).json({
+        message: "Solo puedes actualizar tu propio perfil",
       });
     }
 
     // Eliminar campos no permitidos aunque vengan en la solicitud
-    const {  idRol, password, ...safeData } = req.body;
-    
+    const { idRol, password, ...safeData } = req.body;
+
     const updatedUser = await updateProfileService(req.params.id, safeData);
     res.json(updatedUser);
-    
   } catch (error) {
-    res.status(400).json({ 
-      message: error.message,
-      type: "profile_update_error"
-    });
+    res.status(400).json({ message: "Error backend"});
   }
 };

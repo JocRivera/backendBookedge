@@ -24,12 +24,12 @@ import { authorize } from "../middlewares/RolesPermissionAuth.js";
 const router = express.Router();
 
 // Rutas protegidas por permisos + privilegios
-router.get("/", getAllUsers);
-router.get("/:id", getUserById);
-router.post("/", createUserValidation,  createUser);
-router.put("/:id", updateUserValidation, verifyToken, updateUser);
-router.delete("/:id",  deleteUser);
-router.patch("/:id",changeStatusUser);
+router.get("/",verifyToken,authorize("usuarios","read"), getAllUsers);
+router.get("/:id",verifyToken,authorize("usuarios","read"),  getUserById);
+router.post("/", verifyToken,authorize("usuarios","post"), createUserValidation,  createUser);
+router.put("/:id",verifyToken,authorize("usuarios","put"),  updateUserValidation, verifyToken, updateUser);
+router.delete("/:id",verifyToken,authorize("usuarios","delete"),   deleteUser);
+router.patch("/:id",verifyToken,authorize("usuarios","changeStatus"), changeStatusUser);
 
 router.get("/Users/get",
   // verifyToken,
