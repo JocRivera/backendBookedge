@@ -109,7 +109,10 @@ router.post(
 );
 
 //Ruta para agregar plan
-router.post("/Reservationplans", addPlansValidation, addPlans);
+router.post(
+  "/Reservationplans",
+   addPlansValidation,
+    addPlans);
 
 //Ruta para actualizar un acompañante
 router.put(
@@ -126,12 +129,19 @@ router.delete(
 );
 
 //Ruta para agregar Cabañas
-router.post("/cabins", addCabinsValidation, addCabin);
+router.post(
+  "/Cabins",
+   addCabinsValidation,
+    addCabin);
 
 //Ruta para agregar Habitaciones
-router.post("/bedrooms", addRoomsValidation, addBedrooms);
+router.post("/bedrooms",
+  addRoomsValidation,
+   addBedrooms);
 
 //Ruta Para agregar servicios
-router.post("/services", addServicesValidation, addService);
+router.post("/services",
+   addServicesValidation,
+    addService);
 
 export default router;
