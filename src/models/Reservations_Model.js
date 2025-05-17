@@ -9,23 +9,22 @@ export const Reservations = database.define(
             primaryKey: true,
             autoIncrement: true,
         },
-        idUser:{
+        idUser: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
                 model: 'Users',
                 key: 'idUser',
             }
-        },        
+        },
         idPlan: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'Plans', 
-                key: 'idPlan', 
+                model: 'Plans',
+                key: 'idPlan',
             },
         },
-
         startDate: {
             type: DataTypes.DATEONLY,
             allowNull: false,

@@ -21,7 +21,7 @@ const database = new Sequelize(
 //nada
 export { database };
 
-database.sync({ force:false })
+database.sync({ force: false }) // Cambia a true si deseas reiniciar la base de datos
   .then(() => {
     console.log("Database synced successfully");
   })
