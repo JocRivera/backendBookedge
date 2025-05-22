@@ -13,22 +13,30 @@ import { validationResult } from "express-validator";
 export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const { user, token, refreshToken } = await loginService(email, password);
+    // loginService devuelve: { user: {id, name, email, role}, token, refreshToken }
+    const loginData = await loginService(email, password);
 
-    // Almacenoooooooooo el token de acceso en una cookie httpOnly
-    res.cookie("authToken", token, {
+    // 1. Establecer Cookies para el Cliente Web (como ya lo haces)
+    res.cookie("authToken", loginData.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 1000, // 1 hora
+      sameSite: 'Lax', // Considera añadir sameSite
     });
-
-    res.cookie("refreshToken", refreshToken, {
+    res.cookie("refreshToken", loginData.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
+      sameSite: 'Lax',
     });
 
-    return res.status(200).json({ message: "Login exitoso", user });
+    // 2. Devolver también los tokens en el cuerpo del JSON para el Cliente Móvil
+    return res.status(200).json({
+      message: "Login exitoso",
+      user: loginData.user,
+      token: loginData.token,           // <-- Para Móvil
+      refreshToken: loginData.refreshToken // <-- Para Móvil
+    });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
@@ -40,61 +48,97 @@ export const registerController = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { user, token, refreshToken } = await registerCustomerService(
-      req.body
-    );
+    // registerCustomerService devuelve: { user: { ... }, token, refreshToken }
+    const registerData = await registerCustomerService(req.body);
 
-    res.cookie("authToken", token, {
+    // 1. Establecer Cookies para el Cliente Web
+    res.cookie("authToken", registerData.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 1000, // 1 hora
+      maxAge: 60 * 60 * 1000,
+      sameSite: 'Lax',
     });
-
-    res.cookie("refreshToken", refreshToken, {
+    res.cookie("refreshToken", registerData.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'Lax',
     });
 
-    return res.status(201).json({ message: "Registro exitoso", user });
+    // 2. Devolver también los tokens en el cuerpo del JSON para el Cliente Móvil
+    return res.status(201).json({
+      message: "Registro exitoso",
+      user: registerData.user,
+      token: registerData.token,           // <-- Para Móvil
+      refreshToken: registerData.refreshToken // <-- Para Móvil
+    });
   } catch (error) {
+    // Si el error es porque el email ya existe, tu servicio ya lo lanza
     return res.status(400).json({ message: error.message });
   }
 };
-
 export const refreshTokenController = async (req, res) => {
   try {
-    const { refreshToken } = req.cookies;
-    if (!refreshToken)
-      return res.status(401).json({ message: "No hay refresh token" });
+    // El cliente móvil enviará el refreshToken en el body.
+    // El cliente web lo enviará como cookie (Axios en web lo hace automáticamente si withCredentials=true).
+    const receivedRefreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
 
-    const { token } = await refreshAccessToken(refreshToken);
+    if (!receivedRefreshToken) {
+      return res.status(401).json({ message: "No se proporcionó refresh token" });
+    }
 
-    res.cookie("authToken", token, {
+    // refreshAccessToken del servicio ahora puede devolver { token: newAccessToken, newRefreshToken (opcional) }
+    const refreshResult = await refreshAccessToken(receivedRefreshToken);
+
+    // 1. Establecer la cookie del NUEVO authToken para el Cliente Web
+    res.cookie("authToken", refreshResult.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 1000, // 1 hora
+      sameSite: 'Lax',
     });
 
-    return res.status(200).json({ message: "Token renovado" });
+    const responsePayload = {
+      message: "Token renovado exitosamente",
+      token: refreshResult.token, // El nuevo access token para el cliente móvil
+    };
+
+    // Si el servicio de refresh TAMBIÉN genera y devuelve un nuevo refresh token (rotación)
+    if (refreshResult.newRefreshToken) {
+      responsePayload.refreshToken = refreshResult.newRefreshToken; // Para el cliente móvil
+      // Actualiza también la cookie del refresh token para la web
+      res.cookie("refreshToken", refreshResult.newRefreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // La misma duración que el original
+        sameSite: 'Lax',
+      });
+    }
+
+    // 2. Devolver el nuevo token (y opcionalmente refreshToken) en el JSON para el Cliente Móvil
+    return res.status(200).json(responsePayload);
+
   } catch (error) {
+    // Si el refresh token es inválido o expirado, refreshAccessToken lanzará un error
     return res.status(403).json({ message: error.message });
   }
 };
 
 export const logoutController = async (req, res) => {
   try {
-    await logoutService(req.user.idUser);
+    if (req.user && req.user.idUser) { // Asegurarse que req.user exista
+        await logoutService(req.user.idUser); // Invalida refresh token en BD
+    }
 
-    // Elimina las cookies de autenticación y refreshToken
-    res.clearCookie("authToken");
-    res.clearCookie("refreshToken");
+    res.clearCookie("authToken", { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'Lax' });
+    res.clearCookie("refreshToken", { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'Lax' });
 
     return res.status(200).json({ message: "Sesión cerrada exitosamente" });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
 };
+
 
 export const recoveryPasswordController = async (req, res) => {
   try {
@@ -118,25 +162,28 @@ export const resetPasswordController = async (req, res) => {
   }
 };
 
+// Auth_Controller.js
+// ...
 export const getUserProfileController = async (req, res) => {
   try {
-    const userId = req.user.idUser;
+     console.log("getUserProfileController: req.user:", req.user); // <--- BUEN PUNTO PARA UN LOG
+    const userId = req.user.idUser; // <--- PUNTO POTENCIAL DE FALLO
     const user = await getUserByIdService(userId);
 
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    // Convertir a objeto plano con .toJSON() antes de manipular
     const userPlain = user.toJSON();
     const { password, ...rest } = userPlain;
 
     return res.status(200).json(rest);
   } catch (error) {
-    console.error("Error al obtener el perfil del usuario:", error);
-    return res.status(500).json({ message: "Error interno del servidor" });
+    console.error("Error al obtener el perfil del usuario:", error); // <-- ESTE LOG ES EL QUE DEBERÍAS VER EN TU CONSOLA DEL BACKEND
+    return res.status(500).json({ message: "Error interno del servidor" }); // <-- Y ESTO ES LO QUE RECIBE EL FRONTEND
   }
 };
+// ...
 
 export const updateProfileController = async (req, res) => {
   const errors = validationResult(req);

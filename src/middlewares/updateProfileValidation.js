@@ -82,9 +82,9 @@ export const updateProfileValidation = [
     .isLength({ min: 3 }).withMessage("El nombre debe tener mínimo 3 caracteres"),
 
   body("email")
-    .notEmpty().withMessage("El correo no puede estar vacío")
-    .isEmail().withMessage("El correo debe ser válido")
-    .custom(validateEmailExistenceOnUpdate), // Llama a la función definida arriba
+  .optional({ checkFalsy: true }) // <--- AÑADE ESTO. checkFalsy hace que "" o null también lo traten como opcional
+  .isEmail().withMessage("El correo debe ser válido si se proporciona") // Se valida solo si está presente
+  .custom(validateEmailExistenceOnUpdate),
 
   body("cellphone")
     .notEmpty().withMessage("El número de celular no puede estar vacío")

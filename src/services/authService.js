@@ -55,13 +55,38 @@ export const loginService = async (email, password) => {
   }
 };
 
-export const refreshAccessToken = async (refreshToken) => {
-  if (!refreshToken) throw new Error("No hay refresh token");
+export const refreshAccessToken = async (currentRefreshToken) => {
+  if (!currentRefreshToken) {
+    throw new Error("No se proporcionó refresh token");
+  }
 
-  const user = await Users.findOne({ where: { refreshToken } });
-  if (!user) throw new Error("Refresh token inválido");
+  const user = await Users.findOne({ where: { refreshToken: currentRefreshToken } });
 
-  return { token: generateToken(user) };
+  // Verifica si el usuario existe y si su estado es activo
+  if (!user || !user.status) { 
+    // Si el usuario no existe o está inactivo, el refresh token no es válido
+    throw new Error("Refresh token inválido o usuario inactivo");
+  }
+
+  // Genera un nuevo token de acceso
+  const newAccessToken = generateToken(user);
+  
+  let newRefreshToken = null; // Por defecto no se rota
+
+  // --- LÓGICA OPCIONAL DE ROTACIÓN DE REFRESH TOKEN ---
+  // Podrías decidir rotar el refresh token aquí si quieres mayor seguridad,
+  // por ejemplo, cada vez que se usa, o después de X usos, o si está cerca de expirar.
+  // Para simplificar, asumiremos que el refresh token tiene una vida larga y no lo rotamos en cada refresh.
+  // Si quisieras rotarlo:
+  // newRefreshToken = generateRefreshToken(user);
+  // await user.update({ refreshToken: newRefreshToken });
+  // console.log("Nuevo Refresh Token generado y guardado:", newRefreshToken);
+
+  const responseObject = { token: newAccessToken };
+  // if (newRefreshToken) { // Solo si se generó uno nuevo
+  //   responseObject.refreshToken = newRefreshToken;
+  // }
+  return responseObject; // Devuelve el nuevo access token (y el nuevo refresh token si se rotó)
 };
 
 export const logoutService = async (userId) => {
