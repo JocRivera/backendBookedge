@@ -34,7 +34,7 @@ export default class Server {
     this.app = express();
     this.app.use(
       cors({
-        origin: ["http://localhost:5173", "http://localhost:5180"],
+        origin: ["http://localhost:5173", "http://localhost:5180","http://localhost:8081"],
         credentials: true,
       })
     );
