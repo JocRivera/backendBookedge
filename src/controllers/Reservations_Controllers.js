@@ -1,9 +1,14 @@
 import { validationResult } from "express-validator"
 import { Payments } from "../models/Payments_Model.js"
 import { Cabins } from "../models/cabin_Model.js"
+import { Bedrooms } from "../models/Bedrooms_Model.js"
+import { Services } from "../models/Services_Model.js"
 import { Reservations } from "../models/Reservations_Model.js"
 import { PaymentsReservations } from "../models/Payments_Reservations_model.js"
 import { ReservationsCabins } from "../models/Reservations_cabins_Model.js"
+import { ReservationsBedrooms } from "../models/Reservations_Bedrooms_Model.js"
+import { ReservationsService } from "../models/Reservations_Service_Model.js"
+
 import {
   getAllReservationsService,
   getReservationsByIdService,
@@ -52,42 +57,107 @@ export const createReservationsController = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() })
   }
+
   try {
-    const { idCabin, ...reservationData } = req.body
+    console.log("🚀 Datos recibidos en createReservationsController:", req.body)
 
-    // Crear la reserva sin la cabaña primero
+    // Extraer todos los campos especiales
+    const { idCabin, idRoom, services, ...reservationData } = req.body
+
+    console.log("📋 Datos extraídos:", {
+      idCabin,
+      idRoom,
+      services,
+      reservationData,
+    })
+
+    // Crear la reserva básica primero
     const reservation = await createReservationsService(reservationData)
+    console.log("✅ Reserva básica creada:", reservation)
 
-    // Si se proporcionó un idCabin, asociar la cabaña a la reserva
+    let updatedReservation = reservation
+
+    // Manejar cabaña si se proporcionó
     if (idCabin) {
+      console.log("🏠 Procesando cabaña:", idCabin)
       const cabinExists = await Cabins.findByPk(idCabin)
       if (!cabinExists) {
         return res.status(400).json({ error: "La cabaña especificada no existe" })
       }
 
-      // Crear la asociación en la tabla intermedia
       await ReservationsCabins.create({
         idReservation: reservation.idReservation,
         idCabin: idCabin,
       })
-
-      // Obtener la reserva con sus cabañas
-      const updatedReservation = await Reservations.findByPk(reservation.idReservation, {
-        include: [
-          {
-            model: Cabins,
-            as: "cabins",
-            through: { attributes: [] }, // No incluir atributos de la tabla intermedia
-          },
-        ],
-      })
-
-      return res.status(201).json(updatedReservation)
+      console.log("✅ Cabaña asociada exitosamente")
     }
 
-    res.status(201).json(reservation)
+    // 🆕 MANEJAR HABITACIÓN SI SE PROPORCIONÓ
+    if (idRoom) {
+      console.log("🛏️ Procesando habitación:", idRoom)
+      const roomExists = await Bedrooms.findByPk(idRoom)
+      if (!roomExists) {
+        return res.status(400).json({ error: "La habitación especificada no existe" })
+      }
+
+      // Crear la asociación en la tabla intermedia
+      await ReservationsBedrooms.create({
+        idReservation: reservation.idReservation,
+        idRoom: idRoom,
+      })
+      console.log("✅ Habitación asociada exitosamente")
+    }
+
+    // 🆕 MANEJAR SERVICIOS SI SE PROPORCIONARON (CON Id_Service CORRECTO)
+    if (services && Array.isArray(services) && services.length > 0) {
+      console.log("🛎️ Procesando servicios:", services)
+
+      for (const serviceId of services) {
+        console.log(`🔍 Verificando servicio con Id_Service: ${serviceId}`)
+
+        // ✅ CORREGIDO: Usar Id_Service en lugar de id
+        const serviceExists = await Services.findByPk(serviceId)
+        if (!serviceExists) {
+          console.warn(`⚠️ Servicio con Id_Service ${serviceId} no existe, saltando...`)
+          continue
+        }
+
+        console.log(`✅ Servicio encontrado:`, serviceExists.toJSON())
+
+        // ✅ CORREGIDO: Usar Id_Service en la asociación
+        await ReservationsService.create({
+          idReservation: reservation.idReservation,
+          Id_Service: serviceId, // ← CAMBIADO de idService a Id_Service
+        })
+        console.log(`✅ Servicio ${serviceId} asociado exitosamente`)
+      }
+    }
+
+    // Obtener la reserva completa con todas las asociaciones
+    updatedReservation = await Reservations.findByPk(reservation.idReservation, {
+      include: [
+        {
+          model: Cabins,
+          as: "cabins",
+          through: { attributes: [] },
+        },
+        {
+          model: Bedrooms,
+          as: "bedrooms",
+          through: { attributes: [] },
+        },
+        {
+          model: Services,
+          as: "services",
+          through: { attributes: [] },
+        },
+      ],
+    })
+
+    console.log("🎉 Reserva completa creada:", updatedReservation)
+    res.status(201).json(updatedReservation)
   } catch (error) {
-    console.error("Error en createReservationsController:", error)
+    console.error("❌ Error en createReservationsController:", error)
     res.status(400).json({ message: error.message })
   }
 }
@@ -99,10 +169,20 @@ export const updateReservationsController = async (req, res) => {
   }
 
   try {
-    const { idReservation } = req.params
-    const { idCabin, ...reservationData } = req.body
+    console.log("✏️ Datos recibidos en updateReservationsController:", req.body)
 
-    // Verificar que la reserva existe antes de actualizar
+    const { idReservation } = req.params
+    const { idCabin, idRoom, services, ...reservationData } = req.body
+
+    console.log("📋 Datos extraídos para actualización:", {
+      idReservation,
+      idCabin,
+      idRoom,
+      services,
+      reservationData,
+    })
+
+    // Verificar que la reserva existe
     const existingReservation = await Reservations.findByPk(idReservation)
     if (!existingReservation) {
       return res.status(404).json({
@@ -113,40 +193,109 @@ export const updateReservationsController = async (req, res) => {
 
     // Actualizar los campos básicos
     await existingReservation.update(reservationData)
+    console.log("✅ Datos básicos actualizados")
 
-    // Actualizar cabaña si se proporcionó
-    if (idCabin) {
-      const cabinExists = await Cabins.findByPk(idCabin)
-      if (!cabinExists) {
-        return res.status(400).json({ error: "La cabaña especificada no existe" })
-      }
-
-      // Eliminar asociaciones existentes
+    // 🆕 ACTUALIZAR CABAÑA
+    if (idCabin !== undefined) {
+      // Eliminar asociaciones existentes de cabañas
       await ReservationsCabins.destroy({
         where: { idReservation },
       })
 
-      // Crear nueva asociación
-      await ReservationsCabins.create({
-        idReservation,
-        idCabin,
-      })
+      if (idCabin) {
+        const cabinExists = await Cabins.findByPk(idCabin)
+        if (!cabinExists) {
+          return res.status(400).json({ error: "La cabaña especificada no existe" })
+        }
+
+        await ReservationsCabins.create({
+          idReservation,
+          idCabin,
+        })
+        console.log("✅ Cabaña actualizada")
+      }
     }
 
-    // Obtener la reserva actualizada con sus cabañas
+    // 🆕 ACTUALIZAR HABITACIÓN
+    if (idRoom !== undefined) {
+      console.log("🛏️ Actualizando habitación:", idRoom)
+
+      // Eliminar asociaciones existentes de habitaciones
+      await ReservationsBedrooms.destroy({
+        where: { idReservation },
+      })
+
+      if (idRoom) {
+        const roomExists = await Bedrooms.findByPk(idRoom)
+        if (!roomExists) {
+          return res.status(400).json({ error: "La habitación especificada no existe" })
+        }
+
+        await ReservationsBedrooms.create({
+          idReservation,
+          idRoom,
+        })
+        console.log("✅ Habitación actualizada")
+      }
+    }
+
+    // 🆕 ACTUALIZAR SERVICIOS (CON Id_Service CORRECTO)
+    if (services !== undefined) {
+      console.log("🛎️ Actualizando servicios:", services)
+
+      // Eliminar asociaciones existentes de servicios
+      await ReservationsService.destroy({
+        where: { idReservation },
+      })
+
+      if (Array.isArray(services) && services.length > 0) {
+        for (const serviceId of services) {
+          console.log(`🔍 Verificando servicio con Id_Service: ${serviceId}`)
+
+          // ✅ CORREGIDO: Usar Id_Service
+          const serviceExists = await Services.findByPk(serviceId)
+          if (!serviceExists) {
+            console.warn(`⚠️ Servicio con Id_Service ${serviceId} no existe, saltando...`)
+            continue
+          }
+
+          console.log(`✅ Servicio encontrado:`, serviceExists.toJSON())
+
+          // ✅ CORREGIDO: Usar Id_Service en la asociación
+          await ReservationsService.create({
+            idReservation,
+            Id_Service: serviceId, // ← CAMBIADO de idService a Id_Service
+          })
+          console.log(`✅ Servicio ${serviceId} actualizado`)
+        }
+      }
+    }
+
+    // Obtener la reserva actualizada con todas las asociaciones
     const updatedReservation = await Reservations.findByPk(idReservation, {
       include: [
         {
           model: Cabins,
           as: "cabins",
-          through: { attributes: [] }, // No incluir atributos de la tabla intermedia
+          through: { attributes: [] },
+        },
+        {
+          model: Bedrooms,
+          as: "bedrooms",
+          through: { attributes: [] },
+        },
+        {
+          model: Services,
+          as: "services",
+          through: { attributes: [] },
         },
       ],
     })
 
+    console.log("🎉 Reserva actualizada completamente:", updatedReservation)
     res.status(200).json(updatedReservation)
   } catch (error) {
-    console.error("Error en updateReservationsController:", error)
+    console.error("❌ Error en updateReservationsController:", error)
     res.status(500).json({
       error: "Error interno del servidor",
       details: process.env.NODE_ENV === "development" ? error.message : undefined,
@@ -218,6 +367,7 @@ export const addCompanions = async (req, res) => {
     })
   }
 }
+
 export const addPaymentToReservationController = async (req, res) => {
   try {
     console.log("Datos recibidos en el backend:", req.body)
@@ -302,34 +452,39 @@ export const addCabin = async (req, res) => {
   }
 }
 
-export const addBedrooms = async (res, req) => {
+
+export const addBedrooms = async (req, res) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() })
   }
   try {
     const { idReservation, idRoom } = req.body
-    console.log("Datos de la habitación:", { idReservation, idRoom })
+    console.log("🛏️ Datos de la habitación:", { idReservation, idRoom })
     await addBedroomsService(idReservation, idRoom)
     res.status(200).json({ message: "Habitaciones agregadas exitosamente" })
   } catch (error) {
-    console.error("Error al agregar la habitación:", error)
+    console.error("❌ Error al agregar la habitación:", error)
     res.status(400).json({ message: error.message })
   }
 }
 
-export const addService = async (res, req) => {
+
+export const addService = async (req, res) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() })
   }
   try {
-    const { idReservation, idService } = req.body
-    console.log("Datos del servicio:", { idReservation, idService })
-    await addServiceService(idReservation, idService)
+
+    const { idReservation, Id_Service } = req.body
+    console.log("🛎️ Datos del servicio:", { idReservation, Id_Service })
+
+    // Pasar Id_Service al servicio
+    await addServiceService(idReservation, Id_Service)
     res.status(200).json({ message: "Servicios agregados exitosamente" })
   } catch (error) {
-    console.error("Error al agregar el servicio:", error)
+    console.error("❌ Error al agregar el servicio:", error)
     res.status(400).json({ message: error.message })
   }
 }
