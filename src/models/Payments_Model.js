@@ -23,7 +23,7 @@ export const Payments = database.define(
       allowNull: false,
     },
     amount: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.FLOAT,
       allowNull: false,
       validate: {
         isFloat: { min: 0 }, 
