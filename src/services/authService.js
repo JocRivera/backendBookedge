@@ -2,6 +2,9 @@ import bcrypt from "bcryptjs";
 import { Users } from "../models/user_Model.js";
 import { generateToken, generateRefreshToken } from "../utils/jwt.js";
 import { Roles } from "../models/Roles_Model.js";
+import { Permissions } from "../models/Permissions_Model.js"; // NECESITARÁS ESTOS MODELOS
+import { PermissionRoles } from "../models/Permission_Roles.js"; // NECESITARÁS ESTOS MODELOS
+import { Privileges } from "../models/Privileges_Model.js";
 import crypto from "crypto";
 import { sendResetPasswordEmail } from "../utils/emails.js";
 import jwt from "jsonwebtoken";  // Asegúrate de importar jwt para decodificar el refresh token
@@ -17,8 +20,11 @@ export const loginService = async (email, password) => {
       }]
     });
 
-    if (!user || !user.status) {
+    if (!user ) {
       throw new Error("Correo o contraseña incorrectos");
+    }else if (!user.status){
+      throw new Error("Tu cuenta se encuentra inactiva");
+      
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -166,20 +172,80 @@ export const resetPasswordService = async (token, newPassword) => {
   });
 };
 export const updateProfileService = async (idUser, updateData) => {
-  const user = await Users.findByPk(idUser);
-  if (!user) throw new Error('Usuario no encontrado');
+  console.log("--- updateProfileService (Backend) ---");
+  console.log("idUser para actualizar:", idUser);
+  console.log("updateData recibida:", JSON.stringify(updateData, null, 2));
 
-  const safeFields = ['name',"email","identification","identificationType",'eps', 'cellphone', 'address', 'birthdate'];
-  
-  await user.update(updateData, {
-    fields: safeFields, 
-    validate: false 
-  });
+  try {
+    const userToUpdate = await Users.findByPk(idUser);
+    if (!userToUpdate) {
+      console.log("Usuario no encontrado en updateProfileService para ID:", idUser);
+      throw new Error('Usuario no encontrado para actualizar');
+    }
 
-  return await Users.findByPk(idUser, {
-    attributes: { 
-      exclude: ['password', 'refreshToken', 'resetToken', 'resetTokenExpires'] 
-    },
-    include: ['role']
-  });
+    // Campos permitidos para ser actualizados directamente desde el perfil del usuario
+    const allowedFields = ['name', 'identification', 'identificationType', 'eps', 'cellphone', 'address', 'birthdate'];
+    const filteredUpdateData = {};
+    for (const key of allowedFields) {
+      // Solo incluir el campo en la actualización si realmente vino en updateData
+      // y no es undefined (para permitir enviar "" para limpiar un campo opcional).
+      if (updateData.hasOwnProperty(key)) {
+        filteredUpdateData[key] = updateData[key];
+      }
+    }
+    console.log("filteredUpdateData a aplicar:", JSON.stringify(filteredUpdateData, null, 2));
+
+    if (Object.keys(filteredUpdateData).length > 0) {
+      console.log("Intentando user.update()...");
+      await userToUpdate.update(filteredUpdateData); // Sequelize aplicará hooks y validaciones de modelo si no usas { validate: false }
+      console.log("user.update() exitoso.");
+    } else {
+      console.log("No hay campos válidos para actualizar después del filtrado.");
+    }
+
+    console.log("Intentando recargar el usuario con roles y permisos...");
+    const reloadedUser = await Users.findByPk(idUser, {
+      attributes: {
+        exclude: ['password', 'refreshToken', 'resetToken', 'resetTokenExpires']
+      },
+      include: [
+        {
+          model: Roles,
+          as: "role", // Asegúrate que 'as: "role"' coincida con tu Users.belongsTo(Roles, {as: 'role'})
+          attributes: ["idRol", "name"],
+          include: [
+            {
+              model: PermissionRoles,
+              as: "permissionRoles", // Asegúrate que 'as: "permissionRoles"' coincida con Roles.hasMany(PermissionRoles, {as: 'permissionRoles'})
+              attributes: ["idPermissionRole"], // Puedes omitir attributes si solo quieres las asociaciones
+              include: [
+                {
+                  model: Permissions,
+                  as: "permissions", // Asegúrate que 'as: "permissions"' coincida con PermissionRoles.belongsTo(Permissions, ...)
+                  attributes: ["idPermission", "name"],
+                },
+                {
+                  model: Privileges,
+                  as: "privileges",  // Asegúrate que 'as: "privileges"' coincida con PermissionRoles.belongsTo(Privileges, ...)
+                  attributes: ["idPrivilege", "name"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!reloadedUser) {
+      console.error("Fallo al recargar el usuario después de la actualización para ID:", idUser);
+      throw new Error("No se pudo recargar el usuario después de la actualización.");
+    }
+    console.log("Usuario recargado exitosamente con permisos. Data del Rol:", JSON.stringify(reloadedUser.role, null, 2));
+    return reloadedUser.toJSON(); // Devuelve el objeto plano
+
+  } catch (serviceError) {
+    console.error("ERROR EN updateProfileService:", serviceError);
+    // Considera si quieres loguear serviceError.stack para más detalle en desarrollo
+    throw serviceError; // Re-lanza para que el controlador lo maneje
+  }
 };
