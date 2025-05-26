@@ -309,8 +309,8 @@ export const changeStatusReservationsController = async (req, res) => {
     return res.status(400).json({ errors: errors.array() })
   }
   try {
-    await changeStatusReservationsService(req.params.id, req.body.status)
-    res.status(200).end()
+    await changeStatusReservationsService(req.params.idReservation, req.body.status) ;
+       res.status(200).end()
   } catch (error) {
     res.status(400).json({ message: error.message })
   }
