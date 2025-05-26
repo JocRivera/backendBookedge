@@ -82,7 +82,7 @@ router.put(
   updateReservationsController
 );
 router.patch(
-  "/:id/status",
+  "/:idReservation/status",
   changeStateReservationsValidation,
   changeStatusReservationsController
 );
