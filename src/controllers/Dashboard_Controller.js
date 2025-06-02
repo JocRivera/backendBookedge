@@ -47,26 +47,21 @@ export class DashboardController {
         }
     }
     // Historia de Usuario 2: Reservas del día
+    // GET /api/dashboard/reservas-diarias?date=YYYY-MM-DD
     async getDailyReservations(req, res) {
         try {
             const { date } = req.query;
             const targetDate = date ? new Date(date) : new Date();
-
-            // Format the date to match only the date part (YYYY-MM-DD)
             const formattedDate = targetDate.toISOString().split('T')[0];
 
-            // Consulta SQL directa para obtener las reservaciones por hora
             const query = `
             SELECT 
-                HOUR(startDate) as hour,
-                COUNT(idReservation) as reservationCount
+                COUNT(idReservation) AS reservationCount
             FROM Reservations
             WHERE DATE(startDate) = ?
-            GROUP BY HOUR(startDate)
-            ORDER BY hour ASC
         `;
 
-            const reservations = await this.sequelize.query(query, {
+            const [result] = await this.sequelize.query(query, {
                 replacements: [formattedDate],
                 type: this.sequelize.QueryTypes.SELECT
             });
@@ -74,16 +69,17 @@ export class DashboardController {
             res.status(200).json({
                 message: "Reservas del día",
                 date: formattedDate,
-                data: reservations
+                count: result.reservationCount || 0
             });
         } catch (error) {
             console.error("Error al obtener las reservas del día", error);
             res.status(500).json({
                 message: "Error al obtener las reservas del día",
-                error: error.message,
+                error: error.message
             });
         }
     }
+
     // Historia de Usuario 3: Meses menos concurridos
     async getLeastBusyMonths(req, res) {
         try {
