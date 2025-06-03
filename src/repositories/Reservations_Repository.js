@@ -160,6 +160,70 @@ export const getReservationsById = async (id) => {
     throw error;
   }
 };
+export const getReservationsByUser = async (userId) => {
+  try {
+    console.log("🔍 Buscando reservas para el usuario:", userId)
+
+    const reservations = await Reservations.findAll({
+      where: {
+        idUser: userId,
+      },
+      include: [
+        {
+          model: Companions,
+          as: "companions",
+          attributes: ["idCompanions", "name","documentNumber"],
+          through: { attributes: [] },
+        },
+        {
+          model: Payments,
+          as: "payments",
+          attributes: ["idPayments", "paymentMethod", "amount", "status", "paymentDate"],
+          through: { attributes: [] },
+        },
+        {
+          model: Plans,
+          as: "plan",
+          attributes: ["idPlan", "name", "salePrice", "description"],
+        },
+        {
+          model: Users,
+          as: "user",
+          attributes: ["idUser", "identification", "name", "email"],
+        },
+        {
+          model: Cabins,
+          as: "cabins",
+          attributes: ["idCabin", "name", "description", "capacity", "status"],
+          through: { attributes: [] },
+        },
+        {
+          model: Bedrooms,
+          as: "bedrooms",
+          attributes: ["idRoom", "name", "description", "capacity", "status"],
+          through: { attributes: [] },
+        },
+        {
+          model: Services,
+          as: "services",
+          attributes: ["Id_Service", "name", "description", "Price"],
+          through: {
+            attributes: [], 
+            as: "reservationService",
+          },
+        },
+      ],
+      order: [["startDate", "DESC"]], // Ordenar por fecha más reciente
+    })
+
+    console.log(`✅ Encontradas ${reservations.length} reservas para el usuario ${userId}`)
+    return reservations
+  } catch (error) {
+    console.error("❌ Error al obtener reservas por usuario:", error.message)
+    throw error
+  }
+}
+
 
 export const createReservations = async (reservationsData) => {
   return await Reservations.create(reservationsData);
