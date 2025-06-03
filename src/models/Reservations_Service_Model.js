@@ -6,28 +6,33 @@ import { Reservations } from "./Reservations_Model.js";
 export const ReservationsService = database.define(
    "ReservationsService",
    {
-      idReservationsSevice:{
+      idReservationsSevice: {
          type: DataTypes.INTEGER,
          primaryKey: true,
          autoIncrement: true,
       },
-      idReservation:{
+      idReservation: {
          type: DataTypes.INTEGER,
-         references:{
+         references: {
             model: Reservations,
             key: "idReservations",
          }
 
       },
-      Id_Service:{
+      Id_Service: {
          type: DataTypes.INTEGER,
-         references:{
+         references: {
             model: Services,
             key: 'Id_Service',
          }
+      },
+      quantity: {
+         type: DataTypes.INTEGER,
+         defaultValue: 1,
+         allowNull: false
       }
-   },{
-      timestamps: false,
-      tableName:'ReservationsServices'
-   }
+   }, {
+   timestamps: false,
+   tableName: 'ReservationsServices'
+}
 )

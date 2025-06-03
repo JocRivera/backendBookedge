@@ -34,7 +34,7 @@ export default class Server {
     this.app = express();
     this.app.use(
       cors({
-        origin: ["http://localhost:5173", "http://localhost:5180","http://localhost:8081"],
+        origin: ["http://localhost:5173", "http://localhost:5180", "http://localhost:8081"],
         credentials: true,
       })
     );
@@ -47,6 +47,7 @@ export default class Server {
     this.routes();
     this.setupAssociations();
   }
+  
 
   setupAssociations() {
     try {
@@ -68,6 +69,7 @@ export default class Server {
       console.error("Se jodió la base de datos", error);
     }
   }
+  
 
   routes() {
     this.app.use("/user", userRoutes);

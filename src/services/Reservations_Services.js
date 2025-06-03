@@ -1,6 +1,7 @@
 import {
     getAllReservations,
     getReservationsById,
+    getReservationsByUser,
     createReservations,
     updateReservations,
     addCompanions,
@@ -83,5 +84,25 @@ export const addBedroomsService = async (idReservation,idRoom) =>{
   return addBedrooms({idReservation,idRoom});
 }
 export const addServiceService = async (idReservation, Id_Service) =>{
-  return addServices({idReservation, Id_Service});
+  return addService({idReservation, Id_Service});
+}
+
+export async function getReservationsByUserService(userId) {
+  try {
+    console.log("🔍 Servicio: Obteniendo reservas para usuario:", userId)
+
+    // Validar que el userId sea un número válido
+    const userIdNumber = Number.parseInt(userId, 10)
+    if (isNaN(userIdNumber) || userIdNumber <= 0) {
+      throw new Error("ID de usuario inválido")
+    }
+
+    const reservations = await getReservationsByUser(userIdNumber)
+
+    console.log(`✅ Servicio: Devolviendo ${reservations.length} reservas`)
+    return reservations
+  } catch (error) {
+    console.error("❌ Error en getReservationsByUserService:", error.message)
+    throw error
+  }
 }
