@@ -52,8 +52,7 @@ export const addPaymentToReservationService = async (idReservation, idPayments) 
     await PaymentsReservations.create({ 
       idReservation, 
       idPayments,
-      amountApplied: await getPaymentAmount(idPayments) // Función para obtener el monto
-    });
+          });
     
   } catch (error) {
     console.error("Error en addPaymentToReservationService:", error);
