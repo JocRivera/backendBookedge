@@ -1,5 +1,6 @@
-import { body, param, validationResult } from "express-validator";
+import { body, param} from "express-validator";
 import { Payments } from "../models/Payments_Model.js";
+import { PaymentsReservations } from "../models/Payments_Reservations_model.js";
 
 export const validatePaymentsExistence = async (id) => {
   const payments = await Payments.findByPk(id);

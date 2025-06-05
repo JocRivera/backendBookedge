@@ -1,8 +1,6 @@
 import { Reservations } from "../models/Reservations_Model.js";
 import { Plans } from "../models/Plans_Model.js";
 import { database } from "../config/database.js"; // Importa la instancia de conexión
-import { Companions } from "../models/Companions_Model.js";
-import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
 
 export class DashboardController {
     constructor() {

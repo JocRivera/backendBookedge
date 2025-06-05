@@ -113,7 +113,7 @@ export const updateProfileValidation = [
   body("birthdate")
     .optional({ checkFalsy: true }) 
     .isISO8601().withMessage("Fecha de nacimiento no válida (formato YYYY-MM-DD)")
-    .custom((value, { req }) => { 
+    .custom((value) => { 
       if (!value) return true; 
       
       const birthDate = new Date(value);

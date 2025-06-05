@@ -1,4 +1,3 @@
-import { where } from "sequelize";
 import { Companions } from "../models/Companions_Model.js";
 
 export const getAllCompanions = async () => {

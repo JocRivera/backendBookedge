@@ -39,17 +39,20 @@ export const getAllReservationsController = async (req, res) => {
 }
 
 export const getReservationsByIdController = async (req, res) => {
-  const errors = validationResult(req)
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   try {
-    console.log("ID recibido en el controlador:", req.params.idReservation)
-    const reservation = await getReservationsByIdService(req.params.idReservation)
+    console.log("ID recibido en el controlador:", req.params.idReservation);
+    const reservation = await getReservationsByIdService(req.params.idReservation);
     if (!reservation) {
-      return res.status(404).json({ message: "Reserva no encontrada" })
+      return res.status(404).json({ message: "Reserva no encontrada" });
     }
-    res.status(200).json(reservation)
+    res.status(200).json(reservation);
   } catch (error) {
-    console.error("Error en el controlador:", error.message)
-    res.status(400).json({ message: error.message })
+    console.error("Error en el controlador:", error.message);
+    res.status(400).json({ message: error.message });
   }
 }
 

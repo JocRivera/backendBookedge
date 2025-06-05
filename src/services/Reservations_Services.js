@@ -6,12 +6,12 @@ import {
     updateReservations,
     addCompanions,
     addPlans,
+    addService,
     updateCompanions,
     deleteCompanions,
     changeStatusReservations,
     addCabins,
     addBedrooms,
-    addService
 } from "../repositories/Reservations_Repository.js";
 import { PaymentsReservations } from "../models/Payments_Reservations_model.js";
 
@@ -52,8 +52,7 @@ export const addPaymentToReservationService = async (idReservation, idPayments) 
     await PaymentsReservations.create({ 
       idReservation, 
       idPayments,
-      amountApplied: await getPaymentAmount(idPayments) // Función para obtener el monto
-    });
+          });
     
   } catch (error) {
     console.error("Error en addPaymentToReservationService:", error);

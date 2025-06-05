@@ -3,8 +3,7 @@ import { PlanServicesModel } from "../models/Plans_Service_Model.js";
 import { PlanCabinModel } from "../models/Plans_Cabin_Model.js";
 import { PlanBedroomModel } from "../models/Plans_Bedroom_Model.js";
 import { Services } from "../models/Services_Model.js";
-import { Cabins } from "../models/cabin_Model.js";
-import { Bedrooms } from "../models/bedrooms_Model.js";
+
 
 export class PlansControllers {
     constructor() {
