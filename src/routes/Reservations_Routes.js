@@ -4,6 +4,7 @@ import {
   getReservationsByIdController,
   createReservationsController,
   updateReservationsController,
+  getReservationsByUserController,
   addCompanions,
   addPaymentToReservationController,
   addPlans,
@@ -19,6 +20,7 @@ import {
   updateReservationsValidation,
   getReservationsValidation,
   changeStateReservationsValidation,
+  getUserReservationsValidation,
   addCompanionValidation,
   addPaymentsValidation,
   addPlansValidation,
@@ -33,8 +35,11 @@ import {
   getCapacitiesBedroom,
   getReservationsServicesPer,
 } from "../repositories/Reservations_Repository.js";
+import { uploadVoucher } from "../controllers/Payments_Controllers.js"
 
 const router = express.Router();
+
+router.get("/user/:userId", getUserReservationsValidation, getReservationsByUserController)
 
 // Listar cabañas, habitaciones y servicios adicionales en una reserva
 router.get("/servicesReservations", async (req, res) => {
@@ -82,7 +87,7 @@ router.put(
   updateReservationsController
 );
 router.patch(
-  "/:id/status",
+  "/:idReservation/status",
   changeStateReservationsValidation,
   changeStatusReservationsController
 );
@@ -104,6 +109,7 @@ router.post(
 //Ruta para agregar pagos
 router.post(
   "/:idReservation/payments",
+  uploadVoucher,
   addPaymentsValidation,
   addPaymentToReservationController
 );

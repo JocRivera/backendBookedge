@@ -105,6 +105,19 @@ export const getReservationsValidation = [
     .withMessage("El ID de la reserva debe ser un número entero")
     .custom(validateReservationsExistence),
 ];
+export const getUserReservationsValidation = [
+  param("userId")
+    .isInt({ min: 1 })
+    .withMessage("El ID del usuario debe ser un número entero positivo")
+    .custom(async (value) => {
+      const user = await Users.findByPk(value)
+      if (!user) {
+        throw new Error("El usuario no existe")
+      }
+      return true
+    }),
+]
+
 
 export const changeStateReservationsValidation = [
   body("status")

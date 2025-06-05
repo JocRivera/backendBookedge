@@ -119,18 +119,25 @@ export const setupAssociations = () => {
   })
 
   //Asociasion de reservas y servicios
-  Reservations.belongsToMany(Services, {
-    through: ReservationsService,
-    foreignKey: "idReservation",
-    otherKey: "Id_Service",
-    as:"services"
-  });
-  Services.belongsToMany(Reservations, {
-    through: ReservationsService,
-    foreignKey: "Id_Service",
-    otherKey:"idReservation",
-    as: "reservations"
-  })
+Reservations.belongsToMany(Services, {
+  through: {
+    model: ReservationsService,
+    attributes: ['quantity'] // ✅ INCLUIR QUANTITY
+  },
+  foreignKey: "idReservation",
+  otherKey: "Id_Service",
+  as:"services"
+});
+
+Services.belongsToMany(Reservations, {
+  through: {
+    model: ReservationsService,
+    attributes: ['quantity'] // ✅ INCLUIR QUANTITY
+  },
+  foreignKey: "Id_Service",
+  otherKey:"idReservation",
+  as: "reservations"
+})
 
   // Asociaciones adicionales para acceder directamente a la tabla intermedia
   Payments.hasMany(PaymentsReservations, {
