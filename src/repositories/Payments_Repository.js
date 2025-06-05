@@ -1,7 +1,7 @@
 import { Payments } from "../models/Payments_Model.js";
-import { PaymentsReservations } from "../models/Payments_Reservations_model.js";
+
 import { Reservations } from "../models/Reservations_Model.js";
-import { changeStatusReservations } from "./Reservations_Repository.js";
+
 
 export const getAllPayments = async () => {
   return await Payments.findAll({

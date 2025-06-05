@@ -1,5 +1,5 @@
 export const validatePermission = (req, res, next) => {
-    const { idPermission, name, status } = req.body;
+    const { name, status } = req.body; // idPermission eliminado
     if (!name) {
         return res.status(400).json({ message: "Name is required" });
     }

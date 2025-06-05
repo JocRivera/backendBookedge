@@ -66,9 +66,14 @@ export const updateBedroomController = async (req, res) => {
   }
 
   try {
-    // ¡AQUÍ FALTA MANEJAR LAS COMODIDADES!
     const { id } = req.params;
     const { name, description, capacity, status, comforts } = req.body;
+
+    // Obtener la habitación existente
+    const existingRoom = await getBedroomByIdService(id);
+    if (!existingRoom) {
+      return res.status(404).json({ message: "Habitación no encontrada" });
+    }
 
     const BedroomDataToUpdate = {
       name: name === undefined ? existingRoom.name : name,
@@ -76,7 +81,7 @@ export const updateBedroomController = async (req, res) => {
       capacity: capacity === undefined ? existingRoom.capacity : capacity,
       status: status === undefined ? existingRoom.status : status
     };
-    await updateBedroomService(id, BedroomDataToUpdate); // Esto solo actualiza los datos de la cabaña
+    await updateBedroomService(id, BedroomDataToUpdate);
 
     // Actualizar comodidades SI se proporcionaron en el body
     if (comforts !== undefined && Array.isArray(comforts)) {

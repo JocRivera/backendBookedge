@@ -1,5 +1,4 @@
 import { PermissionService } from "../services/Permissions_Services.js";
-import bcrypt from "bcryptjs";
 
 export class PermissionsController {
     constructor() {

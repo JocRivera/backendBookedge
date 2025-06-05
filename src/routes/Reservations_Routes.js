@@ -1,6 +1,4 @@
 import express from "express";
-import { authorize } from "../middlewares/RolesPermissionAuth.js";
-import { verifyToken } from "../middlewares/authMiddleware.js";
 import {
   getAllReservationsController,
   getReservationsByIdController,
@@ -43,7 +41,8 @@ router.get("/servicesReservations", async (req, res) => {
   try{
     const services = await getReservationsServicesPer();
     res.status(200).json(services);
-  } catch(error){
+  } catch(error) {
+    console.error("Error al obtener servicios de la reserva:", error);
     res.status(500).json({message: "Error al obtener servicios de la reserva"});
   }
 });
@@ -62,6 +61,7 @@ router.get("/bedroomsReservations", async (req, res) => {
     const bedroom = await getCapacitiesBedroom();
     res.status(200).json(bedroom);
   }catch(error){
+    console.error("Error al obtener habitaciones de la reserva:", error);
     res.status(500).json({message: "Error al obtener habitaciones de la reserva"})
   }
 })

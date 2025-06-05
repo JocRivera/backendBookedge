@@ -12,8 +12,7 @@ import {
   deleteCabinValidation,
   getCabinValidation,
 } from "../middlewares/Valide_Cabins.js";
-import { authorize } from "../middlewares/RolesPermissionAuth.js";
-import { verifyToken } from "../middlewares/authMiddleware.js";
+
 
 const router = express.Router();
 

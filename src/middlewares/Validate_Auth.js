@@ -1,5 +1,4 @@
-import { Users } from "../models/user_Model.js";
-import {param,body} from "express-validator"
+import {body} from "express-validator"
 import { validateIdentificationExistence,validateEmailExistence } from "./Validate_User.js";
 
 

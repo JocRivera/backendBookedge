@@ -2,7 +2,6 @@ import { BedroomsComforts } from "../models/Bedrooms_Comforts.js";
 
 
 export const assignComfortsToBedroomRepository = async ({ idRoom, comforts }) => {
-  const now = new Date();
   const dataToInsert = comforts.map((idComfort) => ({
     idRoom,
     idComfort,

@@ -1,4 +1,3 @@
-import { Payments } from "../models/Payments_Model.js";
 import {
     createPayment,
     getPaymentById,

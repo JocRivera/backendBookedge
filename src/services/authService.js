@@ -77,7 +77,7 @@ export const refreshAccessToken = async (currentRefreshToken) => {
   // Genera un nuevo token de acceso
   const newAccessToken = generateToken(user);
   
-  let newRefreshToken = null; // Por defecto no se rota
+  
 
   // --- LÓGICA OPCIONAL DE ROTACIÓN DE REFRESH TOKEN ---
   // Podrías decidir rotar el refresh token aquí si quieres mayor seguridad,
@@ -189,7 +189,7 @@ export const updateProfileService = async (idUser, updateData) => {
     for (const key of allowedFields) {
       // Solo incluir el campo en la actualización si realmente vino en updateData
       // y no es undefined (para permitir enviar "" para limpiar un campo opcional).
-      if (updateData.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(updateData, key)) {
         filteredUpdateData[key] = updateData[key];
       }
     }

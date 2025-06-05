@@ -1,6 +1,6 @@
 import express from "express";
 import { RolesController } from "../controllers/Roles_Controllers.js";
-import { createRolValidation, getRolByIdValidation, updateRolValidation, deleteRolValidation } from "../middlewares/Validate_Rol.js";
+import { createRolValidation, updateRolValidation, deleteRolValidation } from "../middlewares/Validate_Rol.js";
 const router = express.Router();
 const rolesController = new RolesController();
 

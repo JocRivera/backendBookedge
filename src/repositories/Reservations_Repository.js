@@ -103,7 +103,6 @@ export const getAllReservations = async () => {
 
 export const getReservationsById = async (id) => {
   try {
-    const reservationId = parseInt(id, 10);
     console.log("ID recibido en el repositorio:", id);
     const reservation = await Reservations.findByPk(id, {
       include: [

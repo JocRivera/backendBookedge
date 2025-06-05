@@ -63,9 +63,14 @@ export const updateCabinController = async (req, res) => {
   }
 
   try {
-    // ¡AQUÍ FALTA MANEJAR LAS COMODIDADES!
     const { id } = req.params;
     const { name, description, capacity, status, comforts } = req.body;
+
+    // Obtener la cabaña existente
+    const existingCabin = await getCabinByIdService(id);
+    if (!existingCabin) {
+      return res.status(404).json({ message: "Cabaña no encontrada" });
+    }
 
     const cabinDataToUpdate = {
       name: name === undefined ? existingCabin.name : name,
@@ -73,12 +78,10 @@ export const updateCabinController = async (req, res) => {
       capacity: capacity === undefined ? existingCabin.capacity : capacity,
       status: status === undefined ? existingCabin.status : status
     };
-    await updateCabinService(id, cabinDataToUpdate); // Esto solo actualiza los datos de la cabaña
+    await updateCabinService(id, cabinDataToUpdate);
 
     // Actualizar comodidades SI se proporcionaron en el body
     if (comforts !== undefined && Array.isArray(comforts)) {
-      // Necesitas importar y llamar al servicio correspondiente:
-      // import { updateGroupedComfortsByCabinService } from "../services/CabinComfort_Service.js";
       await updateGroupedComfortsByCabinService({ idCabin: parseInt(id), comforts });
     }
 

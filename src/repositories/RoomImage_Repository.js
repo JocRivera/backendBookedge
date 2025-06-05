@@ -22,7 +22,7 @@ export const deleteRoomImageRepository = async (id) => {
 export const setPrimaryImageRepository = async (roomId, imageId) => {
   const image = await RoomImages.findOne({
     where: {
-      idRoomImage: imageId,
+      idRoomImage: image,
       idRoom: roomId
     }
   });

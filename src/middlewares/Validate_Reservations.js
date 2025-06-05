@@ -5,11 +5,8 @@ import { Users } from "../models/user_Model.js";
 import { Cabins } from "../models/cabin_Model.js";
 import { Bedrooms } from "../models/bedrooms_Model.js";
 import { Services } from "../models/Services_Model.js";
-import { ReservationsBedrooms } from "../models/Reservations_Bedrooms_Model.js";
-import { ReservationsCabins } from "../models/Reservations_cabins_Model.js";
 import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
-import { body, param, validationResult } from "express-validator";
-import { createReservationsService } from "../services/Reservations_Services.js";
+import { body, param } from "express-validator";
 
 export const validateReservationsExistence = async (idReservation) => {
   const reservations = await Reservations.findByPk(idReservation);
@@ -271,7 +268,7 @@ export const addRoomsValidation = [
     .withMessage("El ID de la habitación debe ser un número entero")
     .custom(async (value) => {
       const bedrooms = await Bedrooms.findByPk(value);
-      if (!debrooms) {
+      if (!bedrooms) {
         throw new Error("La habitación no existe");
       }
     }),

@@ -5,12 +5,12 @@ import {
     updateReservations,
     addCompanions,
     addPlans,
+    addService,
     updateCompanions,
     deleteCompanions,
     changeStatusReservations,
     addCabins,
     addBedrooms,
-    addService
 } from "../repositories/Reservations_Repository.js";
 import { PaymentsReservations } from "../models/Payments_Reservations_model.js";
 
@@ -83,5 +83,5 @@ export const addBedroomsService = async (idReservation,idRoom) =>{
   return addBedrooms({idReservation,idRoom});
 }
 export const addServiceService = async (idReservation, Id_Service) =>{
-  return addServices({idReservation, Id_Service});
+  return addService({idReservation, Id_Service});
 }

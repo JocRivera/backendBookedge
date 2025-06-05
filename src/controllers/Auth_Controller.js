@@ -175,7 +175,7 @@ export const getUserProfileController = async (req, res) => {
     }
 
     const userPlain = user.toJSON();
-    const { password, ...rest } = userPlain;
+    const {  ...rest } = userPlain;
 
     return res.status(200).json(rest);
   } catch (error) {
@@ -214,10 +214,7 @@ export const updateProfileController = async (req, res) => {
     // ya que se manejan en otros lugares o no son modificables por el usuario de esta forma.
     // El email tampoco lo tomamos para actualizar directamente desde aquí.
     const {
-      // Campos a ignorar si vienen en el body:
-      idRol,
-      password,
-      email, // No se toma para la actualización directa
+       // No se toma para la actualización directa
       // Campos que SÍ nos interesan del body:
       name,
       identification,
