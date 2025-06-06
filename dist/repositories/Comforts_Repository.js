@@ -1,8 +1,8 @@
-import { Comforts } from "../models/Comfort_Model.js";
+import { Comforts } from "../models/comfort_Model.js";
 
 export const getAllComforts = async (orderBy = 'idComfort', orderDirection = 'ASC') => {
   return await Comforts.findAll({
-    order: [[orderBy, orderDirection]], 
+    order: [[orderBy, orderDirection]],
   });
 };
 

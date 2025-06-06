@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import { database } from "../config/database.js";
 import { Cabins } from "./cabin_Model.js";
-import { Comforts } from "./Comfort_Model.js";
+import { Comforts } from "./comfort_Model.js";
 
 
 export const CabinsComforts = database.define(

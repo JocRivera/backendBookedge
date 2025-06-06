@@ -1,5 +1,5 @@
 import { Cabins } from "../models/cabin_Model.js";
-import { Comforts } from "../models/Comfort_Model.js";
+import { Comforts } from "../models/comfort_Model.js";
 import { CabinImages } from "../models/CabinImage_Model.js";
 
 export const getAllCabinsRepository = async () => {
