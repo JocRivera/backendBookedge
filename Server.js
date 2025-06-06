@@ -1,30 +1,30 @@
 import express, { json } from "express";
-import { database } from "./src/config/database.js";
+import { database } from "./dist/config/database.js";
 import morgan from "morgan";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import cabinRoutes from "./src/routes/Cabin_Routes.js";
-import comfortRoutes from "./src/routes/Comfort_Routes.js";
-// import customerRoutes from './src/routes/Customers_Routes.js';
-import serviceRoutes from "./src/routes/Service_Route.js";
-import permissionRoutes from "./src/routes/Permission_Route.js";
-import rolesRoutes from "./src/routes/Roles_Routes.js";
-import { setupAssociations } from "./src/models/setupAssociations.js";
-import companionsRoutes from "./src/routes/Companions_Routes.js";
-import reservationsRoutes from "./src/routes/Reservations_Routes.js";
-import userRoutes from "./src/routes/User_Routes.js";
-import bedromRoutes from "./src/routes/Bedrom_Routes.js";
-import planRoutes from "./src/routes/Plan_Routes.js";
-import planProgramed from "./src/routes/Plan_Programed_Routes.js";
-import PaymentsRoutes from "./src/routes/Payments_Rutes.js";
-import authRoutes from "./src/routes/authRoutes.js";
-import PrivilegeRoutes from "./src/routes/Privileges_Routes.js";
-import cabinComfortsRoutes from "./src/routes/CabinComforts_Routes.js"
-import bedroomComfortsRoute from "./src/routes/BedroomComfortsRoutes.js"
-import cabinImages from "./src/routes/CabinImage_Routes.js"
-import roomImages from "./src/routes/RoomImage_Routes.js"
+import cabinRoutes from "./dist/routes/Cabin_Routes.js";
+import comfortRoutes from "./dist/routes/Comfort_Routes.js";
+// import customerRoutes from './dist/routes/Customers_Routes.js';
+import serviceRoutes from "./dist/routes/Service_Route.js";
+import permissionRoutes from "./dist/routes/Permission_Route.js";
+import rolesRoutes from "./dist/routes/Roles_Routes.js";
+import { setupAssociations } from "./dist/models/setupAssociations.js";
+import companionsRoutes from "./dist/routes/Companions_Routes.js";
+import reservationsRoutes from "./dist/routes/Reservations_Routes.js";
+import userRoutes from "./dist/routes/User_Routes.js";
+import bedromRoutes from "./dist/routes/Bedrom_Routes.js";
+import planRoutes from "./dist/routes/Plan_Routes.js";
+import planProgramed from "./dist/routes/Plan_Programed_Routes.js";
+import PaymentsRoutes from "./dist/routes/Payments_Rutes.js";
+import authRoutes from "./dist/routes/authRoutes.js";
+import PrivilegeRoutes from "./dist/routes/Privileges_Routes.js";
+import cabinComfortsRoutes from "./dist/routes/CabinComforts_Routes.js"
+import bedroomComfortsRoute from "./dist/routes/BedroomComfortsRoutes.js"
+import cabinImages from "./dist/routes/CabinImage_Routes.js"
+import roomImages from "./dist/routes/RoomImage_Routes.js"
 import { initSettings } from "./seeders/initSettings.js";
-import dashboardRoutes from "./src/routes/Dashboard_Routes.js";
+import dashboardRoutes from "./dist/routes/Dashboard_Routes.js";
 import path from "path";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
@@ -47,7 +47,7 @@ export default class Server {
     this.routes();
     this.setupAssociations();
   }
-  
+
 
   setupAssociations() {
     try {
@@ -69,7 +69,7 @@ export default class Server {
       console.error("Se jodió la base de datos", error);
     }
   }
-  
+
 
   routes() {
     this.app.use("/user", userRoutes);
