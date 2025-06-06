@@ -1,5 +1,5 @@
 import { Cabins } from "./Cabin_Model.js";
-import { CabinsComforts } from "./Cabins_Comforts.js";
+import { CabinsComforts } from "./cabins_Comforts.js";
 import { Comforts } from "./Comfort_Model.js";
 import { Bedrooms } from "./bedrooms_Model.js";
 import { BedroomsComforts } from "./Bedrooms_Comforts.js";
@@ -14,7 +14,7 @@ import { ReservationsCompanions } from "./Reservations_Companions_Models.js";
 import { Payments } from "./Payments_Model.js";
 import { Users } from "../models/user_Model.js";
 import { Services } from "./Services_Model.js";
-import {ReservationsService } from "./Reservations_Service_Model.js"
+import { ReservationsService } from "./Reservations_Service_Model.js"
 import { PaymentsReservations } from "./Payments_Reservations_model.js";
 import { ReservationsCabins } from "./Reservations_cabins_Model.js";
 import { ReservationsBedrooms } from "./Reservations_Bedrooms_Model.js";
@@ -97,13 +97,13 @@ export const setupAssociations = () => {
     otherKey: "idCabin",
     as: "cabins",
   });
-  Cabins.belongsToMany(Reservations, { 
+  Cabins.belongsToMany(Reservations, {
     through: ReservationsCabins,
     foreignKey: "idCabin",
     otherKey: "idReservation",
     as: "reservations",
-  }); 
-  
+  });
+
   //Asociacion para reservas y habitaciones
   Reservations.belongsToMany(Bedrooms, {
     through: ReservationsBedrooms,
@@ -119,25 +119,25 @@ export const setupAssociations = () => {
   })
 
   //Asociasion de reservas y servicios
-Reservations.belongsToMany(Services, {
-  through: {
-    model: ReservationsService,
-    attributes: ['quantity'] // ✅ INCLUIR QUANTITY
-  },
-  foreignKey: "idReservation",
-  otherKey: "Id_Service",
-  as:"services"
-});
+  Reservations.belongsToMany(Services, {
+    through: {
+      model: ReservationsService,
+      attributes: ['quantity'] // ✅ INCLUIR QUANTITY
+    },
+    foreignKey: "idReservation",
+    otherKey: "Id_Service",
+    as: "services"
+  });
 
-Services.belongsToMany(Reservations, {
-  through: {
-    model: ReservationsService,
-    attributes: ['quantity'] // ✅ INCLUIR QUANTITY
-  },
-  foreignKey: "Id_Service",
-  otherKey:"idReservation",
-  as: "reservations"
-})
+  Services.belongsToMany(Reservations, {
+    through: {
+      model: ReservationsService,
+      attributes: ['quantity'] // ✅ INCLUIR QUANTITY
+    },
+    foreignKey: "Id_Service",
+    otherKey: "idReservation",
+    as: "reservations"
+  })
 
   // Asociaciones adicionales para acceder directamente a la tabla intermedia
   Payments.hasMany(PaymentsReservations, {
