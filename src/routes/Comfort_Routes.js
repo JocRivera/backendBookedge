@@ -6,7 +6,7 @@ import {
   updateComfortController,
   deleteComfortController,
   
-} from "../controllers/Comfort_Controller.js";
+} from "../controllers/comfort_Controller.js";
 import { createComfortsValidation,updateComfortValidaiton,getComfortById,deleteComfortValidation } from "../middlewares/Validate_Comforts.js";
 
 const router = express.Router();
