@@ -20,19 +20,13 @@ export const deleteRoomImageRepository = async (id) => {
 };
 
 export const setPrimaryImageRepository = async (roomId, imageId) => {
-  const image = await RoomImages.findOne({
-    where: {
-      idRoomImage: image,
-      idRoom: roomId
-    }
-  });
-    
+  // Paso 1: Establece todas las imágenes de esta habitación como no primarias.
   await RoomImages.update(
     { isPrimary: false },
     { where: { idRoom: roomId } }
   );
   
-  // Establece la imagen seleccionada como primaria
+  // Paso 2: Establece la imagen seleccionada como la única primaria.
   return await RoomImages.update(
     { isPrimary: true },
     { where: { idRoomImage: imageId } }

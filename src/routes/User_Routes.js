@@ -44,7 +44,7 @@ router.get("/Users/get/:id", getUserByIdValidation,
 //Customer
 router.get("/customers/get",
   verifyToken,
-  authorize("Clientes", "read"),
+  authorize("clientes", "read"),
   getAllCustomers);
 router.get("/customers/getId/:id", getUserByIdValidation,
   // verifyToken,
