@@ -1,7 +1,7 @@
 // CabinImage_Model.js
 import { DataTypes } from "sequelize";
 import { database } from "../config/database.js";
-import { Cabins } from "./Cabin_Model.js";
+import { Cabins } from "./cabin_Model.js";
 
 export const CabinImages = database.define(
   "CabinImages",

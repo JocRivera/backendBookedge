@@ -1,5 +1,5 @@
 import { body, param } from "express-validator";
-import { Cabins } from "../models/Cabin_Model.js";
+import { Cabins } from "../models/cabin_Model.js";
 import { Sequelize } from "sequelize"; // <--- Asegúrate de importar Sequelize para Op
 
 export const validateCabinExistence = async (id) => {
@@ -45,7 +45,7 @@ const cabinBaseValidation = [
 
 export const createCabinValidation = [
   ...cabinBaseValidation,
-  body("name").custom(validateCabinName), 
+  body("name").custom(validateCabinName),
 ];
 
 export const updateCabinValidation = [

@@ -1,4 +1,4 @@
-import { Cabins } from "../models/Cabin_Model.js";
+import { Cabins } from "../models/cabin_Model.js";
 import { Comforts } from "../models/Comfort_Model.js";
 import { CabinImages } from "../models/CabinImage_Model.js";
 
@@ -51,10 +51,10 @@ export const createCabinRepository = async (cabinData) => {
 };
 
 export const updateCabinRepository = async (id, cabinData) => {
-  const [updated] = await Cabins.update(cabinData, { 
-    where: { idCabin: id } 
+  const [updated] = await Cabins.update(cabinData, {
+    where: { idCabin: id }
   });
-  
+
   if (updated) {
     const updatedCabin = await getCabinByIdRepository(id);
     return updatedCabin;

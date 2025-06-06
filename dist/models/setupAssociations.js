@@ -1,4 +1,4 @@
-import { Cabins } from "./Cabin_Model.js";
+import { Cabins } from "./cabin_Model.js";
 import { CabinsComforts } from "./Cabins_Comforts.js";
 import { Comforts } from "./Comfort_Model.js";
 import { Bedrooms } from "./bedrooms_Model.js";
@@ -14,7 +14,7 @@ import { ReservationsCompanions } from "./Reservations_Companions_Models.js";
 import { Payments } from "./Payments_Model.js";
 import { Users } from "../models/user_Model.js";
 import { Services } from "./Services_Model.js";
-import {ReservationsService } from "./Reservations_Service_Model.js"
+import { ReservationsService } from "./Reservations_Service_Model.js"
 import { PaymentsReservations } from "./Payments_Reservations_model.js";
 import { ReservationsCabins } from "./Reservations_cabins_Model.js";
 import { ReservationsBedrooms } from "./Reservations_Bedrooms_Model.js";
@@ -97,13 +97,13 @@ export const setupAssociations = () => {
     otherKey: "idCabin",
     as: "cabins",
   });
-  Cabins.belongsToMany(Reservations, { 
+  Cabins.belongsToMany(Reservations, {
     through: ReservationsCabins,
     foreignKey: "idCabin",
     otherKey: "idReservation",
     as: "reservations",
-  }); 
-  
+  });
+
   //Asociacion para reservas y habitaciones
   Reservations.belongsToMany(Bedrooms, {
     through: ReservationsBedrooms,
@@ -123,12 +123,12 @@ export const setupAssociations = () => {
     through: ReservationsService,
     foreignKey: "idReservation",
     otherKey: "Id_Service",
-    as:"services"
+    as: "services"
   });
   Services.belongsToMany(Reservations, {
     through: ReservationsService,
     foreignKey: "Id_Service",
-    otherKey:"idReservation",
+    otherKey: "idReservation",
     as: "reservations"
   })
 

@@ -1,4 +1,4 @@
-import { Cabins } from "./Cabin_Model.js";
+import { Cabins } from "./cabin_Model.js";
 import { CabinsComforts } from "./cabins_Comforts.js";
 import { Comforts } from "./Comfort_Model.js";
 import { Bedrooms } from "./bedrooms_Model.js";
