@@ -5,7 +5,7 @@ import {
   updateComfortService,
   deleteComfortService,
   getAllComfortsService
-} from "../services/Comfort_Services.js";
+} from "../services/comfort_Services.js";
 
 export const getAllComfortsController = async (req, res) => {
   try {
@@ -47,8 +47,8 @@ export const createComfortController = async (req, res) => {
 
 export const updateComfortController = async (req, res) => {
   const errors = validationResult(req);
-  if(!errors.isEmpty()){
-    return res.status(400).json({errors: errors.array()})
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() })
   }
   const { id } = req.params;
   try {
@@ -64,8 +64,8 @@ export const updateComfortController = async (req, res) => {
 
 export const deleteComfortController = async (req, res) => {
   const errors = validationResult(req);
-  if(!errors.isEmpty()){
-    return res.status(400).json({errors:errors.array()})
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() })
   }
   const { id } = req.params;
   try {
