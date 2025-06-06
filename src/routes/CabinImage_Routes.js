@@ -6,7 +6,7 @@ import {
   deleteCabinImageController,
   setPrimaryImageController
 } from "../controllers/CabinImage_Controller.js";
-import upload from "../middlewares/Multer.js";
+import upload from "../middlewares/multer.js";
 
 const router = express.Router();
 
