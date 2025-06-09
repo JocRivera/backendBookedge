@@ -81,10 +81,10 @@ export const refreshTokenController = async (req, res) => {
   try {
     // El cliente móvil enviará el refreshToken en el body.
     // El cliente web lo enviará como cookie (Axios en web lo hace automáticamente si withCredentials=true).
-    const receivedRefreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
+    const receivedRefreshToken = req.cookies?.refreshToken;
 
     if (!receivedRefreshToken) {
-      return res.status(401).json({ message: "No se proporcionó refresh token Controlelr 2" });
+      return res.status(401).json({ message: "No se proporcionó refresh token Controlelr 2", token: receivedRefreshToken });
     }
 
     // refreshAccessToken del servicio ahora puede devolver { token: newAccessToken, newRefreshToken (opcional) }
