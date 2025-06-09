@@ -1,4 +1,5 @@
 import { Reservations } from "../models/Reservations_Model.js";
+import { Op } from "sequelize";
 import { Companions } from "../models/Companions_Model.js";
 import { Plans } from "../models/Plans_Model.js";
 import { Users } from "../models/user_Model.js";
@@ -17,6 +18,14 @@ export const validateReservationsExistence = async (idReservation) => {
 };
 
 const reservationBaseValidation = [
+  // No permitir ambos campos a la vez
+  body().custom((_, { req }) => {
+    if (req.body.idCabin && req.body.idRoom) {
+      throw new Error("No puedes seleccionar una cabaña y una habitación en la misma reserva");
+    }
+    return true;
+  }),
+
   body("idUser")
     .notEmpty()
     .withMessage("El ID del usuario es obligatorio")
@@ -24,9 +33,7 @@ const reservationBaseValidation = [
     .withMessage("El ID del usuario debe ser un número entero")
     .custom(async (value) => {
       const user = await Users.findByPk(value);
-      if (!user) {
-        throw new Error("El usuario no existe");
-      }
+      if (!user) throw new Error("El usuario no existe");
       return true;
     }),
 
@@ -37,9 +44,69 @@ const reservationBaseValidation = [
     .withMessage("El ID del plan debe ser un número entero")
     .custom(async (value) => {
       const plan = await Plans.findByPk(value);
-      if (!plan) {
-        throw new Error("El plan no existe");
-      }
+      if (!plan) throw new Error("El plan no existe");
+      return true;
+    }),
+
+  // Validación de cabaña ocupada
+  body("idCabin")
+    .customSanitizer(value => value === null ? undefined : value)
+    .optional()
+    .isInt()
+    .withMessage("El ID de la cabaña debe ser un número entero")
+    .custom(async (value, { req }) => {
+      if (!value) return true;
+      const cabin = await Cabins.findByPk(value);
+      if (!cabin) throw new Error("La cabaña no existe");
+      const { startDate, endDate } = req.body;
+      if (!startDate || !endDate) return true;
+      const overlapping = await Reservations.findOne({
+        include: [{
+          model: Cabins,
+          as: "cabins",
+          where: { idCabin: value }
+        }],
+        where: {
+          status: { [Op.in]: ["Reservado", "Confirmado"] },
+          [Op.or]: [
+            { startDate: { [Op.between]: [startDate, endDate] } },
+            { endDate: { [Op.between]: [startDate, endDate] } },
+            { startDate: { [Op.lte]: startDate }, endDate: { [Op.gte]: endDate } }
+          ]
+        }
+      });
+      if (overlapping) throw new Error("La cabaña ya está reservada para esas fechas");
+      return true;
+    }),
+
+  // Validación de habitación ocupada
+  body("idRoom")
+    .customSanitizer(value => value === null ? undefined : value)
+    .optional()
+    .isInt()
+    .withMessage("El ID de la habitación debe ser un número entero")
+    .custom(async (value, { req }) => {
+      if (!value) return true;
+      const bedrooms = await Bedrooms.findByPk(value);
+      if (!bedrooms) throw new Error("La habitación no existe");
+      const { startDate, endDate } = req.body;
+      if (!startDate || !endDate) return true;
+      const overlapping = await Reservations.findOne({
+        include: [{
+          model: Bedrooms,
+          as: "bedrooms",
+          where: { idRoom: value }
+        }],
+        where: {
+          status: { [Op.in]: ["Reservado", "Confirmado"] },
+          [Op.or]: [
+            { startDate: { [Op.between]: [startDate, endDate] } },
+            { endDate: { [Op.between]: [startDate, endDate] } },
+            { startDate: { [Op.lte]: startDate }, endDate: { [Op.gte]: endDate } }
+          ]
+        }
+      });
+      if (overlapping) throw new Error("La habitación ya está reservada para esas fechas");
       return true;
     }),
 
@@ -47,33 +114,41 @@ const reservationBaseValidation = [
     .notEmpty()
     .withMessage("La fecha de inicio es obligatoria")
     .isISO8601()
-    .withMessage(
-      "La fecha de inicio debe tener un formato válido (Año-Mes-Dia)"
-    )
+    .withMessage("La fecha de inicio debe tener un formato válido (Año-Mes-Dia)")
     .custom((value) => {
-      const currentDate = new Date();
-      const selectedDate = new Date(value);
-      if (selectedDate < currentDate) {
-        throw new Error(
-          "La fecha de inicio no puede ser anterior a la fecha actual"
-        );
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const todayStr = `${yyyy}-${mm}-${dd}`;
+      if (value < todayStr) {
+        throw new Error("La fecha de inicio no puede ser anterior a la fecha actual");
       }
       return true;
     }),
 
   body("endDate")
-    .notEmpty()
-    .withMessage("La fecha de fin es obligatoria")
-    .isISO8601()
-    .withMessage("La fecha de fin debe tener un formato válido (Año-Mes-Dia)")
-    .custom((value, { req }) => {
-      const startDate = new Date(req.body.startDate);
-      const endDate = new Date(value);
-      if (endDate < startDate) {
-        throw new Error(
-          "La fecha de fin no puede ser anterior a la fecha de inicio"
-        );
+    .custom(async (value, { req }) => {
+      const plan = await Plans.findByPk(req.body.idPlan);
+      if (plan && plan.requiresLodging) {
+        if (!value) {
+          throw new Error("La fecha de fin es obligatoria para este plan");
+        }
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+          throw new Error("La fecha de fin debe tener un formato válido (Año-Mes-Dia)");
+        }
+        if (req.body.startDate) {
+          const startDate = new Date(req.body.startDate);
+          const endDate = new Date(value);
+          if (isNaN(endDate.getTime())) {
+            throw new Error("La fecha de fin debe tener un formato válido (Año-Mes-Dia)");
+          }
+          if (endDate <= startDate) {
+            throw new Error("La fecha de fin debe ser posterior a la de inicio");
+          }
+        }
       }
+      // Si el plan NO requiere alojamiento, endDate puede estar vacío, undefined o no existir
       return true;
     }),
 
@@ -82,14 +157,16 @@ const reservationBaseValidation = [
     .isIn(["Reservado", "Confirmado", "Pendiente", "Anulado"])
     .withMessage("Estado no válido"),
 ];
+
+// Exporta para usar en tus rutas
 export const createReservationValidation = [...reservationBaseValidation];
 
 export const updateReservationsValidation = [
-  ...reservationBaseValidation,
   param("idReservation")
     .isInt()
     .withMessage("El ID de la reserva debe ser un número entero")
     .custom(validateReservationsExistence),
+  ...reservationBaseValidation,
 ];
 
 export const deletereservationsValidation = [
@@ -253,15 +330,31 @@ export const addCabinsValidation = [
     .custom(validateReservationsExistence),
 
   body("idCabin")
-    .notEmpty()
-    .withMessage("El ID de la cabaña es obligatorio")
+    .optional()
     .isInt()
     .withMessage("El ID de la cabaña debe ser un número entero")
-    .custom(async (value) => {
+    .custom(async (value, { req }) => {
+      if (!value) return true;
       const cabin = await Cabins.findByPk(value);
-      if (!cabin) {
-        throw new Error("La cabaña no existe");
-      }
+      if (!cabin) throw new Error("La cabaña no existe");
+      const { startDate, endDate } = req.body;
+      if (!startDate || !endDate) return true;
+      const overlapping = await Reservations.findOne({
+        include: [{
+          model: Cabins,
+          as: "cabins",
+          where: { idCabin: value }
+        }],
+        where: {
+          status: { [Op.in]: ["Reservado", "Confirmado"] },
+          [Op.or]: [
+            { startDate: { [Op.between]: [startDate, endDate] } },
+            { endDate: { [Op.between]: [startDate, endDate] } },
+            { startDate: { [Op.lte]: startDate }, endDate: { [Op.gte]: endDate } }
+          ]
+        }
+      });
+      if (overlapping) throw new Error("La cabaña ya está reservada para esas fechas");
       return true;
     }),
 ];
@@ -275,15 +368,32 @@ export const addRoomsValidation = [
     .withMessage("El ID de la reserva debe ser un número entero")
     .custom(validateReservationsExistence),
   body("idRoom")
-    .notEmpty()
-    .withMessage("El ID de la habitación es obligatorio")
+    .optional()
     .isInt()
     .withMessage("El ID de la habitación debe ser un número entero")
-    .custom(async (value) => {
+    .custom(async (value, { req }) => {
+      if (!value) return true;
       const bedrooms = await Bedrooms.findByPk(value);
-      if (!bedrooms) {
-        throw new Error("La habitación no existe");
-      }
+      if (!bedrooms) throw new Error("La habitación no existe");
+      const { startDate, endDate } = req.body;
+      if (!startDate || !endDate) return true;
+      const overlapping = await Reservations.findOne({
+        include: [{
+          model: Bedrooms,
+          as: "bedrooms",
+          where: { idRoom: value }
+        }],
+        where: {
+          status: { [Op.in]: ["Reservado", "Confirmado"] },
+          [Op.or]: [
+            { startDate: { [Op.between]: [startDate, endDate] } },
+            { endDate: { [Op.between]: [startDate, endDate] } },
+            { startDate: { [Op.lte]: startDate }, endDate: { [Op.gte]: endDate } }
+          ]
+        }
+      });
+      if (overlapping) throw new Error("La habitación ya está reservada para esas fechas");
+      return true;
     }),
 ];
 
