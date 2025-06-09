@@ -84,7 +84,7 @@ export const refreshTokenController = async (req, res) => {
     const receivedRefreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
 
     if (!receivedRefreshToken) {
-      return res.status(401).json({ message: "No se proporcionó refresh token" });
+      return res.status(401).json({ message: "No se proporcionó refresh token Controlelr 2" });
     }
 
     // refreshAccessToken del servicio ahora puede devolver { token: newAccessToken, newRefreshToken (opcional) }

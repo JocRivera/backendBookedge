@@ -63,7 +63,7 @@ export const loginService = async (email, password) => {
 
 export const refreshAccessToken = async (currentRefreshToken) => {
   if (!currentRefreshToken) {
-    throw new Error("No se proporcionó refresh token");
+    throw new Error("No se proporcionó refresh token SERVICE");
   }
 
   const user = await Users.findOne({ where: { refreshToken: currentRefreshToken } });
