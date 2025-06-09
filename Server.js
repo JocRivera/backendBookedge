@@ -36,7 +36,12 @@ export default class Server {
     
     this.app.use(
       cors({
-        origin: ["http://localhost:5173", "http://localhost:5180", "http://localhost:8081,"," https://bookedge-service.web.app"],
+        origin: [
+          "http://localhost:5173",
+          "http://localhost:5180",
+          "http://localhost:8081",
+          "https://bookedge-service.web.app",
+        ],
         credentials: true,
       })
     );
