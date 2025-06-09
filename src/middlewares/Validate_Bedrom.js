@@ -1,5 +1,5 @@
 import { body, param } from "express-validator";
-import { Bedrooms } from "../models/bedrooms_Model.js"; 
+import { Bedrooms } from "../models/Bedrooms_Model.js"; 
 import { Sequelize } from "sequelize"; 
 
 export const validateBedroomExistence = async (id) => {
