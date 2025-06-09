@@ -13,29 +13,27 @@ import { validationResult } from "express-validator";
 export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
-    // loginService devuelve: { user: {id, name, email, role}, token, refreshToken }
     const loginData = await loginService(email, password);
 
-    // 1. Establecer Cookies para el Cliente Web (como ya lo haces)
+    // 1. Establecer Cookies para el Cliente Web
     res.cookie("authToken", loginData.token, {
       httpOnly: true,
       secure: true, // Render es HTTPS
       maxAge: 60 * 60 * 1000,
-      sameSite: 'None', // Cambia esto
+      sameSite: 'None',
     });
     res.cookie("refreshToken", loginData.refreshToken, {
       httpOnly: true,
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'None', // Cambia esto
+      sameSite: 'None',
     });
 
-    // 2. Devolver también los tokens en el cuerpo del JSON para el Cliente Móvil
+    // 2. Devolver solo el access token y el usuario en el cuerpo (NO el refresh token)
     return res.status(200).json({
       message: "Login exitoso",
       user: loginData.user,
-      token: loginData.token,           // <-- Para Móvil
-      refreshToken: loginData.refreshToken // <-- Para Móvil
+      token: loginData.token
     });
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -48,90 +46,78 @@ export const registerController = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    // registerCustomerService devuelve: { user: { ... }, token, refreshToken }
     const registerData = await registerCustomerService(req.body);
 
-    // 1. Establecer Cookies para el Cliente Web
     res.cookie("authToken", registerData.token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       maxAge: 60 * 60 * 1000,
-      sameSite: 'Lax',
+      sameSite: 'None',
     });
     res.cookie("refreshToken", registerData.refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'Lax',
+      sameSite: 'None',
     });
 
-    // 2. Devolver también los tokens en el cuerpo del JSON para el Cliente Móvil
     return res.status(201).json({
       message: "Registro exitoso",
       user: registerData.user,
-      token: registerData.token,           // <-- Para Móvil
-      refreshToken: registerData.refreshToken // <-- Para Móvil
+      token: registerData.token
     });
   } catch (error) {
-    // Si el error es porque el email ya existe, tu servicio ya lo lanza
     return res.status(400).json({ message: error.message });
   }
 };
+
 export const refreshTokenController = async (req, res) => {
   try {
-    // El cliente móvil enviará el refreshToken en el body.
-    // El cliente web lo enviará como cookie (Axios en web lo hace automáticamente si withCredentials=true).
     const receivedRefreshToken = req.cookies?.refreshToken;
 
     if (!receivedRefreshToken) {
-      return res.status(401).json({ message: "No se proporcionó refresh token Controlelr 2", token: receivedRefreshToken });
+      return res.status(401).json({ message: "No se proporcionó refresh token Controlelr 2" });
     }
 
-    // refreshAccessToken del servicio ahora puede devolver { token: newAccessToken, newRefreshToken (opcional) }
     const refreshResult = await refreshAccessToken(receivedRefreshToken);
 
-    // 1. Establecer la cookie del NUEVO authToken para el Cliente Web
+    // Establecer la cookie del NUEVO authToken para el Cliente Web
     res.cookie("authToken", refreshResult.token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 1000, // 1 hora
-      sameSite: 'Lax',
+      secure: true,
+      maxAge: 60 * 60 * 1000,
+      sameSite: 'None',
     });
 
-    const responsePayload = {
-      message: "Token renovado exitosamente",
-      token: refreshResult.token, // El nuevo access token para el cliente móvil
-    };
-
-    // Si el servicio de refresh TAMBIÉN genera y devuelve un nuevo refresh token (rotación)
+    // Si rotas el refresh token, actualiza la cookie (opcional)
     if (refreshResult.newRefreshToken) {
-      responsePayload.refreshToken = refreshResult.newRefreshToken; // Para el cliente móvil
-      // Actualiza también la cookie del refresh token para la web
       res.cookie("refreshToken", refreshResult.newRefreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 7 * 24 * 60 * 60 * 1000, // La misma duración que el original
-        sameSite: 'Lax',
+        secure: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        sameSite: 'None',
       });
     }
 
-    // 2. Devolver el nuevo token (y opcionalmente refreshToken) en el JSON para el Cliente Móvil
-    return res.status(200).json(responsePayload);
+    // Solo devuelve el nuevo access token
+    return res.status(200).json({
+      message: "Token renovado exitosamente",
+      token: refreshResult.token
+    });
 
   } catch (error) {
-    // Si el refresh token es inválido o expirado, refreshAccessToken lanzará un error
     return res.status(403).json({ message: error.message });
   }
 };
 
 export const logoutController = async (req, res) => {
   try {
-    if (req.user && req.user.idUser) { // Asegurarse que req.user exista
-        await logoutService(req.user.idUser); // Invalida refresh token en BD
+    if (req.user && req.user.idUser) {
+      await logoutService(req.user.idUser);
     }
 
-    res.clearCookie("authToken", { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'Lax' });
-    res.clearCookie("refreshToken", { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: 'Lax' });
+    res.clearCookie("authToken", { httpOnly: true, secure: true, sameSite: 'None' });
+    res.clearCookie("refreshToken", { httpOnly: true, secure: true, sameSite: 'None' });
 
     return res.status(200).json({ message: "Sesión cerrada exitosamente" });
   } catch (error) {
