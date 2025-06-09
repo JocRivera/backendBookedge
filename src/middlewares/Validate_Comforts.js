@@ -1,5 +1,5 @@
 import { body, param} from "express-validator";
-import { Comforts } from "../models/comfort_Model.js";
+import { Comforts } from "../models/Comfort_Model.js";
 import { Sequelize } from 'sequelize'; // Añade esto al inicio del archivo
 
 
