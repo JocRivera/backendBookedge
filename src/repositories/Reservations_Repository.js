@@ -225,7 +225,10 @@ export const getReservationsByUser = async (userId) => {
 
 
 export const createReservations = async (reservationsData) => {
-  return await Reservations.create(reservationsData);
+  console.log("🟢 Datos que se guardarán en Reservations:", reservationsData);
+  const reservation = await Reservations.create(reservationsData);
+  console.log("🟢 Reserva creada:", reservation.toJSON());
+  return reservation;
 };
 
 export const updateReservations = async (id, reservationsData) => {
