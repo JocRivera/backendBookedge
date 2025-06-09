@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import { database } from "../config/database.js";
-import { Bedrooms } from "./bedrooms_Model.js"
+import { Bedrooms } from "./Bedrooms_Model.js"
 import { Reservations } from "./Reservations_Model.js";
 export const ReservationsBedrooms = database.define(
    "ReservationsBedrooms",

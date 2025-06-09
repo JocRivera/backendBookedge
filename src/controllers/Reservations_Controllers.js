@@ -1,6 +1,6 @@
 import { validationResult } from "express-validator"
 import { Payments } from "../models/Payments_Model.js"
-import { Cabins } from "../models/cabin_Model.js"
+import { Cabins } from "../models/Cabin_Model.js"
 import { Bedrooms } from "../models/Bedrooms_Model.js"
 import { Services } from "../models/Services_Model.js"
 import { Reservations } from "../models/Reservations_Model.js"

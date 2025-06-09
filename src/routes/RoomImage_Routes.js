@@ -5,7 +5,7 @@ import {
   deleteRoomImageController,
   setPrimaryImageController
 } from "../controllers/RoomImage_Controller.js";
-import upload from "../middlewares/multer.js";
+import upload from "../middlewares/Multer.js";
 import { validateRoomId, validateImageId } from "../middlewares/validateImageParams.js";
 
 const router = express.Router();

@@ -3,8 +3,8 @@ import { Companions } from "../models/Companions_Model.js";
 import { Payments } from "../models/Payments_Model.js";
 import { Plans } from "../models/Plans_Model.js";
 import { Users } from "../models/user_Model.js";
-import { Cabins } from "../models/cabin_Model.js";
-import { Bedrooms } from "../models/bedrooms_Model.js";
+import { Cabins } from "../models/Cabin_Model.js";
+import { Bedrooms } from "../models/Bedrooms_Model.js";
 import { Services } from "../models/Services_Model.js"
 import { ReservationsCompanions } from "../models/Reservations_Companions_Models.js";
 import { ReservationsCabins } from "../models/Reservations_cabins_Model.js";

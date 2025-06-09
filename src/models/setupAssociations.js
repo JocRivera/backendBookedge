@@ -1,7 +1,7 @@
 import { Cabins } from "./Cabin_Model.js";
 import { CabinsComforts } from "./Cabins_Comforts.js";
 import { Comforts } from "./Comfort_Model.js";
-import { Bedrooms } from "./bedrooms_Model.js";
+import { Bedrooms } from "./Bedrooms_Model.js";
 import { BedroomsComforts } from "./Bedrooms_Comforts.js";
 import { Roles } from "./Roles_Model.js";
 import { Permissions } from "./Permissions_Model.js";
