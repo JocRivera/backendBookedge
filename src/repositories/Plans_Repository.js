@@ -1,7 +1,7 @@
 import { Plans } from "../models/Plans_Model.js";
 import { Services } from "../models/Services_Model.js";
-import { Cabins } from "../models/cabin_Model.js";
-import { Bedrooms } from "../models/bedrooms_Model.js";
+import { Cabins } from "../models/Cabin_Model.js";
+import { Bedrooms } from "../models/Bedrooms_Model.js";
 import { PlanCabinModel } from "../models/Plans_Cabin_Model.js";
 import { PlanBedroomModel } from "../models/Plans_Bedroom_Model.js";
 import { Sequelize } from "sequelize";
