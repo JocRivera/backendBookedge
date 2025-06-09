@@ -19,15 +19,15 @@ export const loginController = async (req, res) => {
     // 1. Establecer Cookies para el Cliente Web (como ya lo haces)
     res.cookie("authToken", loginData.token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 1000, // 1 hora
-      sameSite: 'Lax', // Considera añadir sameSite
+      secure: true, // Render es HTTPS
+      maxAge: 60 * 60 * 1000,
+      sameSite: 'None', // Cambia esto
     });
     res.cookie("refreshToken", loginData.refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
-      sameSite: 'Lax',
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'None', // Cambia esto
     });
 
     // 2. Devolver también los tokens en el cuerpo del JSON para el Cliente Móvil
