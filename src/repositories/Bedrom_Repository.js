@@ -1,4 +1,4 @@
-import { Bedrooms } from "../models/bedrooms_Model.js";
+import { Bedrooms } from "../models/Bedrooms_Model.js";
 import { Comforts } from "../models/comfort_Model.js";
 import { RoomImages } from "../models/RoomImage_Model.js";
 
