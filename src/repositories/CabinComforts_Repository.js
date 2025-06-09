@@ -1,4 +1,4 @@
-import { CabinsComforts } from "../models/cabins_Comforts.js";
+import { CabinsComforts } from "../models/Cabins_Comforts.js";
 
 export const assignComfortsToCabinRepository = async ({
   idCabin,
