@@ -33,29 +33,13 @@ export default class Server {
   constructor() {
     this.app = express();
 
-        const allowedOrigins = [
-      "http://localhost:5173", // Tu frontend de Vite
-      "http://localhost:5180",
-      "http://localhost:8081"
-      // "https://tu-frontend-desplegado.com" // <- Añadirás esto en el futuro
-    ];
-     this.app.use(
+    
+    this.app.use(
       cors({
-        // La función origin es la forma más robusta y recomendada
-        origin: function (origin, callback) {
-          // Si el origen de la petición está en nuestra lista, permitirlo.
-          if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-            // !origin permite peticiones de herramientas como Postman
-            callback(null, true);
-          } else {
-            console.error(`CORS: Origen no permitido: ${origin}`);
-            callback(new Error('Not allowed by CORS'));
-          }
-        },
-        credentials: true, // ¡Fundamental para las cookies!
+        origin: ["http://localhost:5173", "http://localhost:5180", "http://localhost:8081"],
+        credentials: true,
       })
     );
-  
     this.app.use(express.json());
     this.app.use(cookieParser());
     this.app.use(morgan("dev"));
