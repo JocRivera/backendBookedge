@@ -17,13 +17,19 @@ export const sendResetPasswordEmail = async (email, resetLink) => {
       to: email,
       subject: "Recuperación de Contraseña",
       html: `
-        <div style="position:relative; min-height:200px; padding-bottom:80px;">
+        <div style="min-height:200px;">
           <h2>Recupera tu contraseña</h2>
           <p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
           <a href="${resetLink}" style="color: blue; font-weight: bold;">Restablecer contraseña</a>
           <p>Este enlace expirará en 15 minutos.</p>
-          <img src="https://bookedge-service.web.app/logo.png" alt="Logo Los Lagos"
-            style="position:absolute; right:10px; bottom:10px; width:80px; height:auto; opacity:0.8;" />
+          <table width="100%" style="margin-top:40px;">
+            <tr>
+              <td style="text-align:right; vertical-align:bottom;">
+                <img src="https://bookedge-service.web.app/logo.png" alt="Logo Los Lagos"
+                  width="80" style="opacity:0.8;"/>
+              </td>
+            </tr>
+          </table>
         </div>
       `,
     });
