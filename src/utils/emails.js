@@ -1,14 +1,20 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-dotenv.config(); 
+dotenv.config();
 
-const resend = new Resend(process.env.RESEND_API_KEY); 
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_USER, // tu correo Gmail
+    pass: process.env.GMAIL_PASS, // tu contraseña o App Password
+  },
+});
 
 export const sendResetPasswordEmail = async (email, resetLink) => {
   try {
-    const result = await resend.emails.send({
-      from: "bookedgedevelops@gmail.com",
-      to: email, 
+    const info = await transporter.sendMail({
+      from: `"Los Lagos" <${process.env.GMAIL_USER}>`,
+      to: email,
       subject: "Recuperación de Contraseña",
       html: `
         <h2>Recupera tu contraseña</h2>
@@ -17,10 +23,9 @@ export const sendResetPasswordEmail = async (email, resetLink) => {
         <p>Este enlace expirará en 15 minutos.</p>
       `,
     });
-
-    console.log("Correo enviado:", result);
+    console.log("Correo enviado:", info.messageId);
   } catch (error) {
-    console.error("Error de Resend:", error);
+    console.error("Error al enviar correo:", error);
     throw new Error("Error al enviar el correo de recuperación.");
   }
 };
