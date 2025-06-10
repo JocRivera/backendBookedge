@@ -8,7 +8,7 @@ export const sendResetPasswordEmail = async (email, resetLink) => {
   try {
     const result = await resend.emails.send({
       from: "onboarding@resend.dev",
-      to: "bookedgedevelops@gmail.com", 
+      to: email, 
       subject: "Recuperación de Contraseña",
       html: `
         <h2>Recupera tu contraseña</h2>
@@ -20,7 +20,7 @@ export const sendResetPasswordEmail = async (email, resetLink) => {
 
     console.log("Correo enviado:", result);
   } catch (error) {
-    console.error("Error de Resend:", error); // 👈 esto nos da más información real
+    console.error("Error de Resend:", error);
     throw new Error("Error al enviar el correo de recuperación.");
   }
 };
