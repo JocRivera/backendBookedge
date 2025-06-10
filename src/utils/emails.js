@@ -7,7 +7,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export const sendResetPasswordEmail = async (email, resetLink) => {
   try {
     const result = await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: "bookedgedevelops@gmail.com",
       to: email, 
       subject: "Recuperación de Contraseña",
       html: `
