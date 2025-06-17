@@ -80,13 +80,17 @@ export class DashboardController {
 
     // Historia de Usuario 3: Meses menos concurridos
     async getLeastBusyMonths(req, res) {
-        try {
-            // Obtener el año actual si no se proporciona
-            const { year } = req.query;
-            const targetYear = year || new Date().getFullYear();
+    try {
+        const { year } = req.query;
+        const targetYear = year || new Date().getFullYear();
 
-            // Consulta simple de conteo de reservas por mes
-            const query = `
+        if (!/^\d{4}$/.test(targetYear)) {
+            return res.status(400).json({
+                message: "Formato de año inválido. Por favor, proporcione un año válido de 4 dígitos.",
+            });
+        }
+
+        const query = `
             SELECT 
                 MONTH(startDate) as month, 
                 COUNT(idReservation) as visitorCount 
@@ -96,34 +100,54 @@ export class DashboardController {
             ORDER BY visitorCount ASC
         `;
 
-            const [visitorsByMonth] = await this.sequelize.query(query, {
-                replacements: [targetYear],
-                type: this.sequelize.QueryTypes.SELECT
-            });
+        const response = await this.sequelize.query(query, {
+            replacements: [targetYear],
+            type: this.sequelize.QueryTypes.SELECT
+        });
 
-            // Convertir el número de mes a nombre del mes
-            const monthNames = [
-                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-            ];
-
-            const formattedData = Array.isArray(visitorsByMonth) ? visitorsByMonth.map(item => ({
-                month: monthNames[item.month - 1],
-                monthNumber: item.month,
-                visitorCount: parseInt(item.visitorCount)
-            })) : [];
-
-            res.status(200).json({
-                message: "Meses menos concurridos",
-                year: targetYear,
-                data: formattedData
-            });
-        } catch (error) {
-            console.error("Error al obtener los meses menos concurridos", error);
-            res.status(500).json({
-                message: "Error al obtener los meses menos concurridos",
-                error: error.message,
+        if (!Array.isArray(response)) {
+            return res.status(500).json({
+                message: "Error en la consulta. Los datos no son un array.",
+                error: "El resultado de la consulta no es un array.",
             });
         }
+
+        if (response.length === 0) {
+            return res.status(404).json({
+                message: `No se encontraron reservas para el año ${targetYear}`,
+                year: targetYear,
+            });
+        }
+
+        const monthNames = [
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
+
+        const formattedData = response.map(item => {
+            const visitorCount = parseInt(item.visitorCount);
+            const monthIndex = item.month - 1;
+
+            return {
+                month: monthIndex >= 0 && monthIndex < 12 ? monthNames[monthIndex] : "Mes desconocido",
+                monthNumber: item.month,
+                visitorCount: isNaN(visitorCount) ? 0 : visitorCount
+            };
+        });
+
+        res.status(200).json({
+            message: "Meses menos concurridos",
+            year: targetYear,
+            data: formattedData
+        });
+
+    } catch (error) {
+        console.error("Error al obtener los meses menos concurridos:", error);
+        res.status(500).json({
+            message: "Error al obtener los meses menos concurridos",
+            error: error.message,
+        });
     }
+}
+
 }
